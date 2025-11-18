@@ -32,7 +32,7 @@ jobs:
       # Create a release on GitHub
       - name: Create Release
         id: create_release
-        uses: ncipollo/release-action@v1.11.1
+        uses: ncipollo/release-action@v1.20.0
         with:
           tag: ${{ env.tag }}
           name: SimpleDatatexts
