@@ -12,6 +12,7 @@ local format           = string.format
 local print            = print
 local strsplit         = strsplit
 local stringlower      = string.lower
+local tconcat          = table.concat
 local tinsert          = table.insert
 local tonumber         = tonumber
 local tostring         = tostring
@@ -53,10 +54,11 @@ local colors = { GetClassColor(addon.cache.playerClass):GetRGB() }
 addon.cache.colorR = colors[1]
 addon.cache.colorG = colors[2]
 addon.cache.colorB = colors[3]
-addon.cache.colorRGB = format("|cff%02x%02x%02x", addon.cache.colorR * 255, addon.cache.colorG * 255, addon.cache.colorB * 255)
+--addon.cache.colorRGB = format("|cff%02x%02x%02x", addon.cache.colorR * 255, addon.cache.colorG * 255, addon.cache.colorB * 255)
 addon.cache.colorHex = GetClassColor(addon.cache.playerClass):GenerateHexColor()
 addon.cache.version = GetAddOnMetadata(addonName, "Version") or "not defined"
 addon.cache.moduleNames = {}
+SDTCache = addon.cache
 
 -------------------------------------------------
 -- Module Registration
@@ -80,6 +82,14 @@ function addon:GetTagColor()
         return addon.cache.colorHex
     end
     return "ffffffff"
+end
+
+-------------------------------------------------
+-- Utility: Color Text
+-------------------------------------------------
+function addon:ColorText(text)
+    local color = addon:GetTagColor()
+    return "|c"..color..text.."|r"
 end
 
 -------------------------------------------------
@@ -375,8 +385,8 @@ renameLabel:SetPoint("TOPLEFT", panelDropdown, "BOTTOMLEFT", 20, -16)
 renameLabel:SetText("Rename Panel:")
 renameLabel:Hide()
 local nameEditBox = CreateFrame("EditBox", addonName .. "_PanelNameEditBox", panel, "InputBoxTemplate")
-nameEditBox:SetSize(140, 20)
-nameEditBox:SetPoint("TOPLEFT", renameLabel, "BOTTOMLEFT", 0, -6)
+nameEditBox:SetSize(170, 20)
+nameEditBox:SetPoint("TOPLEFT", renameLabel, "BOTTOMLEFT", 4, -6)
 nameEditBox:SetAutoFocus(false)
 nameEditBox:SetJustifyH("CENTER")
 nameEditBox:SetJustifyV("MIDDLE")
@@ -420,7 +430,7 @@ local function buildSlotSelectors(barName)
     if not b then return end
 
     for i = 1, b.numSlots do
-        local lbl = MakeLabel(panel, "Slot " .. i .. ":", "TOPLEFT", 320, -310 - ((i - 1) * 50))
+        local lbl = MakeLabel(panel, "Slot " .. i .. ":", "TOPLEFT", 320, -290 - ((i - 1) * 50))
         local dd = CreateFrame("Frame", addonName .. "_SlotSel_" .. i, panel, "UIDropDownMenuTemplate")
         dd:SetPoint("TOPLEFT", lbl, "BOTTOMLEFT", -20, -6)
         UIDropDownMenu_SetWidth(dd, 140)
@@ -471,7 +481,7 @@ local function CreateSliderWithBox(parent, name, text, min, max, step, attach, x
     -- Edit Box
     local eb = CreateFrame("EditBox", addonName.."_"..name.."EditBox", parent, "InputBoxTemplate")
     eb:SetSize(50, 20)
-    eb:SetPoint("LEFT", slider, "RIGHT", 40, 0)
+    eb:SetPoint("LEFT", slider, "RIGHT", 25, 0)
     eb:SetAutoFocus(false)
     eb:SetJustifyH("CENTER")
     eb:SetJustifyV("MIDDLE")
@@ -535,7 +545,7 @@ local opacitySlider, opacityBox = CreateSliderWithBox(panel, "Background Opacity
 local slotSlider, slotBox = CreateSliderWithBox(panel, "Slots", "Slots", 1, 5, 1, opacitySlider, 0, -20)
 local widthSlider, widthBox = CreateSliderWithBox(panel, "Width", "Width", 100, 800, 1, slotSlider, 0, -20)
 local heightSlider, heightBox = CreateSliderWithBox(panel, "Height", "Height", 16, 128, 1, widthSlider, 0, -20)
-local scaleSlider, scaleBox = CreateSliderWithBox(panel, "Scale", "Scale", 50, 500, 1, nameEditBox, 0, -30)
+local scaleSlider, scaleBox = CreateSliderWithBox(panel, "Scale", "Scale", 50, 500, 1, nameEditBox, 3, -30)
 
 -- Panel dropdown initializer
 local function PanelDropdown_Initialize(self, level)
@@ -701,59 +711,109 @@ loader:SetScript("OnEvent", function(self, event, arg)
     end
 end)
 
+local function SlashHelp()
+    addon.Print("|cffffff00--[Options]--|r")
+    addon.Print("Lock/Unlock: |cff8888ff/sdt lock|r")
+    addon.Print("Width: |cff8888ff/sdt width <barName> <newWidth>|r")
+    addon.Print("Height: |cff8888ff/sdt height <barName> <newHeight>|r")
+    addon.Print("Scale: |cff8888ff/sdt scale <barName> <newScale>|r")
+    addon.Print("Settings: |cff8888ff/sdt config|r")
+    addon.Print("Version: |cff8888ff/sdt version|r")
+end
+
+local function BarAdjustments(adj, bar, num)
+    -- Make sure we have all of our values
+    if not adj or not bar or not num then
+        addon.Print("Usage: /sdt " .. adj .. " <barName> <value>")
+        SlashHelp()
+        return
+    end
+
+    -- Check custom name if supplied instead of the bar key
+    if not SDTDB.bars[bar] then
+        local resolved = nil
+        for barItem, settings in pairs(SDTDB.bars) do
+            if stringlower(settings.name) == stringlower(bar) then
+                resolved = barItem
+                break
+            end
+        end
+        if not resolved then
+            addon.Print("Invalid panel name supplied. Valid panel names are:")
+            for j,k in pairs(SDTDB.bars) do
+                addon.Print("- ", tostring(j), "("..tostring(k.name)..")")
+            end
+            return
+        end
+        bar = resolved
+    end
+
+    -- Validate the number supplied
+    if type(num) ~= "number" then
+        addon.Print("A valid numeric value for the adjustment must be specified.")
+        SlashHelp()
+        return
+    end
+
+    -- Further validate the value is within parameters, then make the adjustment
+    if adj == "width" then
+        if num >= 100 and num <= 800 then
+            SDTDB.bars[bar].width = num
+            widthSlider:SetValue(num)
+            widthBox:SetText(num)
+            addon:RebuildSlots(addon.bars[bar])
+        else
+            addon.Print("Invalid panel width specified.")
+        end
+    elseif adj == "height" then
+        if num >= 16 and num <= 128 then
+            SDTDB.bars[bar].height = num
+            heightSlider:SetValue(num)
+            heightBox:SetText(num)
+            addon:RebuildSlots(addon.bars[bar])
+        else
+            addon.Print("Invalid panel height specified.")
+        end
+    elseif adj == "scale" then
+        if num >= 50 and num <= 500 then
+            SDTDB.bars[bar].scale = num
+            scaleSlider:SetValue(num)
+            scaleBox:SetText(num)
+            addon.bars[bar]:SetScale(num / 100)
+        else
+            addon.Print("Invalid panel scale specified.")
+        end
+    else
+        addon.Print("Invalid adjustment type specified.")
+    end
+end
+
 -- Slash command
 SLASH_SDT1 = "/sdt"
 SlashCmdList["SDT"] = function(msg)
-    local arg1, arg2, arg3 = strsplit(" ", msg)
-    arg1 = stringlower(arg1)
-    if arg1 == "config" then
+    local args = {}
+    for word in msg:gmatch("%S+") do
+        tinsert(args, word)
+    end
+    local command = args[1] and stringlower(args[1]) or ""
+    local bar, num
+    if #args > 2 then
+        num = tonumber(args[#args])
+        bar = tconcat(args, " ", 2, #args - 1)
+    end
+    if command == "config" then
         Settings.OpenToCategory(panel.name)
-    elseif arg1 == "lock" then
+    elseif command == "lock" then
         SDTDB.settings.locked = not SDTDB.settings.locked
         lockCheckbox:SetChecked(SDTDB.settings.locked)
         addon.Print("SDT panels are now: ", SDTDB.settings.locked and "|cffff0000LOCKED|r" or "|cff00ff00UNLOCKED|r")
-    elseif arg1 == "width" then
-        if not SDTDB.bars[arg2] then
-            addon.Print("Invalid bar name supplied. Valid bar names are:")
-            for j,_ in pairs(SDTDB.bars) do
-                addon.Print("- ", tostring(j))
-            end
-            return
-        end
-        arg3 = tonumber(arg3)
-        if arg3 and type(arg3) == "number" and arg3 >= 100 and arg3 <= 800 then
-            SDTDB.bars[arg2].width = arg3
-            widthSlider:SetValue(arg3)
-            addon:RebuildSlots(addon.bars[arg2])
-        else
-            addon.Print("Invalid bar width specified")
-        end
-    elseif arg1 == "height" then
-        if not SDTDB.bars[arg2] then
-            addon.Print("Invalid bar name supplied. Valid bar names are:")
-            for j,_ in pairs(SDTDB.bars) do
-                addon.Print("- ", tostring(j))
-            end
-            return
-        end
-        arg3 = tonumber(arg3)
-        if arg3 and type(arg3) == "number" and arg3 >= 16 and arg3 <= 128 then
-            SDTDB.bars[arg2].height = arg3
-            heightSlider:SetValue(arg3)
-            addon:RebuildSlots(addon.bars[arg2])
-        else
-            addon.Print("Invalid bar height specified")
-        end
-    elseif arg1 == "update" then
+    elseif command == "width" or command == "height" or command == "scale" then
+        BarAdjustments(command, bar, num)
+    elseif command == "update" then
         addon:UpdateAllModules()
-    elseif arg1 == "version" then
+    elseif command == "version" then
         addon.Print("Simple Datatexts Version: |cff8888ff" ..tostring(addon.cache.version) .. "|r")
-    elseif arg1 == "help" or arg1 == "" then
-        addon.Print("|cffffff00--[Options]--|r")
-        addon.Print("Lock/Unlock: |cff8888ff/sdt lock|r")
-        addon.Print("Width: |cff8888ff/sdt width <barName> <newWidth>")
-        addon.Print("Height: |cff8888ff/sdt height <barName> <newHeight>")
-        addon.Print("Settings: |cff8888ff/sdt config|r")
-        addon.Print("Version: |cff8888ff/sdt version|r")
+    else
+        SlashHelp()
     end
 end
