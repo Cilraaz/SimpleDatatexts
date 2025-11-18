@@ -1,12 +1,20 @@
 -- modules/Guild.lua
--- Guild list datatext adapted Ara_Broker_Guild_Friends for Simple DataTexts (SDT)
+-- Guild list datatext imported from Ara_Broker_Guild_Friends for Simple DataTexts (SDT)
 local addonName, addon = ...
-local SDTC = addon.cache
+local LDB = LibStub("LibDataBroker-1.1")
 
 local mod = {}
 
+-- Find Ara's guild LDB object
+local ara = LDB:GetDataObjectByName("|cFFFFB366Ara|r Guild")
+
+if not ara then
+    print("|cffff0000[SDT]|r Ara Guild LDB object not found!")
+    return
+end
+
 ----------------------------------------------------
--- Module Creation
+-- Module wrapper for SDT
 ----------------------------------------------------
 function mod.Create(slotFrame)
     local f = CreateFrame("Frame", nil, slotFrame)
@@ -20,77 +28,44 @@ function mod.Create(slotFrame)
     end
 
     ----------------------------------------------------
-    -- Update logic
+    -- Update function simply reflects Ara's text
     ----------------------------------------------------
-    local function UpdateGuild()
-        local guildName = GetGuildInfo("player")
-        if guildName then
-            local numGuild = GetNumGuildMembers()
-            text:SetFormattedText("|cff%sGuild:|r %d", addon:GetTagColor(), numGuild)
-        else
-            text:SetFormattedText("|cff%sGuild:|r None", addon:GetTagColor())
-        end
+    local function Update()
+        text:SetFormattedText("|c%s%s|r", addon:GetTagColor(), ara.text or "")
     end
+    f.Update = Update
 
     ----------------------------------------------------
-    -- Event Handler
-    ----------------------------------------------------
-    local function OnEvent(self, event, ...)
-        if event == "GUILD_ROSTER_UPDATE" or event == "PLAYER_ENTERING_WORLD" then
-            UpdateGuild()
-        end
-    end
-
-    f:SetScript("OnEvent", OnEvent)
-    f:RegisterEvent("GUILD_ROSTER_UPDATE")
-    f:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-    ----------------------------------------------------
-    -- Tooltip
+    -- Tooltip: forward to Ara
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-        GameTooltip:ClearLines()
-
-        local guildName, guildRankName = GetGuildInfo("player")
-        if guildName then
-            GameTooltip:AddLine("Guild: " .. guildName .. " (" .. guildRankName .. ")")
-            GameTooltip:AddLine(" ")
-
-            local numGuild = GetNumGuildMembers()
-            for i = 1, numGuild do
-                local name, rank, rankIndex, level, class, zone, note, officernote, connected = GetGuildRosterInfo(i)
-                local status = connected and "|cff00ff00Online|r" or "|cffff0000Offline|r"
-                GameTooltip:AddDoubleLine(name, status)
-            end
-        else
-            GameTooltip:AddLine("You are not in a guild")
+        if ara.OnEnter then
+            ara.OnEnter(self)
         end
-
-        GameTooltip:Show()
+    end)
+    slotFrame:SetScript("OnLeave", function(self)
+        if ara.OnLeave then
+            ara.OnLeave(self)
+        end
     end)
 
-    slotFrame:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
     ----------------------------------------------------
-    -- Click to open guild frame
+    -- Click: forward to Ara
     ----------------------------------------------------
-    slotFrame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-    slotFrame:SetScript("OnClick", function(self)
-        ToggleGuildFrame()
+    slotFrame:RegisterForClicks("AnyUp")
+    slotFrame:SetScript("OnClick", function(self, button)
+        if ara.OnClick then
+            ara.OnClick(self, button)
+        end
     end)
 
-    -- Request guild roster for initial update
-    GuildRoster()
-    UpdateGuild()
+    -- Initial update
+    Update()
 
     return f
 end
 
-----------------------------------------------------
--- Register with SDT
-----------------------------------------------------
 addon:RegisterDataText("Guild", mod)
 
 return mod

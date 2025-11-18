@@ -82,7 +82,7 @@ local function FormatMoney(copper, classColor)
     local s = floor((copper % 10000) / 100)
     local c = copper % 100
     if classColor then
-        local col = "|cff" .. addon:GetTagColor()
+        local col = "|c" .. addon:GetTagColor()
         return format("%s%d|r%s %s%d|r%s %s%d|r%s", col, g, GOLD_ICON, col, s, SILVER_ICON, col, c, COPPER_ICON)
     else
         return format("|cffffd700%d|r%s |cffc7c7c7%d|r%s |cffeda55f%d|r%s", g, GOLD_ICON, s, SILVER_ICON, c, COPPER_ICON)
@@ -214,6 +214,7 @@ function mod.Create(slotFrame)
         end
         UpdateGold(slotFrame)
     end
+    f.Update = function() OnEvent(f) end
 
     f:SetScript("OnEvent", OnEvent)
     f:RegisterEvent("PLAYER_ENTERING_WORLD")

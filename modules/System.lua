@@ -84,7 +84,7 @@ function mod.Create(slotFrame)
         local _, _, homePing, worldPing = GetNetStats()
         local latency = homePing
         local c = addon:GetTagColor()
-        text:SetFormattedText("|cff%sFPS:|r %s%d|r |cff%sMS:|r %s%d|r", c, StatusColor(fps), fps, c, StatusColor(nil, latency), latency)
+        text:SetFormattedText("|c%sFPS:|r %s%d|r |c%sMS:|r %s%d|r", c, StatusColor(fps), fps, c, StatusColor(nil, latency), latency)
 
         if enteredFrame then
             mod.OnEnter(self)
@@ -92,12 +92,14 @@ function mod.Create(slotFrame)
     end)
 
     -- Update immediately upon creation
-    do
+    local function UpdateText()
         local fps = floor(GetFramerate())
         local _, _, homePing, worldPing = GetNetStats()
         local latency = homePing
         text:SetFormattedText("FPS: %s%d|r MS: %s%d|r", StatusColor(fps), fps, StatusColor(nil, latency), latency)
     end
+    UpdateText()
+    f.Update = UpdateText
 
     -- Event handling: keep track of addons loaded
     local function OnEvent(self, event, ...)
@@ -145,10 +147,9 @@ function mod.OnEnter(self)
 
     GameTooltip:AddLine("SYSTEM")
     GameTooltip:AddLine(" ")
-    GameTooltip:AddDoubleLine("FPS:", fps)
-    GameTooltip:AddDoubleLine("Home Latency:", homePing.." ms")
-    GameTooltip:AddDoubleLine("World Latency:", worldPing.." ms")
-    GameTooltip:AddLine(" ")
+    GameTooltip:AddDoubleLine("FPS:", fps, .69, .31, .31, .84, .75, .65)
+    GameTooltip:AddDoubleLine("Home Latency:", homePing.." ms", .69, .31, .31, .84, .75, .65)
+    GameTooltip:AddDoubleLine("World Latency:", worldPing.." ms", .69, .31, .31, .84, .75, .65)
 
     -- Update memory & CPU usage
     UpdateAddOnMemoryUsage()
@@ -181,13 +182,17 @@ function mod.OnEnter(self)
     table.sort(infoDisplay, function(a,b) return a.sort > b.sort end)
 
     -- Display addons
+    GameTooltip:AddDoubleLine("Total Memory:", BreakUpLargeNumbers(totalMEM).." mb", .69, .31, .31, .84, .75, .65)
+    GameTooltip:AddLine(" ")
     for _, data in ipairs(infoDisplay) do
         local memStr = FormatMem(data.mem or 0)
         if cpuProfiling then
             local cpuStr = data.cpu and format("%d ms", floor(data.cpu)) or "0 ms"
             GameTooltip:AddDoubleLine(data.title, memStr.." / "..cpuStr)
         else
-            GameTooltip:AddDoubleLine(data.title, memStr)
+            local red = data.mem / totalMEM
+		    local green = (1 - red) + .5
+            GameTooltip:AddDoubleLine(data.title, memStr, 1, 1, 1, red or 1, green or 1, 0)
         end
     end
 

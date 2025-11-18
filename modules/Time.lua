@@ -168,6 +168,8 @@ function mod.Create(slotFrame)
         end
     end
 
+    f.Update = function() OnEvent(f) end
+
     f:SetScript("OnEvent", OnEvent)
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
     f:RegisterEvent("UPDATE_INSTANCE_INFO")
@@ -195,13 +197,13 @@ function mod.Create(slotFrame)
         self.timeElapsed = updateTime
 
         local Hr, Min, Sec, AmPm = GetTimeValues()
-        text:SetFormattedText('|cff%s%02d:%02d %s|r', addon:GetTagColor(), Hr, Min, AMPM[AmPm])
+        text:SetFormattedText('|c%s%02d:%02d %s|r', addon:GetTagColor(), Hr, Min, AMPM[AmPm])
     end)
 
     -- Update immediately upon creation
     do
         local Hr, Min, Sec, AmPm = GetTimeValues()
-        text:SetFormattedText('|cff%s%02d:%02d %s|r', addon:GetTagColor(), Hr, Min, AMPM[AmPm])
+        text:SetFormattedText('|c%s%02d:%02d %s|r', addon:GetTagColor(), Hr, Min, AMPM[AmPm])
     end
 
     return f

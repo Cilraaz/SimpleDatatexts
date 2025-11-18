@@ -34,8 +34,9 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateMastery()
         currentMastery = GetMasteryEffect() or 0
-        text:SetFormattedText("|cff%sMastery: %s|r", addon:GetTagColor(), FormatPercent(currentMastery))
+        text:SetFormattedText("|c%sMastery: %s|r", addon:GetTagColor(), FormatPercent(currentMastery))
     end
+    f.Update = UpdateMastery
 
     ----------------------------------------------------
     -- Event Handler

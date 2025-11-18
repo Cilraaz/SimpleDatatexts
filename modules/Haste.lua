@@ -34,8 +34,9 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateHaste()
         currentHaste = GetHaste() or 0
-        text:SetFormattedText("|cff%sHaste: %s|r", addon:GetTagColor(), FormatPercent(currentHaste))
+        text:SetFormattedText("|c%sHaste: %s|r", addon:GetTagColor(), FormatPercent(currentHaste))
     end
+    f.Update = UpdateHaste
 
     ----------------------------------------------------
     -- Event Handler

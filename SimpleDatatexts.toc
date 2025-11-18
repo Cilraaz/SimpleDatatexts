@@ -6,7 +6,7 @@
 ## SavedVariables: SDTDB
 
 # Core
-SDT.lua
+SimpleDatatexts.lua
 
 # Datatext Modules
 modules/Bags.lua
@@ -21,3 +21,7 @@ modules/Mastery.lua
 modules/System.lua
 modules/Time.lua
 modules/Versatility.lua
+
+# Libs
+libs/LibStub.lua
+libs/LibDataBroker-1.1.lua

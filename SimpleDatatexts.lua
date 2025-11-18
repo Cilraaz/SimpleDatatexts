@@ -1,4 +1,4 @@
--- Midnight Simple DataTexts
+-- Simple DataTexts
 -- Addon locals
 local addonName, addon = ...
 -- lua locals
@@ -13,7 +13,7 @@ local GetAddOnMetadata = C_AddOns.GetAddOnMetadata
 
 -- Defaults
 _G.SDTDB = _G.SDTDB or {
-    bars = {}, -- keyed by name: { numSlots = 3, slots = { [1] = "FPS", ... }, point = { point = ..., relativePoint = ..., x = ..., y = ... }, showBackground = true, showBorder = true, width = 300, height = 22 }
+    bars = {}, -- keyed by name: { numSlots = 3, slots = { [1] = "FPS", ... }, point = { point = ..., relativePoint = ..., x = ..., y = ... }, showBackground = true, showBorder = true, width = 300, height = 22, scale = 100, bgOpacity = 50 }
     settings = { locked = false, useClassColor = false },
     gold = {}
 }
@@ -49,7 +49,7 @@ function addon:GetTagColor()
     if SDTDB.settings.useClassColor then
         return addon.cache.colorHex
     end
-    return "ffffff"
+    return "ffffffff"
 end
 
 -------------------------------------------------
@@ -116,6 +116,9 @@ function addon:CreateDataBar(id, numSlots)
         bar:SetPoint("CENTER")
     end
 
+    local scale = saved.scale or 100
+    bar:SetScale(scale / 100)
+
     function bar:ApplyBackground()
         if saved.showBackground then
             bar:SetBackdrop({ 
@@ -123,7 +126,8 @@ function addon:CreateDataBar(id, numSlots)
                 edgeFile = saved.showBorder and "Interface/Tooltips/UI-Tooltip-Border" or nil, 
                 edgeSize = saved.showBorder and 8 or 0 
             })
-            bar:SetBackdropColor(0,0,0,0.5)
+            local alpha = (saved.bgOpacity or 50) / 100
+            bar:SetBackdropColor(0,0,0,alpha)
         else
             bar:SetBackdrop(nil)
         end
@@ -209,6 +213,29 @@ function addon:RebuildSlots(bar)
 end
 
 -------------------------------------------------
+-- Rebuild Slots on All Bars
+-------------------------------------------------
+function addon:RebuildAllSlots()
+    for _, bar in pairs(SDTDB.bars) do
+        addon.Print("Rebuilding slots for bar " .. bar.name)
+        addon:RebuildSlots(bar)
+    end
+end
+
+-------------------------------------------------
+-- Update All Modules
+-------------------------------------------------
+function addon:UpdateAllModules()
+    for _, bar in pairs(addon.bars) do
+        for _, slot in pairs(bar.slots) do
+            if slot.moduleFrame and slot.moduleFrame.Update then
+                slot.moduleFrame.Update()
+            end
+        end
+    end
+end
+
+-------------------------------------------------
 -- Slot Selection Dropdown
 -------------------------------------------------
 local dropdownFrame = CreateFrame("Frame", addonName .. "_SlotDropdown", UIParent, "UIDropDownMenuTemplate")
@@ -238,7 +265,7 @@ end
 -- Settings Panel UI
 -------------------------------------------------
 local panel = CreateFrame("Frame", addonName .. "_Settings", UIParent)
-panel.name = "Midnight Simple DataTexts"
+panel.name = "Simple DataTexts"
 
 local title = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 title:SetPoint("TOPLEFT", 16, -16)
@@ -274,6 +301,7 @@ classColorCheckbox.Text:SetText("Use Class Color")
 classColorCheckbox:SetChecked(SDTDB.settings.useClassColor)
 classColorCheckbox:SetScript("OnClick", function(self)
     SDTDB.settings.useClassColor = self:GetChecked()
+    addon:UpdateAllModules()
 end)
 
 -- Add Panel
@@ -422,6 +450,16 @@ local function CreateSliderWithBox(parent, name, text, min, max, step, attach, x
                 barData.width = val
             elseif name == "Height" then
                 barData.height = val
+            elseif name == "Scale" then
+                barData.scale = val
+                if addon.bars[panel.selectedBar] then
+                    addon.bars[panel.selectedBar]:SetScale(val / 100)
+                end
+            elseif name == "Background Opacity" then
+                barData.bgOpacity = val
+                if addon.bars[panel.selectedBar] then
+                    addon.bars[panel.selectedBar]:ApplyBackground()
+                end
             end
             if addon.bars[panel.selectedBar] then
                 addon:RebuildSlots(addon.bars[panel.selectedBar])
@@ -439,6 +477,11 @@ local function CreateSliderWithBox(parent, name, text, min, max, step, attach, x
             val = math.max(min, math.min(max, val))
             slider:SetValue(val)
             self:SetText(val)
+            if name == "Scale" and addon.bars[panel.selectedBar] then
+                addon.bars[panel.selectedBar]:SetScale(val / 100)
+            elseif name == "Background Opacity" and addon.bars[panel.selectedBar] then
+                addon.bars[panel.selectedBar]:ApplyBackground()
+            end
         else
             -- reset to slider value if invalid
             self:SetText(math.floor(slider:GetValue()+0.5))
@@ -448,9 +491,11 @@ local function CreateSliderWithBox(parent, name, text, min, max, step, attach, x
     return slider, eb
 end
 
-local slotSlider, slotBox = CreateSliderWithBox(panel, "Slots", "Slots", 1, 5, 1, bgCheckbox, 0, -20)
+local opacitySlider, opacityBox = CreateSliderWithBox(panel, "Background Opacity", "Background Opacity", 0, 100, 1, bgCheckbox, 0, -20)
+local slotSlider, slotBox = CreateSliderWithBox(panel, "Slots", "Slots", 1, 5, 1, opacitySlider, 0, -20)
 local widthSlider, widthBox = CreateSliderWithBox(panel, "Width", "Width", 100, 800, 1, slotSlider, 0, -20)
 local heightSlider, heightBox = CreateSliderWithBox(panel, "Height", "Height", 16, 128, 1, widthSlider, 0, -20)
+local scaleSlider, scaleBox = CreateSliderWithBox(panel, "Scale", "Scale", 50, 500, 1, nameEditBox, 0, -20)
 
 -- Panel dropdown initializer
 local function PanelDropdown_Initialize(self, level)
@@ -484,6 +529,10 @@ function updateSelectedBarControls()
         heightBox:Hide()
         renameLabel:Hide()
         nameEditBox:Hide()
+        scaleSlider:Hide()
+        scaleBox:Hide()
+        opacitySlider:Hide()
+        opacityBox:Hide()
         for _, f in ipairs(slotSelectors) do f:Hide() end
         return
     end
@@ -501,6 +550,10 @@ function updateSelectedBarControls()
     renameLabel:Show()
     nameEditBox:SetText(SDTDB.bars[barName].name or barName)
     nameEditBox:Show()
+    scaleSlider:Show()
+    scaleBox:Show()
+    opacitySlider:Show()
+    opacityBox:Show()
 
     local b = SDTDB.bars[barName]
     if not b then return end
@@ -531,6 +584,16 @@ function updateSelectedBarControls()
     local height = b.height or 22
     heightSlider:SetValue(height)
     heightBox:SetText(height)
+
+    -- Scale
+    local scale = b.scale or 100
+    scaleSlider:SetValue(scale)
+    scaleBox:SetText(scale)
+
+    -- Opacity
+    local opacity = b.bgOpacity or 50
+    opacitySlider:SetValue(opacity)
+    opacityBox:SetText(opacity)
 
     -- Rebuild slots & selectors
     if addon.bars[barName] then addon:RebuildSlots(addon.bars[barName]) end
@@ -580,6 +643,10 @@ loader:SetScript("OnEvent", function(self, event, arg)
             end
         end
         UIDropDownMenu_Initialize(panelDropdown, PanelDropdown_Initialize)
+
+        -- Sync settings after the addon is fully loaded
+        lockCheckbox:SetChecked(SDTDB.settings.locked)
+        classColorCheckbox:SetChecked(SDTDB.settings.useClassColor)
     end
 end)
 
@@ -626,6 +693,8 @@ SlashCmdList["SDT"] = function(msg)
         else
             addon.Print("Invalid bar height specified")
         end
+    elseif arg1 == "update" then
+        addon:UpdateAllModules()
     elseif arg1 == "version" then
         addon.Print("Simple Datatexts Version: |cff8888ff" ..tostring(addon.cache.version) .. "|r")
     elseif arg1 == "help" or arg1 == "" then

@@ -63,8 +63,9 @@ function mod.Create(slotFrame)
             end
         end
 
-        text:SetFormattedText("|cff%sBags: %d/%d|r", addon:GetTagColor(), totalNormal - freeNormal, totalNormal)
+        text:SetFormattedText("|c%sBags: %d/%d|r", addon:GetTagColor(), totalNormal - freeNormal, totalNormal)
     end
+    f.Update = UpdateBags
 
     ----------------------------------------------------
     -- Event Handler
@@ -89,7 +90,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
         GameTooltip:ClearLines()
         GameTooltip:AddLine("Bags")
         GameTooltip:AddLine(" ")
