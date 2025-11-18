@@ -27,14 +27,12 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
-    local displayString = "|c%s%s|r"
-
     ----------------------------------------------------
     -- Event Handler
     ----------------------------------------------------
     local function OnEvent(self, event, ...)
         local mailText = HasNewMail() and "New Mail" or "No Mail"
-        text:SetFormattedText(displayString, addon:GetTagColor(), mailText)
+        text:SetText(addon:ColorText(mailText))
     end
 
     f.Update = function() OnEvent(f) end

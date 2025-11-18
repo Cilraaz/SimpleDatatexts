@@ -119,19 +119,19 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
+    local function UpdateText()
+        local Hr, Min, Sec, AmPm = GetTimeValues()
+        local textString = format("%d:%02d %s", Hr, Min, AMPM[AmPm])
+        text:SetText(addon:ColorText(textString))
+    end
+
     f:SetScript("OnUpdate", function(self, elapsed)
         self.timeElapsed = (self.timeElapsed or updateTime) - elapsed
         if self.timeElapsed > 0 then return end
         self.timeElapsed = updateTime
 
-        local Hr, Min, Sec, AmPm = GetTimeValues()
-        text:SetFormattedText('|c%s%02d:%02d %s|r', addon:GetTagColor(), Hr, Min, AMPM[AmPm])
+        UpdateText()
     end)
-
-    local function UpdateText()
-        local Hr, Min, Sec, AmPm = GetTimeValues()
-        text:SetFormattedText('|c%s%02d:%02d %s|r', addon:GetTagColor(), Hr, Min, AMPM[AmPm])
-    end
     
     f.Update = UpdateText
 

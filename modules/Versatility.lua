@@ -52,7 +52,8 @@ function mod.Create(slotFrame)
     local function UpdateVersatility()
         currentVers = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE)
         versReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN)
-        text:SetFormattedText("|c%sVers: %s|r", addon:GetTagColor(), addon:FormatPercent(currentVers))
+        local textString = "Vers: "..addon:FormatPercent(currentVers)
+        text:SetText(addon:ColorText(textString))
     end
 
     f.Update = UpdateVersatility

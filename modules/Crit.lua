@@ -76,7 +76,8 @@ function mod.Create(slotFrame)
 		    ratingIndex = CR_CRIT_MELEE
 	    end
 
-        text:SetFormattedText("|c%sCrit: %s|r", addon:GetTagColor(), addon:FormatPercent(critChance))
+        local textString = "Crit: "..addon:FormatPercent(critChance)
+        text:SetText(addon:ColorText(textString))
     end
     f.Update = UpdateCrit
 

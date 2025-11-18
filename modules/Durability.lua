@@ -140,7 +140,8 @@ function mod.Create(slotFrame)
         -- colorize percent
         local r, g, b = ColorGradient(totalDurability / 100)
         local durabilityHex = format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
-        text:SetFormattedText("|c%sDurability: |r %s%s|r", addon:GetTagColor(), durabilityHex, addon:FormatPercent(totalDurability))
+        local textString = addon:ColorText("Durability: ")..format("%s%s|r", durabilityHex, addon:FormatPercent(totalDurability))
+        text:SetText(textString)
 
         -- pulse if below threshold
         if totalDurability <= percThreshold then

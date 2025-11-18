@@ -53,9 +53,9 @@ end
 ----------------------------------------------------
 local function StatusColor(fps, ping)
     if fps then
-        return statusColors[fps >= 30 and 1 or (fps >= 20 and 2) or (fps >= 10 and 3) or 4]
+        return statusColors[fps >= 30 and 1 or (fps >= 20 and 2) or (fps >= 10 and 3) or 4] .. fps .. "|r"
     else
-        return statusColors[ping < 150 and 1 or (ping < 300 and 2) or (ping < 500 and 3) or 4]
+        return statusColors[ping < 150 and 1 or (ping < 300 and 2) or (ping < 500 and 3) or 4] .. ping .. "|r"
     end
 end
 
@@ -169,29 +169,26 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     -- Update Logic
     ----------------------------------------------------
-    
+    local function UpdateText()
+        local fps = floor(GetFramerate())
+        local _, _, homePing, worldPing = GetNetStats()
+        local latency = homePing
+        local textString = addon:ColorText("FPS: ") .. StatusColor(fps) .. addon:ColorText(" MS: ") .. StatusColor(nil, latency)
+        text:SetText(textString)
+    end
+
     f:SetScript("OnUpdate", function(self, elapsed)
         wait = wait + elapsed
         if wait < 1 then return end
         wait = 0
 
-        local fps = floor(GetFramerate())
-        local _, _, homePing, worldPing = GetNetStats()
-        local latency = homePing
-        local c = addon:GetTagColor()
-        text:SetFormattedText("|c%sFPS:|r %s%d|r |c%sMS:|r %s%d|r", c, StatusColor(fps), fps, c, StatusColor(nil, latency), latency)
+        UpdateText()
 
         if enteredFrame then
             mod.OnEnter(slotFrame)
         end
     end)
 
-    local function UpdateText()
-        local fps = floor(GetFramerate())
-        local _, _, homePing, worldPing = GetNetStats()
-        local latency = homePing
-        text:SetFormattedText("FPS: %s%d|r MS: %s%d|r", StatusColor(fps), fps, StatusColor(nil, latency), latency)
-    end
     UpdateText()
     f.Update = UpdateText
 

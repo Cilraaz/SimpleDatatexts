@@ -90,7 +90,8 @@ function mod.Create(slotFrame)
             end
         end
 
-        text:SetFormattedText("|c%sBags: %d/%d|r", addon:GetTagColor(), totalNormal - freeNormal, totalNormal)
+        local textString = "Bags: "..(totalNormal - freeNormal).."/"..totalNormal
+        text:SetText(addon:ColorText(textString))
     end
     f.Update = UpdateBags
 

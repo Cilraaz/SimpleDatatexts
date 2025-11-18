@@ -6,13 +6,6 @@ local SDTC = addon.cache
 local mod = {}
 
 ----------------------------------------------------
--- Utility
-----------------------------------------------------
-local function FormatPercent(v)
-    return string.format("%.2f%%", v)
-end
-
-----------------------------------------------------
 -- Module Creation
 ----------------------------------------------------
 function mod.Create(slotFrame)
@@ -34,7 +27,8 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateMastery()
         currentMastery = GetMasteryEffect() or 0
-        text:SetFormattedText("|c%sMastery: %s|r", addon:GetTagColor(), FormatPercent(currentMastery))
+        local textString = "Mastery: "..addon:FormatPercent(currentMastery)
+        text:SetText(addon:ColorText(textString))
     end
     f.Update = UpdateMastery
 

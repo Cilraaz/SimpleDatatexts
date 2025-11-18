@@ -82,8 +82,10 @@ local function FormatMoney(copper, classColor)
     local s = floor((copper % 10000) / 100)
     local c = copper % 100
     if classColor then
-        local col = "|c" .. addon:GetTagColor()
-        return format("%s%d|r%s %s%d|r%s %s%d|r%s", col, g, GOLD_ICON, col, s, SILVER_ICON, col, c, COPPER_ICON)
+        local goldPart = addon:ColorText(g) .. GOLD_ICON
+        local silverPart = addon:ColorText(s) .. SILVER_ICON
+        local copperPart = addon:ColorText(c) .. COPPER_ICON
+        return goldPart.." "..silverPart.." "..copperPart
     else
         return format("|cffffd700%d|r%s |cffc7c7c7%d|r%s |cffeda55f%d|r%s", g, GOLD_ICON, s, SILVER_ICON, c, COPPER_ICON)
     end

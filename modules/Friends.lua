@@ -38,7 +38,7 @@ function mod.Create(slotFrame)
     -- Update function simply reflects Ara's text
     ----------------------------------------------------
     local function Update()
-        text:SetFormattedText("|c%s%s|r", addon:GetTagColor(), ara.text or "")
+        text:SetFormattedText(addon:ColorText(ara.text or ""))
     end
     f.Update = Update
 
