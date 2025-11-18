@@ -1,6 +1,7 @@
 -- modules/Time.lua
 -- Time & Lockout datatext adapted from ElvUI for Simple DataTexts (SDT)
-local addonName, addon = ...
+local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 
 local mod = {}
 
@@ -122,7 +123,7 @@ function mod.Create(slotFrame)
     local function UpdateText()
         local Hr, Min, Sec, AmPm = GetTimeValues()
         local textString = format("%d:%02d %s", Hr, Min, AMPM[AmPm])
-        text:SetText(addon:ColorText(textString))
+        text:SetText(SDT:ColorText(textString))
     end
 
     f:SetScript("OnUpdate", function(self, elapsed)
@@ -166,7 +167,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = addon:FindBestAnchorPoint(self)
+        local anchor = SDT:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
         GameTooltip:AddLine("TIME")
@@ -244,6 +245,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-addon:RegisterDataText("Time", mod)
+SDT:RegisterDataText("Time", mod)
 
 return mod

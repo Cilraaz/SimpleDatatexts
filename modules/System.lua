@@ -1,6 +1,7 @@
 -- modules/System.lua
 -- System datatext adapted from ElvUI for Simple DataTexts (SDT)
-local addonName, addon = ...
+local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 
 local mod = {}
 
@@ -63,7 +64,7 @@ end
 -- Tooltip Creation Function
 ----------------------------------------------------
 function mod.OnEnter(self)
-    local anchor = addon:FindBestAnchorPoint(self)
+    local anchor = SDT:FindBestAnchorPoint(self)
     GameTooltip:SetOwner(self, anchor)
     GameTooltip:ClearLines()
 
@@ -173,7 +174,7 @@ function mod.Create(slotFrame)
         local fps = floor(GetFramerate())
         local _, _, homePing, worldPing = GetNetStats()
         local latency = homePing
-        local textString = addon:ColorText("FPS: ") .. StatusColor(fps) .. addon:ColorText(" MS: ") .. StatusColor(nil, latency)
+        local textString = SDT:ColorText("FPS: ") .. StatusColor(fps) .. SDT:ColorText(" MS: ") .. StatusColor(nil, latency)
         text:SetText(textString)
     end
 
@@ -224,6 +225,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-addon:RegisterDataText("System", mod)
+SDT:RegisterDataText("System", mod)
 
 return mod

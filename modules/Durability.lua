@@ -1,7 +1,7 @@
 -- modules/Durability.lua
 -- Durability datatext adapted ElvUI for Simple DataTexts (SDT)
-local addonName, addon = ...
-local SDTC = addon.cache
+local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 
 local mod = {}
 
@@ -140,7 +140,7 @@ function mod.Create(slotFrame)
         -- colorize percent
         local r, g, b = ColorGradient(totalDurability / 100)
         local durabilityHex = format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
-        local textString = addon:ColorText("Durability: ")..format("%s%s|r", durabilityHex, addon:FormatPercent(totalDurability))
+        local textString = SDT:ColorText("Durability: ")..format("%s%s|r", durabilityHex, SDT:FormatPercent(totalDurability))
         text:SetText(textString)
 
         -- pulse if below threshold
@@ -178,7 +178,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = addon:FindBestAnchorPoint(self)
+        local anchor = SDT:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
         GameTooltip:AddLine(DURABILITY or "Durability")
@@ -189,7 +189,7 @@ function mod.Create(slotFrame)
             local link = GetInventoryItemLink("player", slotIndex) or UNKNOWN
             local colorR, colorG, colorB = ColorGradient((perc or 0) / 100)
             local left = format("|T%s:14:14:0:0:64:64:4:60:4:60|t %s", texture or "", link)
-            local right = addon:FormatPercent(perc or 0)
+            local right = SDT:FormatPercent(perc or 0)
             GameTooltip:AddDoubleLine(left, right, 1, 1, 1, colorR, colorG, colorB)
         end
 
@@ -225,6 +225,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-addon:RegisterDataText("Durability", mod)
+SDT:RegisterDataText("Durability", mod)
 
 return mod

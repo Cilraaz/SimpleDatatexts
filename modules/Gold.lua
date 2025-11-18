@@ -1,7 +1,7 @@
 -- modules/Gold.lua
 -- Gold & Currency datatext adapted from ElvUI for Simple DataTexts (SDT)
-local addonName, addon = ...
-local SDTC = addon.cache
+local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 
 local mod = {}
 
@@ -82,9 +82,9 @@ local function FormatMoney(copper, classColor)
     local s = floor((copper % 10000) / 100)
     local c = copper % 100
     if classColor then
-        local goldPart = addon:ColorText(g) .. GOLD_ICON
-        local silverPart = addon:ColorText(s) .. SILVER_ICON
-        local copperPart = addon:ColorText(c) .. COPPER_ICON
+        local goldPart = SDT:ColorText(g) .. GOLD_ICON
+        local silverPart = SDT:ColorText(s) .. SILVER_ICON
+        local copperPart = SDT:ColorText(c) .. COPPER_ICON
         return goldPart.." "..silverPart.." "..copperPart
     else
         return format("|cffffd700%d|r%s |cffc7c7c7%d|r%s |cffeda55f%d|r%s", g, GOLD_ICON, s, SILVER_ICON, c, COPPER_ICON)
@@ -146,7 +146,7 @@ end
 ----------------------------------------------------
 local function ShowTooltip(self)
     local tooltip = GameTooltip
-    local anchor = addon:FindBestAnchorPoint(self)
+    local anchor = SDT:FindBestAnchorPoint(self)
     tooltip:SetOwner(self, anchor)
     tooltip:ClearLines()
     tooltip:AddLine("GOLD")
@@ -261,6 +261,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-addon:RegisterDataText("Gold", mod)
+SDT:RegisterDataText("Gold", mod)
 
 return mod

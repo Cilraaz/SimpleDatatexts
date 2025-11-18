@@ -1,6 +1,7 @@
 -- modules/Versatility.lua
 -- Versatility datatext adapted from ElvUI for Simple DataTexts (SDT)
-local addonName, addon = ...
+local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 
 local mod = {}
 
@@ -52,8 +53,8 @@ function mod.Create(slotFrame)
     local function UpdateVersatility()
         currentVers = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE)
         versReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN)
-        local textString = "Vers: "..addon:FormatPercent(currentVers)
-        text:SetText(addon:ColorText(textString))
+        local textString = "Vers: "..SDT:FormatPercent(currentVers)
+        text:SetText(SDT:ColorText(textString))
     end
 
     f.Update = UpdateVersatility
@@ -81,7 +82,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = addon:FindBestAnchorPoint(self)
+        local anchor = SDT:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
 
@@ -106,6 +107,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-addon:RegisterDataText("Versatility", mod)
+SDT:RegisterDataText("Versatility", mod)
 
 return mod

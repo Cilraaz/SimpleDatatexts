@@ -1,6 +1,7 @@
 -- modules/Guild.lua
 -- Guild list datatext imported from Ara_Broker_Guild_Friends for Simple DataTexts (SDT)
-local addonName, addon = ...
+local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local LDB = LibStub("LibDataBroker-1.1")
 
 local mod = {}
@@ -21,7 +22,7 @@ local ara = LDB:GetDataObjectByName("|cFFFFB366Ara|r Guild")
 ----------------------------------------------------
 function mod.Create(slotFrame)
     if not ara then
-        addon.Print("Ara Guild LDB object not found! SDT Guild datatext disabled.")
+        SDT.Print("Ara Guild LDB object not found! SDT Guild datatext disabled.")
         return
     end
     local f = CreateFrame("Frame", nil, slotFrame)
@@ -38,7 +39,7 @@ function mod.Create(slotFrame)
     -- Update function simply reflects Ara's text
     ----------------------------------------------------
     local function Update()
-        text:SetText(addon:ColorText(ara.text or ""))
+        text:SetText(SDT:ColorText(ara.text or ""))
     end
     f.Update = Update
 
@@ -69,6 +70,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-addon:RegisterDataText("Guild", mod)
+SDT:RegisterDataText("Guild", mod)
 
 return mod

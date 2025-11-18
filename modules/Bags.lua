@@ -1,7 +1,7 @@
 -- modules/Bags.lua
 -- Bags datatext adapted from ElvUI for Simple DataTexts (SDT)
-local addonName, addon = ...
-local SDTC = addon.cache
+local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 
 local mod = {}
 
@@ -91,7 +91,7 @@ function mod.Create(slotFrame)
         end
 
         local textString = "Bags: "..(totalNormal - freeNormal).."/"..totalNormal
-        text:SetText(addon:ColorText(textString))
+        text:SetText(SDT:ColorText(textString))
     end
     f.Update = UpdateBags
 
@@ -118,7 +118,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = addon:FindBestAnchorPoint(self)
+        local anchor = SDT:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
         GameTooltip:AddLine("Bags")
@@ -161,6 +161,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-addon:RegisterDataText("Bags", mod)
+SDT:RegisterDataText("Bags", mod)
 
 return mod

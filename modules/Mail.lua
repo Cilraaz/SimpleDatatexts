@@ -1,6 +1,7 @@
 -- modules/Mail.lua
 -- Mail datatext adapted from ElvUI for Simple DataTexts (SDT)
-local addonName, addon = ...
+local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 
 local mod = {}
 
@@ -32,7 +33,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function OnEvent(self, event, ...)
         local mailText = HasNewMail() and "New Mail" or "No Mail"
-        text:SetText(addon:ColorText(mailText))
+        text:SetText(SDT:ColorText(mailText))
     end
 
     f.Update = function() OnEvent(f) end
@@ -49,7 +50,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = addon:FindBestAnchorPoint(self)
+        local anchor = SDT:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
 
@@ -79,6 +80,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-addon:RegisterDataText("Mail", mod)
+SDT:RegisterDataText("Mail", mod)
 
 return mod
