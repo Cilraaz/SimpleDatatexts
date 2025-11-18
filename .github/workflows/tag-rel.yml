@@ -5,6 +5,9 @@ on:
     tags:
       - '*'
 
+permissions:
+    contents: write
+    
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -31,7 +34,7 @@ jobs:
         id: create_release
         uses: ncipollo/release-action@v1.11.1
         with:
-          tag: ${{ github.ref }}
+          tag: ${{ env.tag }}
           name: SimpleDatatexts
           body: |
             Changes: https://github.com/Cilraaz/SimpleDatatexts/compare/${{ env.oldtag }}...${{ env.tag }}
