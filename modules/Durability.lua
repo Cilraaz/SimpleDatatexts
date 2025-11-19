@@ -19,6 +19,7 @@ local wipe   = table.wipe
 local GameTooltip                = GameTooltip
 local GetCoinTextureString       = GetCoinTextureString
 local GetInventoryItemDurability = GetInventoryItemDurability
+local GetInventoryItem           = C_TooltipInfo.GetInventoryItem
 local GetInventoryItemLink       = GetInventoryItemLink
 local GetInventoryItemTexture    = GetInventoryItemTexture
 local GetRepairAllCost           = GetRepairAllCost
@@ -126,15 +127,10 @@ function mod.Create(slotFrame)
                 if perc < totalDurability then
                     totalDurability = perc
                 end
+                local data = GetInventoryItem("player", index)
+                local repairCost = data and data.repairCost
+                totalRepairCost = totalRepairCost + (repairCost or 0)
             end
-        end
-
-        -- If a merchant window is open, show GetRepairAllCost if positive
-        if MerchantFrame and MerchantFrame:IsShown() then
-            local cost = GetRepairAllCost()
-            totalRepairCost = cost or 0
-        else
-            totalRepairCost = 0
         end
 
         -- colorize percent
