@@ -2,7 +2,7 @@
 ## Title: Simple DataTexts
 ## Notes: Lightweight datatext framework.
 ## Author: Cilraaz
-## Version: 12.0.0.08
+## Version: 12.0.0.07
 ## SavedVariables: SDTDB
 
 # Core
@@ -12,6 +12,9 @@ SimpleDatatexts.lua
 Ara_Broker_Guild_Friends.lua
 
 # Datatext Modules
+modules/Agility.lua
+modules/Armor.lua
+modules/AttackPower.lua
 modules/Bags.lua
 modules/Crit.lua
 modules/Durability.lua
@@ -19,8 +22,10 @@ modules/Friends.lua
 modules/Gold.lua
 modules/Guild.lua
 modules/Haste.lua
+modules/Intellect.lua
 modules/Mail.lua
 modules/Mastery.lua
+modules/Strength.lua
 modules/System.lua
 modules/Time.lua
 modules/Versatility.lua
