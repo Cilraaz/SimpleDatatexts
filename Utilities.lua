@@ -194,6 +194,12 @@ function SDT:RegisterDataText(name, module)
 end
 
 -------------------------------------------------
+-- Utility: SetActiveProfile
+-------------------------------------------------
+function SDT:SetActiveProfile(profileName)
+end
+
+-------------------------------------------------
 -- Utility: SetCVar
 -------------------------------------------------
 function SDT:SetCVar(cvar, value)

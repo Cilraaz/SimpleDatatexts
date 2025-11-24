@@ -42,7 +42,6 @@ local charDefaultsTable = {
     chosenProfile = {
         generic = charKey,
     },
-    bars = {},
     settings = { 
         locked = false,
         useClassColor = false,
@@ -54,10 +53,6 @@ local charDefaultsTable = {
         debug = false,
     }
 }
-for i = 1, GetNumSpecializations() do
-    local _, specName = GetSpecializationInfo(i)
-    charDefaultsTable.chosenProfile[specName] = ""
-end
 
 local function checkDefaultDB()
     SDTDB.gold = SDTDB.gold or {}
@@ -99,6 +94,33 @@ local function checkDefaultDB()
     end
 
     SDT.SDTDB_CharDB = charDB
+
+    for i = 1, GetNumSpecializations() do
+        local _, specName = GetSpecializationInfo(i)
+        local specNameLower = specName:lower()
+        if not charDB.chosenProfile[specName] then
+            charDB.chosenProfile[specName] = charKey.."-"..specNameLower
+        end
+    end
+
+    for _, profileName in pairs(charDB.chosenProfile) do
+        if not SDTDB.profiles[profileName] then
+            SDTDB.profiles[profileName] = { 
+                bars = {
+                    SDT_Bar1 = {
+                        numSlots = 3,
+                        slots = {},
+                        showBackground = true,
+                        showBorder = true,
+                        width = 300,
+                        height = 22,
+                        name = "SDT_Bar1",
+                    }
+                }
+            }
+        end
+    end
+
     local profileName
     if charDB.useSpecProfiles then
         local _, currentSpec = GetSpecializationInfo(GetSpecialization())
@@ -664,7 +686,7 @@ StaticPopupDialogs["SDT_CONFIRM_DELETE_BAR"] = {
     timeout = 0,
     whileDead = true,
     hideOnEscape = true,
-    preferredIndex = 3, -- avoids taint issues (3–4 are safest)
+    preferredIndex = 3,
     OnAccept = function(self, barName)
         -- Perform the delete
         if SDT.bars[barName] then
@@ -702,13 +724,128 @@ StaticPopupDialogs["SDT_CONFIRM_DELETE_BAR"] = {
 -------------------------------------------------
 -- Profiles Settings
 -------------------------------------------------
+local profileCreateLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+profileCreateLabel:SetPoint("TOPLEFT", profilesTitle, "BOTTOMLEFT", 0, -16)
+profileCreateLabel:SetText("Create New Profile:")
 
+local profileCreateName = CreateFrame("EditBox", nil, profilesSubPanel, "InputBoxTemplate")
+profileCreateName:SetSize(160, 24)
+profileCreateName:SetPoint("TOPLEFT", profileCreateLabel, "BOTTOMLEFT", 0, -2)
+profileCreateName:SetAutoFocus(false)
+profileCreateName:SetJustifyH("CENTER")
+profileCreateName:SetJustifyV("MIDDLE")
+profileCreateName:SetScript("OnEnterPressed", function(self)
+    local name = self:GetText():trim()
+    if name ~= "" then
+        if not SDT.profiles[name] then
+            SDT.profiles[name] = { bars = {} }
+        else
+            StaticPopup_Show("SDT_PROFILE_ALREADY_EXISTS")
+        end
+    end
+end)
+
+StaticPopupDialogs["SDT_PROFILE_ALREADY_EXISTS"] = {
+    text = "The profile name you have entered already exists. Please enter a new name.",
+    button1 = "Ok",
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3
+}
+
+local profileSelectLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+profileSelectLabel:SetPoint("LEFT", profileCreateLabel, "RIGHT", 100, 0)
+profileSelectLabel:SetText("Existing Profile:")
+
+local profileSelectDropdown = CreateFrame("Frame", addonName .. "_ProfileSelectDropdown", profilesSubPanel, "UIDropDownMenuTemplate")
+profileSelectDropdown:SetPoint("LEFT", profileCreateName, "RIGHT", 20, -4)
+UIDropDownMenu_SetWidth(profileSelectDropdown, 140)
+
+local function ProfileSelectDropdown_Init(self, level)
+    for profileName in pairs(SDTDB.profiles) do
+        local info = UIDropDownMenu_CreateInfo()
+        info.text = profileName
+        info.func = function()
+            SDT:SetActiveProfile(profileName)
+            UIDropDownMenu_SetSelectedValue(profileSelectDropdown, profileName)
+            UIDropDownMenu_SetText(profileSelectDropdown, profileName)
+        end
+        UIDropDownMenu_AddButton(info, level)
+    end
+end
+
+local perSpecCheck = CreateFrame("CheckButton", nil, profilesSubPanel, "InterfaceOptionsCheckButtonTemplate")
+perSpecCheck:SetPoint("TOPLEFT", profileCreateName, "BOTTOMLEFT", 0, -20)
+perSpecCheck.Text:SetText("Enable Per-Spec Profiles")
+perSpecCheck:SetChecked(SDT.SDTDB_CharDB.useSpecProfiles)
+perSpecCheck:SetScript("OnClick", function(self)
+    SDT.SDTDB_CharDB.useSpecProfiles = self:GetChecked()
+end)
+
+local specOneLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+specOneLabel:SetPoint("TOPLEFT", perSpecCheck, "BOTTOMLEFT", 0, 0)
+specOneLabel:SetText("")
+
+local specOneDropdown = CreateFrame("Frame", addonName .. "_SpecOneDropdown", profilesSubPanel, "UIDropDownMenuTemplate")
+specOneDropdown:SetPoint("TOPLEFT", specOneLabel, "BOTTOMLEFT", -20, -4)
+UIDropDownMenu_SetWidth(specOneDropdown, 120)
+
+local specTwoLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+specTwoLabel:SetPoint("LEFT", specOneLabel, "LEFT", 150, 0)
+specTwoLabel:SetText("")
+
+local specTwoDropdown = CreateFrame("Frame", addonName .. "_SpecTwoDropdown", profilesSubPanel, "UIDropDownMenuTemplate")
+specTwoDropdown:SetPoint("LEFT", specOneDropdown, "RIGHT", -20, 0)
+UIDropDownMenu_SetWidth(specTwoDropdown, 120)
+
+local specThreeLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+specThreeLabel:SetPoint("LEFT", specTwoLabel, "LEFT", 150, 0)
+specThreeLabel:SetText("")
+
+local specThreeDropdown = CreateFrame("Frame", addonName .. "_SpecThreeDropdown", profilesSubPanel, "UIDropDownMenuTemplate")
+specThreeDropdown:SetPoint("LEFT", specTwoDropdown, "RIGHT", -20, 0)
+UIDropDownMenu_SetWidth(specThreeDropdown, 120)
+
+local specFourLabel
+local specFourDropdown
+if SDT.cache.playerClass == "DRUID" then
+    specFourLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    specFourLabel:SetPoint("LEFT", specThreeLabel, "LEFT", 150, 0)
+    specFourLabel:SetText("")
+
+    specFourDropdown = CreateFrame("Frame", addonName .. "_SpecFourDropdown", profilesSubPanel, "UIDropDownMenuTemplate")
+    specFourDropdown:SetPoint("LEFT", specThreeDropdown, "RIGHT", -20, 0)
+    UIDropDownMenu_SetWidth(specFourDropdown, 120)
+end
+
+local function UpdateProfileSpecs()
+    local _, specOneName = GetSpecializationInfo(1)
+    local _, specTwoName = GetSpecializationInfo(2)
+    local _, specThreeName = GetSpecializationInfo(3)
+    specOneLabel:SetText(specOneName..":")
+    specTwoLabel:SetText(specTwoName..":")
+    specThreeLabel:SetText(specThreeName..":")
+    local specFourName
+    if SDT.cache.playerClass == "DRUID" then
+        _, specFourName = GetSpecializationInfo(4)
+        specFourLabel:SetText(specFourName..":")
+    end
+end
+
+-------------------------------------------------
+-- Loader!
+-------------------------------------------------
 local loader = CreateFrame("Frame")
 loader:RegisterEvent("ADDON_LOADED")
+loader:RegisterEvent("PLAYER_ENTERING_WORLD")
 loader:SetScript("OnEvent", function(self, event, arg)
-    if arg == addonName then
+    --if event == "ADDON_LOADED" and arg == addonName then        
+    if event == "PLAYER_ENTERING_WORLD" then
         checkDefaultDB()
-        
+
+        UpdateProfileSpecs()
+
         -- Create and verify our fonts
         SDT.fonts = LSM:List("font")
         tsort(SDT.fonts)
@@ -731,6 +868,34 @@ loader:SetScript("OnEvent", function(self, event, arg)
         UIDropDownMenu_Initialize(fontDropdown, FontDropdown_Initialize)
         UIDropDownMenu_SetSelectedValue(fontDropdown, currentFont)
         UIDropDownMenu_SetText(fontDropdown, currentFont)
+        UIDropDownMenu_Initialize(profileSelectDropdown, ProfileSelectDropdown_Init)
+        local activeProfile
+        if SDT.SDTDB_CharDB.useSpecProfiles then
+            local _, currentSpec = GetSpecializationInfo(GetSpecialization())
+            activeProfile = SDT.SDTDB_CharDB.chosenProfile[currentSpec]
+        else
+            activeProfile = SDT.SDTDB_CharDB.chosenProfile.generic
+        end
+        UIDropDownMenu_SetSelectedValue(profileSelectDropdown, activeProfile)
+        UIDropDownMenu_SetText(profileSelectDropdown, activeProfile)
+        UIDropDownMenu_Initialize(specOneDropdown, ProfileSelectDropdown_Init)
+        local _, specOne = GetSpecializationInfo(1)
+        UIDropDownMenu_SetSelectedValue(specOneDropdown, SDT.SDTDB_CharDB.chosenProfile[specOne])
+        UIDropDownMenu_SetText(specOneDropdown, SDT.SDTDB_CharDB.chosenProfile[specOne])
+        UIDropDownMenu_Initialize(specTwoDropdown, ProfileSelectDropdown_Init)
+        local _, specTwo = GetSpecializationInfo(2)
+        UIDropDownMenu_SetSelectedValue(specTwoDropdown, SDT.SDTDB_CharDB.chosenProfile[specTwo])
+        UIDropDownMenu_SetText(specTwoDropdown, SDT.SDTDB_CharDB.chosenProfile[specTwo])
+        UIDropDownMenu_Initialize(specThreeDropdown, ProfileSelectDropdown_Init)
+        local _, specThree = GetSpecializationInfo(3)
+        UIDropDownMenu_SetSelectedValue(specThreeDropdown, SDT.SDTDB_CharDB.chosenProfile[specThree])
+        UIDropDownMenu_SetText(specThreeDropdown, SDT.SDTDB_CharDB.chosenProfile[specThree])
+        if SDT.cache.playerClass == "DRUID" then
+            UIDropDownMenu_Initialize(specFourDropdown, ProfileSelectDropdown_Init)
+            local _, specFour = GetSpecializationInfo(4)
+            UIDropDownMenu_SetSelectedValue(specFourDropdown, SDT.SDTDB_CharDB.chosenProfile[specFour])
+            UIDropDownMenu_SetText(specFourDropdown, SDT.SDTDB_CharDB.chosenProfile[specFour])
+        end
         lockCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.locked)
         classColorCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.useClassColor)
         customColorCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.useCustomColor)
@@ -738,5 +903,8 @@ loader:SetScript("OnEvent", function(self, event, arg)
         fontSizeSlider:SetValue(SDT.SDTDB_CharDB.settings.fontSize)
         fontSizeBox:SetText(tostring(SDT.SDTDB_CharDB.settings.fontSize))
         fontSizeBox:SetCursorPosition(0)
+
+        -- Update modules to be safe
+        SDT:UpdateAllModules()
     end
 end)
