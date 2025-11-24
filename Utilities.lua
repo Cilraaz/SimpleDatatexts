@@ -173,7 +173,7 @@ end
 -------------------------------------------------
 function SDT:NextBarID()
     local n = 1
-    while SDT.SDTDB_CharDB.bars["SDT_Bar" .. n] do
+    while SDT.profileBars["SDT_Bar" .. n] do
         n = n + 1
     end
     return n

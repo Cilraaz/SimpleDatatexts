@@ -29,14 +29,19 @@ local tonumber         = tonumber
 local tostring         = tostring
 local tsort            = table.sort
 
+----------------------------------------------------
+-- File Locals
+----------------------------------------------------
+local charKey = SDT:GetCharKey()
+
 -------------------------------------------------
 -- Early DB Defaults
 -------------------------------------------------
-local globalDefaultsTable = {
-    gold = {},
-}
-
 local charDefaultsTable = {
+    useSpecProfiles = false,
+    chosenProfile = {
+        generic = charKey,
+    },
     bars = {},
     settings = { 
         locked = false,
@@ -49,10 +54,14 @@ local charDefaultsTable = {
         debug = false,
     }
 }
+for i = 1, GetNumSpecializations() do
+    local _, specName = GetSpecializationInfo(i)
+    charDefaultsTable.chosenProfile[specName] = ""
+end
 
 local function checkDefaultDB()
-    SDTDB = SDTDB or CopyTable(globalDefaultsTable)
-    local charKey = SDT:GetCharKey()
+    SDTDB.gold = SDTDB.gold or {}
+    SDTDB.profiles = SDTDB.profiles or {}
     SDTDB[charKey] = SDTDB[charKey] or {}
     SDT.SDTDB_CharDB = SDTDB[charKey]
 
@@ -65,10 +74,15 @@ local function checkDefaultDB()
     if (not charDB.settings and SDTDB.settings) then
         charDB.settings = CopyTable(SDTDB.settings)
     end
+    if (not SDTDB.profiles[charKey] and charDB.bars) then
+        SDTDB.profiles[charKey] = {}
+        SDTDB.profiles[charKey].bars = CopyTable(charDB.bars)
+    end
 
     -- Fill in missing defaults
-    charDB.bars     = charDB.bars or {}
-    charDB.settings = charDB.settings or CopyTable(charDefaultsTable.settings)
+    charDB.useSpecProfiles = charDB.useSpecProfiles or charDefaultsTable.useSpecProfiles
+    charDB.chosenProfile   = charDB.chosenProfile or charDefaultsTable.chosenProfile
+    charDB.settings        = charDB.settings or CopyTable(charDefaultsTable.settings)
     for k, v in pairs(charDefaultsTable.settings) do
         if charDB.settings[k] == nil then charDB.settings[k] = v end
     end
@@ -80,8 +94,19 @@ local function checkDefaultDB()
     if SDTDB.settings and next(SDTDB.settings) and next(charDB.settings) then
         SDTDB.settings = nil
     end
+    if charDB.bars and next(charDB.bars) and next(SDTDB.profiles[charKey].bars) then
+        charDB.bars = nil
+    end
 
     SDT.SDTDB_CharDB = charDB
+    local profileName
+    if charDB.useSpecProfiles then
+        local _, currentSpec = GetSpecializationInfo(GetSpecialization())
+        profileName = charDB.chosenProfile[currentSpec]
+    else
+        profileName = charDB.chosenProfile.generic
+    end
+    SDT.profileBars = SDTDB.profiles[profileName].bars
 end
 
 _G.SDTDB = _G.SDTDB or {}
@@ -97,10 +122,10 @@ SDT.SettingsPanel = panel
 
 local title = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 title:SetPoint("TOPLEFT", 16, -16)
-title:SetText(panel.name)
+title:SetText(panel.name .. " - Global Settings")
 
 local version = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-version:SetPoint("LEFT", title, "RIGHT", 6, -1)
+version:SetPoint("TOPRIGHT", -16, -17)
 version:SetText("v" .. SDT.cache.version)
 
 local function MakeLabel(parent, text, point, x, y)
@@ -115,24 +140,73 @@ category.ID = panel.name
 Settings.RegisterAddOnCategory(category)
 
 -------------------------------------------------
--- Left Column Controls
+-- Settings Sub-Panels
 -------------------------------------------------
--- Lock Panels
-local lockCheckbox = CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-lockCheckbox:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -20)
+local globalSubPanel = CreateFrame("Frame", addonName .. "_GlobalSubPanel", UIParent)
+globalSubPanel.name = "Global"
+globalSubPanel.parent = panel.name
+SDT.GlobalSubPanel = globalSubPanel
+
+local globalTitle = globalSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+globalTitle:SetPoint("TOPLEFT", 16, -16)
+globalTitle:SetText("Simple DataTexts - Global Settings")
+
+local globalVersion = globalSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+globalVersion:SetPoint("TOPRIGHT", -16, -17)
+globalVersion:SetText("v" .. SDT.cache.version)
+
+local globalCategory = Settings.RegisterCanvasLayoutSubcategory(category, globalSubPanel, "Global")
+Settings.RegisterAddOnCategory(globalCategory)
+
+local panelsSubPanel = CreateFrame("Frame", addonName .. "_PanelsSubPanel", UIParent)
+panelsSubPanel.name = "Panels"
+panelsSubPanel.parent = panel.name
+SDT.PanelsSubPanel = panelsSubPanel
+
+local panelsTitle = panelsSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+panelsTitle:SetPoint("TOPLEFT", 16, -16)
+panelsTitle:SetText("Simple DataTexts - Panel Settings")
+
+local panelsVersion = panelsSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+panelsVersion:SetPoint("TOPRIGHT", -16, -17)
+panelsVersion:SetText("v" .. SDT.cache.version)
+
+local panelsCategory = Settings.RegisterCanvasLayoutSubcategory(category, panelsSubPanel, "Panels")
+Settings.RegisterAddOnCategory(panelsCategory)
+
+local profilesSubPanel = CreateFrame("Frame", addonName .. "_ProfilesSubPanel", UIParent)
+profilesSubPanel.name = "Profiles"
+profilesSubPanel.parent = panel.name
+SDT.ProfilesSubPanel = profilesSubPanel
+
+local profilesTitle = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+profilesTitle:SetPoint("TOPLEFT", 16, -16)
+profilesTitle:SetText("Simple DataTexts - Profile Settings")
+
+local profilesVersion = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+profilesVersion:SetPoint("TOPRIGHT", -16, -17)
+profilesVersion:SetText("v" .. SDT.cache.version)
+
+local profilesCategory = Settings.RegisterCanvasLayoutSubcategory(category, profilesSubPanel, "Profiles")
+Settings.RegisterAddOnCategory(profilesCategory)
+
+-------------------------------------------------
+-- Global Settings
+-------------------------------------------------
+local lockCheckbox = CreateFrame("CheckButton", nil, globalSubPanel, "InterfaceOptionsCheckButtonTemplate")
+lockCheckbox:SetPoint("TOPLEFT", globalTitle, "BOTTOMLEFT", 0, -20)
 lockCheckbox.Text:SetText("Lock Panels (disable movement)")
 lockCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.locked)
 lockCheckbox:SetScript("OnClick", function(self)
     SDT.SDTDB_CharDB.settings.locked = self:GetChecked()
 end)
 
--- Use Class Color
-local classColorCheckbox = CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+local classColorCheckbox = CreateFrame("CheckButton", nil, globalSubPanel, "InterfaceOptionsCheckButtonTemplate")
 classColorCheckbox:SetPoint("TOPLEFT", lockCheckbox, "BOTTOMLEFT", 0, -20)
 classColorCheckbox.Text:SetText("Use Class Color")
 classColorCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.useClassColor)
 
-local use24HourClockCheckbox = CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+local use24HourClockCheckbox = CreateFrame("CheckButton", nil, globalSubPanel, "InterfaceOptionsCheckButtonTemplate")
 use24HourClockCheckbox:SetPoint("LEFT", classColorCheckbox, "RIGHT", 100, 0)
 use24HourClockCheckbox.Text:SetText("Use 24Hr Clock")
 use24HourClockCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.use24HourClock)
@@ -141,7 +215,7 @@ use24HourClockCheckbox:SetScript("OnClick", function(self)
     SDT:UpdateAllModules()
 end)
 
-local customColorCheckbox = CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+local customColorCheckbox = CreateFrame("CheckButton", nil, globalSubPanel, "InterfaceOptionsCheckButtonTemplate")
 customColorCheckbox:SetPoint("TOPLEFT", classColorCheckbox, "BOTTOMLEFT", 0, -20)
 customColorCheckbox.Text:SetText("Use Custom Color")
 customColorCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.useCustomColor)
@@ -163,7 +237,7 @@ customColorCheckbox:SetScript("OnClick", function(self)
     SDT:UpdateAllModules()
 end)
 
-local colorPickerButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+local colorPickerButton = CreateFrame("Button", nil, globalSubPanel, "UIPanelButtonTemplate")
 colorPickerButton:SetPoint("LEFT", customColorCheckbox, "RIGHT", 120, 0)
 colorPickerButton:SetSize(80, 24)
 colorPickerButton:SetScript("OnShow", function(self)
@@ -210,15 +284,15 @@ colorPickerButton:SetScript("OnClick", function()
     showColorPicker()
 end)
 
-local fontLabel = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+local fontLabel = globalSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 fontLabel:SetPoint("TOPLEFT", customColorCheckbox, "BOTTOMLEFT", 0, -20)
 fontLabel:SetText("Display Font:")
 
-local fontDropdown = CreateFrame("Frame", addonName .. "_FontDropdown", panel, "UIDropDownMenuTemplate")
+local fontDropdown = CreateFrame("Frame", addonName .. "_FontDropdown", globalSubPanel, "UIDropDownMenuTemplate")
 fontDropdown:SetPoint("TOPLEFT", fontLabel, "BOTTOMLEFT", -20, -4)
 UIDropDownMenu_SetWidth(fontDropdown, 160)
 
-local fontSizeSlider = CreateFrame("Slider", addonName.."_FontSizeSlider", panel, "OptionsSliderTemplate")
+local fontSizeSlider = CreateFrame("Slider", addonName.."_FontSizeSlider", globalSubPanel, "OptionsSliderTemplate")
 fontSizeSlider:SetPoint("TOPLEFT", fontDropdown, "BOTTOMLEFT", 20, -20)
 fontSizeSlider:SetMinMaxValues(4, 40)
 fontSizeSlider:SetValueStep(1)
@@ -230,7 +304,7 @@ fontSizeSlider:SetScript("OnShow", function(self)
     self:SetValue(SDT.SDTDB_CharDB.settings.fontSize)
 end)
 
-local fontSizeBox = CreateFrame("EditBox", addonName.."_FontSizeEditBox", panel, "InputBoxTemplate")
+local fontSizeBox = CreateFrame("EditBox", addonName.."_FontSizeEditBox", globalSubPanel, "InputBoxTemplate")
 fontSizeBox:SetSize(50, 20)
 fontSizeBox:SetPoint("LEFT", fontSizeSlider, "RIGHT", 25, 0)
 fontSizeBox:SetAutoFocus(false)
@@ -261,26 +335,28 @@ fontSizeBox:SetScript("OnEnterPressed", function(self)
     SDT:ApplyFont()
 end)
 
--- Add Panel
-local addBarButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-addBarButton:SetPoint("TOPLEFT", fontSizeSlider, "BOTTOMLEFT", 0, -30)
-addBarButton:SetSize(140, 24)
+-------------------------------------------------
+-- Panels Settings - Left Column
+-------------------------------------------------
+local addBarButton = CreateFrame("Button", nil, panelsSubPanel, "UIPanelButtonTemplate")
+addBarButton:SetPoint("TOPLEFT", panelsTitle, "BOTTOMLEFT", 0, -20)
+addBarButton:SetSize(160, 24)
 addBarButton:SetText("Create New Panel")
 
 -- Panel Selector
-local panelLabel = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+local panelLabel = panelsSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 panelLabel:SetPoint("TOPLEFT", addBarButton, "BOTTOMLEFT", 0, -16)
 panelLabel:SetText("Select Panel:")
-local panelDropdown = CreateFrame("Frame", addonName .. "_PanelDropdown", panel, "UIDropDownMenuTemplate")
+local panelDropdown = CreateFrame("Frame", addonName .. "_PanelDropdown", panelsSubPanel, "UIDropDownMenuTemplate")
 panelDropdown:SetPoint("TOPLEFT", panelLabel, "BOTTOMLEFT", -20, -6)
 UIDropDownMenu_SetWidth(panelDropdown, 160)
 
 -- Rename Panel
-local renameLabel = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+local renameLabel = panelsSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 renameLabel:SetPoint("TOPLEFT", panelDropdown, "BOTTOMLEFT", 20, -16)
 renameLabel:SetText("Rename Panel:")
 renameLabel:Hide()
-local nameEditBox = CreateFrame("EditBox", addonName .. "_PanelNameEditBox", panel, "InputBoxTemplate")
+local nameEditBox = CreateFrame("EditBox", addonName .. "_PanelNameEditBox", panelsSubPanel, "InputBoxTemplate")
 nameEditBox:SetSize(170, 20)
 nameEditBox:SetPoint("TOPLEFT", renameLabel, "BOTTOMLEFT", 4, -6)
 nameEditBox:SetAutoFocus(false)
@@ -291,28 +367,28 @@ nameEditBox:Hide()
 
 nameEditBox:SetScript("OnEnterPressed", function(self)
     local newName = self:GetText():trim()
-    if newName ~= "" and panel.selectedBar then
-        SDT.SDTDB_CharDB.bars[panel.selectedBar].name = newName
+    if newName ~= "" and panelsSubPanel.selectedBar then
+        SDT.profileBars[panelsSubPanel.selectedBar].name = newName
         UIDropDownMenu_Initialize(panelDropdown, PanelDropdown_Initialize)
         UIDropDownMenu_SetText(panelDropdown, newName)
     end
 end)
 
 -------------------------------------------------
--- Right Column Controls (per-panel)
+-- Panels Settings - Right Column
 -------------------------------------------------
-local removeBarButton = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
+local removeBarButton = CreateFrame("Button", nil, panelsSubPanel, "UIPanelButtonTemplate")
 removeBarButton:SetSize(160, 24)
-removeBarButton:SetPoint("LEFT", lockCheckbox, "RIGHT", 280, 0)
+removeBarButton:SetPoint("LEFT", addBarButton, "RIGHT", 140, 0)
 removeBarButton:SetText("Remove Selected Panel")
 removeBarButton:Hide()
 
-local bgCheckbox = CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+local bgCheckbox = CreateFrame("CheckButton", nil, panelsSubPanel, "InterfaceOptionsCheckButtonTemplate")
 bgCheckbox:SetPoint("TOPLEFT", removeBarButton, "BOTTOMLEFT", 0, -12)
 bgCheckbox.Text:SetText("Show Background")
 bgCheckbox:Hide()
 
-local borderCheckbox = CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+local borderCheckbox = CreateFrame("CheckButton", nil, panelsSubPanel, "InterfaceOptionsCheckButtonTemplate")
 borderCheckbox:SetPoint("LEFT", bgCheckbox, "RIGHT", 100, 0)
 borderCheckbox.Text:SetText("Show Border")
 borderCheckbox:Hide()
@@ -322,12 +398,12 @@ local function buildSlotSelectors(barName)
     for _, f in ipairs(slotSelectors) do f:Hide() end
     slotSelectors = {}
 
-    local b = SDT.SDTDB_CharDB.bars[barName]
+    local b = SDT.profileBars[barName]
     if not b then return end
 
     for i = 1, b.numSlots do
-        local lbl = MakeLabel(panel, "Slot " .. i .. ":", "TOPLEFT", 320, -290 - ((i - 1) * 50))
-        local dd = CreateFrame("Frame", addonName .. "_SlotSel_" .. i, panel, "UIDropDownMenuTemplate")
+        local lbl = MakeLabel(panelsSubPanel, "Slot " .. i .. ":", "TOPLEFT", 320, -290 - ((i - 1) * 50))
+        local dd = CreateFrame("Frame", addonName .. "_SlotSel_" .. i, panelsSubPanel, "UIDropDownMenuTemplate")
         dd:SetPoint("TOPLEFT", lbl, "BOTTOMLEFT", -20, -6)
         UIDropDownMenu_SetWidth(dd, 140)
 
@@ -335,7 +411,7 @@ local function buildSlotSelectors(barName)
             local info = UIDropDownMenu_CreateInfo()
             info.text = "(empty)"
             info.func = function()
-                SDT.SDTDB_CharDB.bars[barName].slots[i] = nil
+                SDT.profileBars[barName].slots[i] = nil
                 UIDropDownMenu_SetText(dd, "(empty)")
                 if SDT.bars[barName] then SDT:RebuildSlots(SDT.bars[barName]) end
             end
@@ -345,7 +421,7 @@ local function buildSlotSelectors(barName)
                 local moduleName = name
                 info.text = moduleName
                 info.func = function()
-                    SDT.SDTDB_CharDB.bars[barName].slots[i] = name
+                    SDT.profileBars[barName].slots[i] = name
                     UIDropDownMenu_SetText(dd, name)
                     if SDT.bars[barName] then SDT:RebuildSlots(SDT.bars[barName]) end
                 end
@@ -388,8 +464,8 @@ local function CreateSliderWithBox(parent, name, text, min, max, step, attach, x
     slider:SetScript("OnValueChanged", function(self, value)
         local val = math.floor(value + 0.5)
         eb:SetText(val)
-        if panel.selectedBar then
-            local barData = SDT.SDTDB_CharDB.bars[panel.selectedBar]
+        if panelsSubPanel.selectedBar then
+            local barData = SDT.profileBars[panelsSubPanel.selectedBar]
             if name == "Slots" then
                 barData.numSlots = val
             elseif name == "Width" then
@@ -398,20 +474,20 @@ local function CreateSliderWithBox(parent, name, text, min, max, step, attach, x
                 barData.height = val
             elseif name == "Scale" then
                 barData.scale = val
-                if SDT.bars[panel.selectedBar] then
-                    SDT.bars[panel.selectedBar]:SetScale(val / 100)
+                if SDT.bars[panelsSubPanel.selectedBar] then
+                    SDT.bars[panelsSubPanel.selectedBar]:SetScale(val / 100)
                 end
             elseif name == "Background Opacity" then
                 barData.bgOpacity = val
-                if SDT.bars[panel.selectedBar] then
-                    SDT.bars[panel.selectedBar]:ApplyBackground()
+                if SDT.bars[panelsSubPanel.selectedBar] then
+                    SDT.bars[panelsSubPanel.selectedBar]:ApplyBackground()
                 end
             end
-            if SDT.bars[panel.selectedBar] then
-                SDT:RebuildSlots(SDT.bars[panel.selectedBar])
+            if SDT.bars[panelsSubPanel.selectedBar] then
+                SDT:RebuildSlots(SDT.bars[panelsSubPanel.selectedBar])
             end
             if name == "Slots" then
-                buildSlotSelectors(panel.selectedBar)
+                buildSlotSelectors(panelsSubPanel.selectedBar)
             end
         end
     end)
@@ -423,10 +499,10 @@ local function CreateSliderWithBox(parent, name, text, min, max, step, attach, x
             val = math.max(min, math.min(max, val))
             slider:SetValue(val)
             self:SetText(val)
-            if name == "Scale" and SDT.bars[panel.selectedBar] then
-                SDT.bars[panel.selectedBar]:SetScale(val / 100)
-            elseif name == "Background Opacity" and SDT.bars[panel.selectedBar] then
-                SDT.bars[panel.selectedBar]:ApplyBackground()
+            if name == "Scale" and SDT.bars[panelsSubPanel.selectedBar] then
+                SDT.bars[panelsSubPanel.selectedBar]:SetScale(val / 100)
+            elseif name == "Background Opacity" and SDT.bars[panelsSubPanel.selectedBar] then
+                SDT.bars[panelsSubPanel.selectedBar]:ApplyBackground()
             end
         else
             -- reset to slider value if invalid
@@ -437,21 +513,21 @@ local function CreateSliderWithBox(parent, name, text, min, max, step, attach, x
     return slider, eb
 end
 
-local opacitySlider, opacityBox = CreateSliderWithBox(panel, "Background Opacity", "Background Opacity", 0, 100, 1, bgCheckbox, 0, -20)
-local slotSlider, slotBox = CreateSliderWithBox(panel, "Slots", "Slots", 1, 5, 1, opacitySlider, 0, -20)
-local widthSlider, widthBox = CreateSliderWithBox(panel, "Width", "Width", 100, 800, 1, slotSlider, 0, -20)
-local heightSlider, heightBox = CreateSliderWithBox(panel, "Height", "Height", 16, 128, 1, widthSlider, 0, -20)
-local scaleSlider, scaleBox = CreateSliderWithBox(panel, "Scale", "Scale", 50, 500, 1, nameEditBox, 3, -30)
+local opacitySlider, opacityBox = CreateSliderWithBox(panelsSubPanel, "Background Opacity", "Background Opacity", 0, 100, 1, bgCheckbox, 5, -20)
+local slotSlider, slotBox = CreateSliderWithBox(panelsSubPanel, "Slots", "Slots", 1, 5, 1, opacitySlider, 0, -20)
+local widthSlider, widthBox = CreateSliderWithBox(panelsSubPanel, "Width", "Width", 100, 800, 1, slotSlider, 0, -20)
+local heightSlider, heightBox = CreateSliderWithBox(panelsSubPanel, "Height", "Height", 16, 128, 1, widthSlider, 0, -20)
+local scaleSlider, scaleBox = CreateSliderWithBox(panelsSubPanel, "Scale", "Scale", 50, 500, 1, nameEditBox, 3, -30)
 
 -- Panel dropdown initializer
 local function PanelDropdown_Initialize(self, level)
     local info = UIDropDownMenu_CreateInfo()
-    for barName, _ in pairs(SDT.SDTDB_CharDB.bars) do
-        local displayName = SDT.SDTDB_CharDB.bars[barName].name or barName
+    for barName, _ in pairs(SDT.profileBars) do
+        local displayName = SDT.profileBars[barName].name or barName
         info.text = displayName
         info.func = function()
             UIDropDownMenu_SetText(panelDropdown, displayName)
-            panel.selectedBar = barName
+            panelsSubPanel.selectedBar = barName
             updateSelectedBarControls()
         end
         UIDropDownMenu_AddButton(info)
@@ -477,7 +553,7 @@ end
 
 -- Update per-panel controls
 function updateSelectedBarControls()
-    local barName = panel.selectedBar
+    local barName = panelsSubPanel.selectedBar
     if not barName then
         removeBarButton:Hide()
         bgCheckbox:Hide()
@@ -510,12 +586,12 @@ function updateSelectedBarControls()
     heightSlider:Show()
     heightBox:Show()
     renameLabel:Show()
-    nameEditBox:SetText(SDT.SDTDB_CharDB.bars[barName].name or barName)
+    nameEditBox:SetText(SDT.profileBars[barName].name or barName)
     nameEditBox:Show()
     scaleSlider:Show()
     scaleBox:Show()
 
-    local b = SDT.SDTDB_CharDB.bars[barName]
+    local b = SDT.profileBars[barName]
     if not b then return end
 
     -- Background / Border
@@ -564,17 +640,17 @@ end
 addBarButton:SetScript("OnClick", function()
     local id = SDT:NextBarID()
     local name = "SDT_Bar" .. id
-    SDT.SDTDB_CharDB.bars[name] = { numSlots = 3, slots = {}, showBackground = true, showBorder = true, width = 300, height = 22 }
+    SDT.profileBars[name] = { numSlots = 3, slots = {}, showBackground = true, showBorder = true, width = 300, height = 22 }
     SDT:CreateDataBar(id, 3)
     UIDropDownMenu_Initialize(panelDropdown, PanelDropdown_Initialize)
     UIDropDownMenu_SetText(panelDropdown, name)
-    panel.selectedBar = name
+    panelsSubPanel.selectedBar = name
     updateSelectedBarControls()
 end)
 
 -- Remove selected panel
 removeBarButton:SetScript("OnClick", function()
-    local barName = panel.selectedBar
+    local barName = panelsSubPanel.selectedBar
     if not barName then return end
 
     StaticPopup_Show("SDT_CONFIRM_DELETE_BAR", nil, nil, barName)
@@ -595,10 +671,10 @@ StaticPopupDialogs["SDT_CONFIRM_DELETE_BAR"] = {
             SDT.bars[barName]:Hide()
             SDT.bars[barName] = nil
         end
-        SDT.SDTDB_CharDB.bars[barName] = nil
+        SDT.profileBars[barName] = nil
 
         -- Clear UI state
-        panel.selectedBar = nil
+        panelsSubPanel.selectedBar = nil
         UIDropDownMenu_SetText(panelDropdown, "(none)")
         UIDropDownMenu_Initialize(panelDropdown, PanelDropdown_Initialize)
 
@@ -622,6 +698,10 @@ StaticPopupDialogs["SDT_CONFIRM_DELETE_BAR"] = {
         scaleBox:Hide()
     end,
 }
+
+-------------------------------------------------
+-- Profiles Settings
+-------------------------------------------------
 
 local loader = CreateFrame("Frame")
 loader:RegisterEvent("ADDON_LOADED")
@@ -654,5 +734,9 @@ loader:SetScript("OnEvent", function(self, event, arg)
         lockCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.locked)
         classColorCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.useClassColor)
         customColorCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.useCustomColor)
+        colorPickerButton:SetText(SDT.SDTDB_CharDB.settings.customColorHex)
+        fontSizeSlider:SetValue(SDT.SDTDB_CharDB.settings.fontSize)
+        fontSizeBox:SetText(tostring(SDT.SDTDB_CharDB.settings.fontSize))
+        fontSizeBox:SetCursorPosition(0)
     end
 end)

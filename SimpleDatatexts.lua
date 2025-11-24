@@ -61,8 +61,8 @@ local function CreateMovableFrame(name)
     f:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         local point, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
-        if SDT.SDTDB_CharDB.bars[self:GetName()] then
-            SDT.SDTDB_CharDB.bars[self:GetName()].point = { point = point, relativePoint = relativePoint, x = xOfs, y = yOfs }
+        if SDT.profileBars[self:GetName()] then
+            SDT.profileBars[self:GetName()].point = { point = point, relativePoint = relativePoint, x = xOfs, y = yOfs }
         end
     end)
 
@@ -74,10 +74,10 @@ end
 -------------------------------------------------
 function SDT:CreateDataBar(id, numSlots)
     local name = "SDT_Bar" .. id
-    if not SDT.SDTDB_CharDB.bars[name] then
-        SDT.SDTDB_CharDB.bars[name] = { numSlots = numSlots or 3, slots = {}, showBackground = true, showBorder = true, width = 300, height = 22, name = name }
+    if not SDT.profileBars[name] then
+        SDT.profileBars[name] = { numSlots = numSlots or 3, slots = {}, showBackground = true, showBorder = true, width = 300, height = 22, name = name }
     end
-    local saved = SDT.SDTDB_CharDB.bars[name]
+    local saved = SDT.profileBars[name]
 
     local bar = CreateMovableFrame(name)
     SDT.bars[name] = bar
@@ -124,7 +124,7 @@ function SDT:RebuildSlots(bar)
     end
     bar.slots = {}
 
-    local saved = SDT.SDTDB_CharDB.bars[bar:GetName()]
+    local saved = SDT.profileBars[bar:GetName()]
     if not saved then return end
     local numSlots = saved.numSlots or 3
 
@@ -176,8 +176,8 @@ function SDT:RebuildSlots(bar)
         slot:SetScript("OnDragStop", function(self)
             bar:StopMovingOrSizing()
             local point, relativeTo, relativePoint, xOfs, yOfs = bar:GetPoint()
-            if SDT.SDTDB_CharDB.bars[bar:GetName()] then
-                SDT.SDTDB_CharDB.bars[bar:GetName()].point = { point = point, relativePoint = relativePoint, x = xOfs, y = yOfs }
+            if SDT.profileBars[bar:GetName()] then
+                SDT.profileBars[bar:GetName()].point = { point = point, relativePoint = relativePoint, x = xOfs, y = yOfs }
             end
         end)
 
@@ -191,7 +191,7 @@ end
 -- Rebuild Slots on All Bars
 -------------------------------------------------
 function SDT:RebuildAllSlots()
-    for _, bar in pairs(SDT.SDTDB_CharDB.bars) do
+    for _, bar in pairs(SDT.profileBars) do
         SDT.Print("Rebuilding slots for bar " .. bar.name)
         SDT:RebuildSlots(bar)
     end
@@ -222,7 +222,7 @@ function SDT:ShowSlotDropdown(slot, bar)
         for _, moduleName in ipairs(SDT.cache.moduleNames) do
             info.text = moduleName
             info.func = function()
-                SDT.SDTDB_CharDB.bars[bar:GetName()].slots[slot.index] = moduleName
+                SDT.profileBars[bar:GetName()].slots[slot.index] = moduleName
                 SDT:RebuildSlots(bar)
             end
             UIDropDownMenu_AddButton(info)
@@ -251,15 +251,25 @@ local loader = CreateFrame("Frame")
 loader:RegisterEvent("ADDON_LOADED")
 loader:SetScript("OnEvent", function(self, event, arg)
     if arg == addonName then
-        CreateModuleList()      
+        CreateModuleList()
+
+        -- Set our profile variable
+        local profileName
+        if SDT.SDTDB_CharDB.useSpecProfiles then
+            local _, currentSpec = GetSpecializationInfo(GetSpecialization())
+            profileName = SDT.SDTDB_CharDB.chosenProfile[currentSpec]
+        else
+            profileName = SDT.SDTDB_CharDB.chosenProfile.generic
+        end
+        SDT.profileBars = SDTDB.profiles[profileName].bars
 
         -- If no bars exist, create our first bar
-        if not next(SDT.SDTDB_CharDB.bars) then
-            SDT.SDTDB_CharDB.bars["SDT_Bar1"] = { numSlots = 3, slots = {}, showBackground = true, showBorder = true }
+        if not next(SDT.profileBars) then
+            SDT.profileBars["SDT_Bar1"] = { numSlots = 3, slots = {}, showBackground = true, showBorder = true }
         end
 
         -- Create our bars
-        for barName, data in pairs(SDT.SDTDB_CharDB.bars) do
+        for barName, data in pairs(SDT.profileBars) do
             local id = tonumber(barName:match("SDT_Bar(%d+)") or "0")
             if id > 0 and not SDT.bars[barName] then
                 SDT:CreateDataBar(id, data.numSlots)
@@ -290,9 +300,9 @@ local function BarAdjustments(adj, bar, num)
     end
 
     -- Check custom name if supplied instead of the bar key
-    if not SDT.SDTDB_CharDB.bars[bar] then
+    if not SDT.profileBars[bar] then
         local resolved = nil
-        for barItem, settings in pairs(SDT.SDTDB_CharDB.bars) do
+        for barItem, settings in pairs(SDT.profileBars) do
             if stringlower(settings.name) == stringlower(bar) then
                 resolved = barItem
                 break
@@ -300,7 +310,7 @@ local function BarAdjustments(adj, bar, num)
         end
         if not resolved then
             SDT.Print("Invalid panel name supplied. Valid panel names are:")
-            for j,k in pairs(SDT.SDTDB_CharDB.bars) do
+            for j,k in pairs(SDT.profileBars) do
                 SDT.Print("- ", tostring(j), "("..tostring(k.name)..")")
             end
             return
@@ -318,7 +328,7 @@ local function BarAdjustments(adj, bar, num)
     -- Further validate the value is within parameters, then make the adjustment
     if adj == "width" then
         if num >= 100 and num <= 800 then
-            SDT.SDTDB_CharDB.bars[bar].width = num
+            SDT.profileBars[bar].width = num
             widthSlider:SetValue(num)
             widthBox:SetText(num)
             SDT:RebuildSlots(SDT.bars[bar])
@@ -327,7 +337,7 @@ local function BarAdjustments(adj, bar, num)
         end
     elseif adj == "height" then
         if num >= 16 and num <= 128 then
-            SDT.SDTDB_CharDB.bars[bar].height = num
+            SDT.profileBars[bar].height = num
             heightSlider:SetValue(num)
             heightBox:SetText(num)
             SDT:RebuildSlots(SDT.bars[bar])
@@ -336,7 +346,7 @@ local function BarAdjustments(adj, bar, num)
         end
     elseif adj == "scale" then
         if num >= 50 and num <= 500 then
-            SDT.SDTDB_CharDB.bars[bar].scale = num
+            SDT.profileBars[bar].scale = num
             scaleSlider:SetValue(num)
             scaleBox:SetText(num)
             SDT.bars[bar]:SetScale(num / 100)
