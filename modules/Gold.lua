@@ -22,6 +22,7 @@ local C_Timer_NewTicker                      = C_Timer and C_Timer.NewTicker
 local C_WowTokenPublic_GetCurrentMarketPrice = C_WowTokenPublic.GetCurrentMarketPrice
 local C_WowTokenPublic_UpdateMarketPrice     = C_WowTokenPublic.UpdateMarketPrice
 local BreakUpLargeNumbers                    = BreakUpLargeNumbers
+local GetBuildInfo                           = GetBuildInfo
 local GetMoney                               = GetMoney
 local GetRealmName                           = GetRealmName
 local IsLoggedIn                             = IsLoggedIn
@@ -66,10 +67,12 @@ end
 
 local function DisplayCurrencyInfo(tooltip)
     local index = 1
-    local info, name = C_CurrencyInfo_GetBackpackCurrencyInfo(index)
-    while name do
-        if info.quantity then
-            tooltip:AddDoubleLine(format(iconStringName, info.iconFileID, name), BreakUpLargeNumbers(info.quantity), 1,1,1, 1,1,1)
+    local info = C_CurrencyInfo_GetBackpackCurrencyInfo(index)
+    local _, _, _, toc = GetBuildInfo()
+    while info and info.name do
+        if index == 1 then GameTooltip:AddLine(" ") end
+        if (info.name ~= "Valorstones" or toc < 120000) and info.quantity then
+            GameTooltip:AddDoubleLine(format(iconStringName, info.iconFileID, info.name), BreakUpLargeNumbers(info.quantity), 1,1,1, 1,1,1)
         end
         index = index + 1
         info, name = C_CurrencyInfo_GetBackpackCurrencyInfo(index)
@@ -77,7 +80,7 @@ local function DisplayCurrencyInfo(tooltip)
 end
 
 local function FormatMoney(copper, classColor)
-    local g = floor(copper / 10000)
+    local g = BreakUpLargeNumbers(floor(copper / 10000))
     local s = floor((copper % 10000) / 100)
     local c = copper % 100
     if classColor then
@@ -86,7 +89,7 @@ local function FormatMoney(copper, classColor)
         local copperPart = SDT:ColorText(c) .. COPPER_ICON
         return goldPart.." "..silverPart.." "..copperPart
     else
-        return format("|cffffd700%d|r%s |cffc7c7c7%d|r%s |cffeda55f%d|r%s", g, GOLD_ICON, s, SILVER_ICON, c, COPPER_ICON)
+        return format("|cffffd700%s|r%s |cffc7c7c7%d|r%s |cffeda55f%d|r%s", g, GOLD_ICON, s, SILVER_ICON, c, COPPER_ICON)
     end
 end
 
@@ -186,8 +189,8 @@ local function ShowTooltip(self)
     if C_WowTokenPublic_GetCurrentMarketPrice then
         tooltip:AddLine(" ")
         tooltip:AddDoubleLine("WoW Token:", FormatMoney(C_WowTokenPublic_GetCurrentMarketPrice() or 0), 0,.8,1,1,1,1)
-        DisplayCurrencyInfo(tooltip)
     end
+    DisplayCurrencyInfo()
 
     tooltip:AddLine(" ")
     tooltip:AddLine(strjoin('', '|cffaaaaaa', "Reset Session Data: Hold Ctrl + Right Click", '|r'))
