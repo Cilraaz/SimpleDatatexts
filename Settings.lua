@@ -734,53 +734,28 @@ profileCreateName:SetPoint("TOPLEFT", profileCreateLabel, "BOTTOMLEFT", 0, -2)
 profileCreateName:SetAutoFocus(false)
 profileCreateName:SetJustifyH("CENTER")
 profileCreateName:SetJustifyV("MIDDLE")
-profileCreateName:SetScript("OnEnterPressed", function(self)
-    local name = self:GetText():trim()
-    if name ~= "" then
-        if not SDT.profiles[name] then
-            SDT.profiles[name] = { bars = {} }
-        else
-            StaticPopup_Show("SDT_PROFILE_ALREADY_EXISTS")
-        end
-    end
-end)
-
-StaticPopupDialogs["SDT_PROFILE_ALREADY_EXISTS"] = {
-    text = "The profile name you have entered already exists. Please enter a new name.",
-    button1 = "Ok",
-    timeout = 0,
-    whileDead = true,
-    hideOnEscape = true,
-    preferredIndex = 3
-}
 
 local profileSelectLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 profileSelectLabel:SetPoint("LEFT", profileCreateLabel, "RIGHT", 100, 0)
-profileSelectLabel:SetText("Existing Profile:")
+profileSelectLabel:SetText("Current Profile:")
 
 local profileSelectDropdown = CreateFrame("Frame", addonName .. "_ProfileSelectDropdown", profilesSubPanel, "UIDropDownMenuTemplate")
 profileSelectDropdown:SetPoint("LEFT", profileCreateName, "RIGHT", 20, -4)
 UIDropDownMenu_SetWidth(profileSelectDropdown, 140)
 
-local function ProfileSelectDropdown_Init(self, level)
-    for profileName in pairs(SDTDB.profiles) do
-        local info = UIDropDownMenu_CreateInfo()
-        info.text = profileName
-        info.func = function()
-            SDT:SetActiveProfile(profileName)
-            UIDropDownMenu_SetSelectedValue(profileSelectDropdown, profileName)
-            UIDropDownMenu_SetText(profileSelectDropdown, profileName)
-        end
-        UIDropDownMenu_AddButton(info, level)
-    end
-end
-
 local perSpecCheck = CreateFrame("CheckButton", nil, profilesSubPanel, "InterfaceOptionsCheckButtonTemplate")
 perSpecCheck:SetPoint("TOPLEFT", profileCreateName, "BOTTOMLEFT", 0, -20)
 perSpecCheck.Text:SetText("Enable Per-Spec Profiles")
-perSpecCheck:SetChecked(SDT.SDTDB_CharDB.useSpecProfiles)
+perSpecCheck:SetChecked(false)
 perSpecCheck:SetScript("OnClick", function(self)
     SDT.SDTDB_CharDB.useSpecProfiles = self:GetChecked()
+    if SDT.SDTDB_CharDB.useSpecProfiles then
+        local specNum = GetSpecialization()
+        local _, specName = GetSpecializationInfo(specNum)
+        SDT:ProfileActivate(SDT.SDTDB_CharDB.chosenProfile[specName], specName)
+    else
+        SDT:ProfileActivate(SDT.SDTDB_CharDB.chosenProfile.generic, "generic")
+    end
 end)
 
 local specOneLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -819,6 +794,26 @@ if SDT.cache.playerClass == "DRUID" then
     UIDropDownMenu_SetWidth(specFourDropdown, 120)
 end
 
+local copyProfileLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+copyProfileLabel:SetPoint("TOPLEFT", specOneDropdown, "BOTTOMLEFT", 20, -20)
+copyProfileLabel:SetText("Copy Profile:")
+
+local copyProfileDropdown = CreateFrame("Frame", addonName .. "_CopyProfileDropdown", profilesSubPanel, "UIDropDownMenuTemplate")
+copyProfileDropdown:SetPoint("TOPLEFT", copyProfileLabel, "BOTTOMLEFT", -20, -4)
+UIDropDownMenu_SetWidth(copyProfileDropdown, 120)
+UIDropDownMenu_SetSelectedName(copyProfileDropdown, "")
+UIDropDownMenu_SetText(copyProfileDropdown, "")
+
+local deleteProfileLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+deleteProfileLabel:SetPoint("TOPLEFT", copyProfileDropdown, "BOTTOMLEFT", 20, -20)
+deleteProfileLabel:SetText("Delete Profile:")
+
+local deleteProfileDropdown = CreateFrame("Frame", addonName .. "_DeleteProfileDropdown", profilesSubPanel, "UIDropDownMenuTemplate")
+deleteProfileDropdown:SetPoint("TOPLEFT", deleteProfileLabel, "BOTTOMLEFT", -20, -4)
+UIDropDownMenu_SetWidth(deleteProfileDropdown, 120)
+UIDropDownMenu_SetSelectedName(deleteProfileDropdown, "")
+UIDropDownMenu_SetText(deleteProfileDropdown, "")
+
 local function UpdateProfileSpecs()
     local _, specOneName = GetSpecializationInfo(1)
     local _, specTwoName = GetSpecializationInfo(2)
@@ -833,14 +828,150 @@ local function UpdateProfileSpecs()
     end
 end
 
+local function ProfileSelectDropdown_Init(self, level)
+    for profileName in pairs(SDTDB.profiles) do
+        local info = UIDropDownMenu_CreateInfo()
+        info.text = profileName
+        info.func = function()
+            local dropdownName = self:GetName()
+            local spec = "generic"
+            if dropdownName == "SimpleDatatexts_SpecOneDropdown" then
+                spec = specOneLabel:GetText():gsub(":$", "")
+            elseif dropdownName == "SimpleDatatexts_SpecTwoDropdown" then
+                spec = specTwoLabel:GetText():gsub(":$", "")
+            elseif dropdownName == "SimpleDatatexts_SpecThreeDropdown" then
+                spec = specThreeLabel:GetText():gsub(":$", "")
+            elseif dropdownName == "SimpleDatatexts_SpecFourDropdown" then
+                spec = specFourLabel:GetText():gsub(":$", "")
+            end
+            SDT:ProfileActivate(profileName, spec)
+            UIDropDownMenu_SetSelectedValue(self, profileName)
+            UIDropDownMenu_SetText(self, profileName)
+        end
+        UIDropDownMenu_AddButton(info, level)
+    end
+end
+
+local function ProfileCopyDropdown_Init(self, level)
+    local blankEntry = UIDropDownMenu_CreateInfo()
+    blankEntry.text = ""
+    UIDropDownMenu_AddButton(blankEntry, level)
+    for profileName in pairs(SDTDB.profiles) do
+        local info = UIDropDownMenu_CreateInfo()
+        info.text = profileName
+        info.func = function()
+            SDT:ProfileCopy(profileName)
+            UIDropDownMenu_SetSelectedName(self, "")
+            UIDropDownMenu_SetText(self, "")
+        end
+        UIDropDownMenu_AddButton(info, level)
+    end
+end
+
+local function ProfileDeleteDropdown_Init(self, level)
+    local blankEntry = UIDropDownMenu_CreateInfo()
+    blankEntry.text = ""
+    UIDropDownMenu_AddButton(blankEntry, level)
+    for profileName in pairs(SDTDB.profiles) do
+        local info = UIDropDownMenu_CreateInfo()
+        info.text = profileName
+        info.func = function()
+            SDT:ProfileDelete(profileName)
+            UIDropDownMenu_SetSelectedName(self, "")
+            UIDropDownMenu_SetText(self, "")
+        end
+        UIDropDownMenu_AddButton(info, level)
+    end
+end
+
+profileCreateName:SetScript("OnEnterPressed", function(self)
+    local name = self:GetText():trim()
+    if name and name ~= "" then
+        if not SDTDB.profiles[name] then
+            SDT:ProfileCreate(name)
+        else
+            StaticPopup_Show("SDT_PROFILE_ALREADY_EXISTS")
+            return
+        end
+    end
+    self:SetText("")
+    self:ClearFocus()
+    UIDropDownMenu_Initialize(profileSelectDropdown, ProfileSelectDropdown_Init)
+    UIDropDownMenu_SetSelectedValue(profileSelectDropdown, name)
+    UIDropDownMenu_SetText(profileSelectDropdown, name)
+end)
+
+StaticPopupDialogs["SDT_PROFILE_ALREADY_EXISTS"] = {
+    text = "The profile name you have entered already exists. Please enter a new name.",
+    button1 = "Ok",
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3
+}
+
+function SDT:UpdateActiveProfile(profileName, spec)
+    if spec == "generic" then
+        UIDropDownMenu_SetSelectedValue(profileSelectDropdown, profileName)
+        UIDropDownMenu_SetText(profileSelectDropdown, profileName)
+    else
+        local ddList = { specOneDropdown, specTwoDropdown, specThreeDropdown, specFourDropdown }
+        for i = 1, GetNumSpecializations() do
+            local _, specName = GetSpecializationInfo(i)
+            if specName == spec then
+                UIDropDownMenu_SetSelectedValue(ddList[i], profileName)
+                UIDropDownMenu_SetText(ddList[i], profileName)
+            end
+        end
+    end
+end
+
+function SDT:RefreshProfileList()
+    UIDropDownMenu_Initialize(profileSelectDropdown, ProfileSelectDropdown_Init)
+    UIDropDownMenu_SetSelectedValue(profileSelectDropdown, SDT.activeProfile)
+    UIDropDownMenu_SetText(profileSelectDropdown, SDT.activeProfile)
+    UIDropDownMenu_Initialize(specOneDropdown, ProfileSelectDropdown_Init)
+    UIDropDownMenu_Initialize(specTwoDropdown, ProfileSelectDropdown_Init)
+    UIDropDownMenu_Initialize(specThreeDropdown, ProfileSelectDropdown_Init)
+    UIDropDownMenu_Initialize(copyProfileDropdown, ProfileCopyDropdown_Init)
+    UIDropDownMenu_Initialize(deleteProfileDropdown, ProfileDeleteDropdown_Init)
+
+    UIDropDownMenu_Refresh(profileSelectDropdown)
+    UIDropDownMenu_Refresh(specOneDropdown)
+    UIDropDownMenu_Refresh(specTwoDropdown)
+    UIDropDownMenu_Refresh(specThreeDropdown)
+    UIDropDownMenu_Refresh(copyProfileDropdown)
+    UIDropDownMenu_Refresh(deleteProfileDropdown)
+
+    if SDT.cache.playerClass == "DRUID" then
+        UIDropDownMenu_Initialize(specFourDropdown, ProfileSelectDropdown_Init)
+        UIDropDownMenu_Refresh(specFourDropdown)
+    end
+
+    UIDropDownMenu_SetSelectedName(copyProfileDropdown, "")
+    UIDropDownMenu_SetText(copyProfileDropdown, "")
+    UIDropDownMenu_SetSelectedName(deleteProfileDropdown, "")
+    UIDropDownMenu_SetText(deleteProfileDropdown, "")
+end
+-------------------------------------------------
+-- Spec Switch Watcher
+-------------------------------------------------
+local specSwitchWatcher = CreateFrame("Frame")
+specSwitchWatcher:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+specSwitchWatcher:SetScript("OnEvent", function(self, event, arg)
+    local dbInfo = SDTDB[SDT:GetCharKey()]
+    if dbInfo.useSpecProfiles then
+        local _, specName = GetSpecializationInfo(GetSpecialization())
+        SDT:ProfileActivate(dbInfo.chosenProfile[specName], specName)
+    end
+end)
+
 -------------------------------------------------
 -- Loader!
 -------------------------------------------------
 local loader = CreateFrame("Frame")
-loader:RegisterEvent("ADDON_LOADED")
 loader:RegisterEvent("PLAYER_ENTERING_WORLD")
-loader:SetScript("OnEvent", function(self, event, arg)
-    --if event == "ADDON_LOADED" and arg == addonName then        
+loader:SetScript("OnEvent", function(self, event, arg)   
     if event == "PLAYER_ENTERING_WORLD" then
         checkDefaultDB()
 
@@ -896,6 +1027,8 @@ loader:SetScript("OnEvent", function(self, event, arg)
             UIDropDownMenu_SetSelectedValue(specFourDropdown, SDT.SDTDB_CharDB.chosenProfile[specFour])
             UIDropDownMenu_SetText(specFourDropdown, SDT.SDTDB_CharDB.chosenProfile[specFour])
         end
+        UIDropDownMenu_Initialize(copyProfileDropdown, ProfileCopyDropdown_Init)
+        UIDropDownMenu_Initialize(deleteProfileDropdown, ProfileDeleteDropdown_Init)
         lockCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.locked)
         classColorCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.useClassColor)
         customColorCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.useCustomColor)
@@ -903,6 +1036,7 @@ loader:SetScript("OnEvent", function(self, event, arg)
         fontSizeSlider:SetValue(SDT.SDTDB_CharDB.settings.fontSize)
         fontSizeBox:SetText(tostring(SDT.SDTDB_CharDB.settings.fontSize))
         fontSizeBox:SetCursorPosition(0)
+        perSpecCheck:SetChecked(SDT.SDTDB_CharDB.useSpecProfiles)
 
         -- Update modules to be safe
         SDT:UpdateAllModules()

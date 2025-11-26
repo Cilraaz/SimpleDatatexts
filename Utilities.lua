@@ -169,7 +169,7 @@ function SDT:HandleMenuList(root, menuList, submenu, depth)
 end
 
 -------------------------------------------------
--- Utility: find next free bar ID
+-- Utility: Find next free bar ID
 -------------------------------------------------
 function SDT:NextBarID()
     local n = 1
@@ -180,11 +180,138 @@ function SDT:NextBarID()
 end
 
 -------------------------------------------------
--- Utility: Print function
+-- Utility: Print Function
 -------------------------------------------------
 function SDT.Print(...)
     print("[|cFFFF6600SDT|r]", ...)
 end
+
+-------------------------------------------------
+-- Utility: Profile Activate
+-------------------------------------------------
+function SDT:ProfileActivate(profileName, spec)
+    SDT.SDTDB_CharDB.chosenProfile[spec] = profileName
+    SDT.activeProfile = profileName
+
+    for bar in pairs(SDT.bars) do
+        SDT.bars[bar]:Hide()
+    end
+    wipe(SDT.bars)
+
+    SDT.profileBars = SDTDB.profiles[profileName].bars
+
+    for barName, barData in pairs(SDT.profileBars) do
+        local id = tonumber(barName:match("SDT_Bar(%d+)"))
+        local newBar = SDT:CreateDataBar(id, barData.numSlots)
+        SDT.bars[barName] = newBar
+        SDT.bars[barName]:Show()
+    end
+
+    SDT:RefreshProfileList()
+    SDT:UpdateActiveProfile(profileName, spec)
+
+    SDT:UpdateAllModules()
+end
+
+-------------------------------------------------
+-- Utility: Profile Copy
+-------------------------------------------------
+function SDT:ProfileCopy(profileName)
+    if not profileName or profileName == "" then return end
+    if profileName == SDT.activeProfile then
+        StaticPopup_Show("SDT_CANT_COPY_ACTIVE_PROFILE")
+        return
+    end
+    local confirmString = format("Are you sure you want to overwrite your\n'%s' profile?\nThis action cannot be undone.", SDT.activeProfile)
+    StaticPopupDialogs.SDT_CONFIRM_COPY_PROFILE.text = confirmString
+    StaticPopup_Show("SDT_CONFIRM_COPY_PROFILE", nil, nil, profileName)
+end
+
+StaticPopupDialogs["SDT_CANT_COPY_ACTIVE_PROFILE"] = {
+    text = "You cannot copy the active profile onto itself. Please change your active profile first.",
+    button1 = "Ok",
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3
+}
+StaticPopupDialogs["SDT_CONFIRM_COPY_PROFILE"] = {
+    text = "Are you sure you want to overwrite your %s profile?\nThis action cannot be undone.",
+    button1 = "Yes",
+    button2 = "No",
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3,
+    OnAccept = function(self, profileName)
+        local src = SDTDB.profiles[profileName]
+        if not src then
+            SDT.Print("Invalid source profile specified.")
+            SDT:RefreshProfileList()
+            return
+        end
+        local newProfile = CopyTable(src)
+        for bar in pairs(SDT.bars) do
+            SDT.bars[bar]:Hide()
+        end
+        wipe(SDTDB.profiles[SDT.activeProfile])
+        SDTDB.profiles[SDT.activeProfile] = newProfile
+        SDT.profileBars = SDTDB.profiles[SDT.activeProfile].bars
+        for barName, barData in pairs(SDT.profileBars) do
+            local id = tonumber(barName:match("SDT_Bar(%d+)"))
+            local newBar = SDT:CreateDataBar(id, barData.numSlots)
+            SDT.bars[barName] = newBar
+            SDT.bars[barName]:Show()
+        end
+        SDT:RefreshProfileList()
+        SDT:UpdateAllModules()
+    end,
+}
+
+-------------------------------------------------
+-- Utility: Profile Create
+-------------------------------------------------
+function SDT:ProfileCreate(profileName)
+    SDTDB.profiles[profileName] = { bars = {} }
+    SDT.profileBars = SDTDB.profiles[profileName].bars
+    SDT:CreateDataBar(1, 3)
+    SDT:ProfileActivate(profileName, "generic")
+end
+
+-------------------------------------------------
+-- Utility: Profile Delete
+-------------------------------------------------
+function SDT:ProfileDelete(profileName)
+    if profileName == "" then return end
+    if SDT.activeProfile == profileName then
+        StaticPopup_Show("SDT_CANT_DELETE_ACTIVE_PROFILE")
+        return
+    else
+        StaticPopup_Show("SDT_CONFIRM_DELETE_PROFILE", nil, nil, profileName)
+    end
+end
+
+StaticPopupDialogs["SDT_CANT_DELETE_ACTIVE_PROFILE"] = {
+    text = "You cannot delete the active profile. Please change your active profile first.",
+    button1 = "Ok",
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3
+}
+StaticPopupDialogs["SDT_CONFIRM_DELETE_PROFILE"] = {
+    text = "Are you sure you want to delete this profile?\nThis action cannot be undone.",
+    button1 = "Yes",
+    button2 = "No",
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3,
+    OnAccept = function(self, profileName)
+        SDTDB.profiles[profileName] = nil
+        SDT:RefreshProfileList()
+    end,
+}
 
 -------------------------------------------------
 -- Module Registration
@@ -207,38 +334,4 @@ function SDT:SetCVar(cvar, value)
     if GetCVar(cvar) ~= valStr then
         SetCVar(cvar, valStr)
     end
-end
-
--------------------------------------------------
--- Utility: Functions for Profile Handling
--------------------------------------------------
-function SDT:GetAllProfileKeys()
-    local keys = {}
-    for k in pairs(SDTDB) do
-        if k ~= "defaults" then
-            table.insert(keys, k)
-        end
-    end
-    return keys
-end
-
-function SDT:CopyProfile(fromKey, toKey)
-    SDTDB[toKey] = CopyTable(SDTDB[fromKey])
-    print("Profile copied from "..fromKey.." to "..toKey)
-end
-
-function SDT:DeleteProfile(key)
-    if SDTDB[key] then
-        SDTDB[key] = nil
-        print("Profile "..key.." deleted")
-        -- Ensure the current charDB points somewhere valid
-        if SDT:getCharKey() == key then
-            SDT.SDTDB_CharDB = SDTDB[SDT:getCharKey()] or CopyTable(charDefaultsTable)
-        end
-    end
-end
-
-function SDT:ResetProfile(key)
-    SDTDB[key] = CopyTable(charDefaultsTable)
-    print("Profile "..key.." reset to defaults")
 end

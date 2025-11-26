@@ -192,7 +192,6 @@ end
 -------------------------------------------------
 function SDT:RebuildAllSlots()
     for _, bar in pairs(SDT.profileBars) do
-        SDT.Print("Rebuilding slots for bar " .. bar.name)
         SDT:RebuildSlots(bar)
     end
 end
@@ -248,20 +247,22 @@ end
 -- Loader to restore bars on addon load
 -------------------------------------------------
 local loader = CreateFrame("Frame")
-loader:RegisterEvent("ADDON_LOADED")
+loader:RegisterEvent("PLAYER_ENTERING_WORLD")
 loader:SetScript("OnEvent", function(self, event, arg)
-    if arg == addonName then
+    --if arg == addonName then
         CreateModuleList()
 
         -- Set our profile variable
         local profileName
-        if SDT.SDTDB_CharDB.useSpecProfiles then
+        local dbInfo = SDTDB[SDT:GetCharKey()]
+        if dbInfo.useSpecProfiles then
             local _, currentSpec = GetSpecializationInfo(GetSpecialization())
-            profileName = SDT.SDTDB_CharDB.chosenProfile[currentSpec]
+            profileName = dbInfo.chosenProfile[currentSpec]
         else
-            profileName = SDT.SDTDB_CharDB.chosenProfile.generic
+            profileName = dbInfo.chosenProfile.generic
         end
         SDT.profileBars = SDTDB.profiles[profileName].bars
+        SDT.activeProfile = profileName
 
         -- If no bars exist, create our first bar
         if not next(SDT.profileBars) then
@@ -278,7 +279,7 @@ loader:SetScript("OnEvent", function(self, event, arg)
 
         -- Update modules to be safe
         SDT:UpdateAllModules()
-    end
+    --end
 end)
 
 local function SlashHelp()
