@@ -95,7 +95,7 @@ function SDT:CreateDataBar(id, numSlots)
     bar:SetScale(scale / 100)
 
     function bar:ApplyBackground()
-        if saved.bgOpacity > 0 or saved.borderName ~= "None" then
+        if saved.bgOpacity and saved.bgOpacity > 0 or saved.borderName and saved.borderName ~= "None" then
             bar:SetBackdrop({ 
                 bgFile = "Interface/Tooltips/UI-Tooltip-Background",
                 edgeFile = saved.borderName ~= "None" and saved.border or nil, 
