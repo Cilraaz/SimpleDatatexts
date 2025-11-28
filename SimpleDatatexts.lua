@@ -77,7 +77,7 @@ end
 function SDT:CreateDataBar(id, numSlots)
     local name = "SDT_Bar" .. id
     if not SDT.profileBars[name] then
-        SDT.profileBars[name] = { numSlots = numSlots or 3, slots = {}, showBackground = true, showBorder = true, width = 300, height = 22, name = name }
+        SDT.profileBars[name] = { numSlots = numSlots or 3, slots = {}, bgOpacity = 50, border = "None", width = 300, height = 22, name = name }
     end
     local saved = SDT.profileBars[name]
 
@@ -95,14 +95,21 @@ function SDT:CreateDataBar(id, numSlots)
     bar:SetScale(scale / 100)
 
     function bar:ApplyBackground()
-        if saved.showBackground then
+        if saved.bgOpacity > 0 or saved.borderName ~= "None" then
             bar:SetBackdrop({ 
-                bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
-                edgeFile = saved.showBorder and "Interface/Tooltips/UI-Tooltip-Border" or nil, 
-                edgeSize = saved.showBorder and 8 or 0 
+                bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+                edgeFile = saved.borderName ~= "None" and saved.border or nil, 
+                edgeSize = saved.borderName ~= "None" and saved.borderSize or 0 
             })
             local alpha = (saved.bgOpacity or 50) / 100
             bar:SetBackdropColor(0,0,0,alpha)
+            if saved.borderColor then
+                local color = saved.borderColor:gsub("#", "")
+                local r = tonumber(color:sub(1, 2), 16) / 255
+                local g = tonumber(color:sub(3, 4), 16) / 255
+                local b = tonumber(color:sub(5, 6), 16) / 255
+                bar:SetBackdropBorderColor(r, g, b, alpha)
+            end
         else
             bar:SetBackdrop(nil)
         end
@@ -289,7 +296,7 @@ loader:SetScript("OnEvent", function(self, event, arg)
 
         -- If no bars exist, create our first bar
         if not next(SDT.profileBars) then
-            SDT.profileBars["SDT_Bar1"] = { numSlots = 3, slots = {}, showBackground = true, showBorder = true }
+            SDT.profileBars["SDT_Bar1"] = { numSlots = 3, slots = {}, bgOpacity = 50, border = "None", width = 300, height = 22 }
         end
 
         -- Create our bars

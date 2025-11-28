@@ -6,6 +6,19 @@
 local addonName, SDT = ...
 
 ----------------------------------------------------
+-- Lua Locals
+----------------------------------------------------
+local format           = string.format
+local tonumber         = tonumber
+local tostring         = tostring
+local tsort            = table.sort
+
+----------------------------------------------------
+-- File Locals
+----------------------------------------------------
+local charKey = SDT:GetCharKey()
+
+----------------------------------------------------
 -- Library Instances
 ----------------------------------------------------
 local LSM = LibStub("LibSharedMedia-3.0")
@@ -22,17 +35,17 @@ LSM:Register("font", "Invisible", [[Interface\AddOns\SimpleDatatexts\fonts\Invis
 LSM:Register("font", "PT Sans Narrow", [[Interface\AddOns\SimpleDatatexts\fonts\PTSansNarrow.ttf]])
 
 ----------------------------------------------------
--- Lua Locals
+-- Create Borders List
 ----------------------------------------------------
-local format           = string.format
-local tonumber         = tonumber
-local tostring         = tostring
-local tsort            = table.sort
+local borderList = LSM:HashTable("border")
+local sortedBorderNames = {}
 
-----------------------------------------------------
--- File Locals
-----------------------------------------------------
-local charKey = SDT:GetCharKey()
+for name in pairs(borderList) do
+    if name ~= "None" then
+        sortedBorderNames[#sortedBorderNames+1] = name
+    end
+end
+tsort(sortedBorderNames)
 
 -------------------------------------------------
 -- Early DB Defaults
@@ -110,8 +123,8 @@ local function checkDefaultDB()
                     SDT_Bar1 = {
                         numSlots = 3,
                         slots = {},
-                        showBackground = true,
-                        showBorder = true,
+                        bgOpacity = 50,
+                        border = "None",
                         width = 300,
                         height = 22,
                         name = "SDT_Bar1",
@@ -355,6 +368,7 @@ fontSizeBox:SetScript("OnEnterPressed", function(self)
         self:SetText(math.floor(fontSizeSlider:GetValue()+0.5))
     end
     SDT:ApplyFont()
+    self:ClearFocus()
 end)
 
 -------------------------------------------------
@@ -394,6 +408,7 @@ nameEditBox:SetScript("OnEnterPressed", function(self)
         UIDropDownMenu_Initialize(panelDropdown, PanelDropdown_Initialize)
         UIDropDownMenu_SetText(panelDropdown, newName)
     end
+    self:ClearFocus()
 end)
 
 -------------------------------------------------
@@ -405,16 +420,6 @@ removeBarButton:SetPoint("LEFT", addBarButton, "RIGHT", 140, 0)
 removeBarButton:SetText("Remove Selected Panel")
 removeBarButton:Hide()
 
-local bgCheckbox = CreateFrame("CheckButton", nil, panelsSubPanel, "InterfaceOptionsCheckButtonTemplate")
-bgCheckbox:SetPoint("TOPLEFT", removeBarButton, "BOTTOMLEFT", 0, -12)
-bgCheckbox.Text:SetText("Show Background")
-bgCheckbox:Hide()
-
-local borderCheckbox = CreateFrame("CheckButton", nil, panelsSubPanel, "InterfaceOptionsCheckButtonTemplate")
-borderCheckbox:SetPoint("LEFT", bgCheckbox, "RIGHT", 100, 0)
-borderCheckbox.Text:SetText("Show Border")
-borderCheckbox:Hide()
-
 local slotSelectors = {}
 local function buildSlotSelectors(barName)
     for _, f in ipairs(slotSelectors) do f:Hide() end
@@ -424,9 +429,9 @@ local function buildSlotSelectors(barName)
     if not b then return end
 
     for i = 1, b.numSlots do
-        local lbl = MakeLabel(panelsSubPanel, "Slot " .. i .. ":", "TOPLEFT", 320, -290 - ((i - 1) * 50))
+        local lbl = MakeLabel(panelsSubPanel, "Slot " .. i .. ":", "TOPLEFT", 320, -300 - ((i - 1) * 50))
         local dd = CreateFrame("Frame", addonName .. "_SlotSel_" .. i, panelsSubPanel, "UIDropDownMenuTemplate")
-        dd:SetPoint("TOPLEFT", lbl, "BOTTOMLEFT", -20, -6)
+        dd:SetPoint("TOPLEFT", lbl, "BOTTOMLEFT", -22, -6)
         UIDropDownMenu_SetWidth(dd, 140)
 
         UIDropDownMenu_Initialize(dd, function(self, level)
@@ -504,6 +509,11 @@ local function CreateSliderWithBox(parent, name, text, min, max, step, attach, x
                 if SDT.bars[panelsSubPanel.selectedBar] then
                     SDT.bars[panelsSubPanel.selectedBar]:ApplyBackground()
                 end
+            elseif name == "Border Size" then
+                barData.borderSize = val
+                if SDT.bars[panelsSubPanel.selectedBar] then
+                    SDT.bars[panelsSubPanel.selectedBar]:ApplyBackground()
+                end
             end
             if SDT.bars[panelsSubPanel.selectedBar] then
                 SDT:RebuildSlots(SDT.bars[panelsSubPanel.selectedBar])
@@ -530,16 +540,107 @@ local function CreateSliderWithBox(parent, name, text, min, max, step, attach, x
             -- reset to slider value if invalid
             self:SetText(math.floor(slider:GetValue()+0.5))
         end
+        self:ClearFocus()
     end)
     
     return slider, eb
 end
 
-local opacitySlider, opacityBox = CreateSliderWithBox(panelsSubPanel, "Background Opacity", "Background Opacity", 0, 100, 1, bgCheckbox, 5, -20)
+local scaleSlider, scaleBox = CreateSliderWithBox(panelsSubPanel, "Scale", "Scale", 50, 500, 1, removeBarButton, 5, -30)
+local opacitySlider, opacityBox = CreateSliderWithBox(panelsSubPanel, "Background Opacity", "Background Opacity", 0, 100, 1, scaleSlider, 0, -20)
 local slotSlider, slotBox = CreateSliderWithBox(panelsSubPanel, "Slots", "Slots", 1, 5, 1, opacitySlider, 0, -20)
 local widthSlider, widthBox = CreateSliderWithBox(panelsSubPanel, "Width", "Width", 100, 800, 1, slotSlider, 0, -20)
 local heightSlider, heightBox = CreateSliderWithBox(panelsSubPanel, "Height", "Height", 16, 128, 1, widthSlider, 0, -20)
-local scaleSlider, scaleBox = CreateSliderWithBox(panelsSubPanel, "Scale", "Scale", 50, 500, 1, nameEditBox, 3, -30)
+
+local borderLabel = panelsSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+borderLabel:SetPoint("TOPLEFT", nameEditBox, "BOTTOMLEFT", -5, -20)
+borderLabel:SetText("Select Border:")
+borderLabel:Hide()
+local borderDropdown = CreateFrame("Frame", addonName .. "_BorderDropdown", panelsSubPanel, "UIDropDownMenuTemplate")
+borderDropdown:SetPoint("TOPLEFT", borderLabel, "BOTTOMLEFT", -20, -6)
+UIDropDownMenu_SetWidth(borderDropdown, 160)
+borderDropdown:Hide()
+
+local borderSizeSlider, borderSizeBox = CreateSliderWithBox(panelsSubPanel, "Border Size", "Border Size", 1, 40, 1, borderDropdown, 30, -20)
+
+local borderColorPicker = CreateFrame("Button", nil, panelsSubPanel, "UIPanelButtonTemplate")
+borderColorPicker:SetPoint("LEFT", borderDropdown, "RIGHT", -2, 2)
+borderColorPicker:SetSize(60, 24)
+borderColorPicker:SetScript("OnShow", function(self)
+    self:SetText(SDT.profileBars[panelsSubPanel.selectedBar].borderColor or "")
+end)
+borderColorPicker:Hide()
+
+local function showBorderColorPicker()
+    ColorPickerFrame:Hide()
+
+    local currColor = SDT.profileBars[panelsSubPanel.selectedBar].borderColor or "#ffffff"
+    local initColor = currColor:gsub("#", "")
+    local initR = tonumber(initColor:sub(1, 2), 16) / 255
+    local initG = tonumber(initColor:sub(3, 4), 16) / 255
+    local initB = tonumber(initColor:sub(5, 6), 16) / 255
+
+    local function onColorPicked()
+        local r, g, b = ColorPickerFrame:GetColorRGB()
+        SDT.profileBars[panelsSubPanel.selectedBar].borderColor = format("#%02X%02X%02X", r*255, g*255, b*255)
+        SDT.bars[panelsSubPanel.selectedBar]:ApplyBackground()
+        borderColorPicker:SetText(SDT.profileBars[panelsSubPanel.selectedBar].borderColor)
+    end
+
+    local function onCancel()
+        SDT.profileBars[panelsSubPanel.selectedBar].borderColor = format("#%02X%02X%02X", initR*255, initG*255, initB*255)
+        SDT.bars[panelsSubPanel.selectedBar]:ApplyBackground()
+        borderColorPicker:SetText(SDT.profileBars[panelsSubPanel.selectedBar].borderColor)
+    end
+
+    local previousValues = { initR, initG, initB }
+
+    local options = {
+        swatchFunc = onColorPicked,
+        cancelFunc = onCancel,
+        hasOpacity = false,
+        opacity = 1,
+        r = initR,
+        g = initG,
+        b = initB,
+    }
+    
+    ColorPickerFrame:SetupColorPickerAndShow(options)
+end
+
+borderColorPicker:SetScript("OnClick", function()
+    showBorderColorPicker()
+end)
+
+local function BorderDropdown_Initialize(self, level)
+    local info = UIDropDownMenu_CreateInfo()
+    info.text = "None"
+    info.func = function()
+        SDT.profileBars[panelsSubPanel.selectedBar].borderName = "None"
+        SDT.profileBars[panelsSubPanel.selectedBar].border = "None"
+        UIDropDownMenu_SetSelectedName(borderDropdown, "None")
+        UIDropDownMenu_SetText(borderDropdown, "None")
+        SDT.bars[panelsSubPanel.selectedBar]:ApplyBackground()
+        borderSizeSlider:Hide()
+        borderSizeBox:Hide()
+    end
+    UIDropDownMenu_AddButton(info)
+    for _, name in ipairs(sortedBorderNames) do
+        info = UIDropDownMenu_CreateInfo()
+        info.text = name
+        info.func = function()
+            local border = borderList[name]
+            SDT.profileBars[panelsSubPanel.selectedBar].borderName = name
+            SDT.profileBars[panelsSubPanel.selectedBar].border = border
+            UIDropDownMenu_SetSelectedName(borderDropdown, name)
+            UIDropDownMenu_SetText(borderDropdown, name)
+            SDT.bars[panelsSubPanel.selectedBar]:ApplyBackground()
+            borderSizeSlider:Show()
+            borderSizeBox:Show()
+        end
+        UIDropDownMenu_AddButton(info)
+    end
+end
 
 -- Panel dropdown initializer
 local function PanelDropdown_Initialize(self, level)
@@ -578,8 +679,11 @@ function updateSelectedBarControls()
     local barName = panelsSubPanel.selectedBar
     if not barName then
         removeBarButton:Hide()
-        bgCheckbox:Hide()
-        borderCheckbox:Hide()
+        borderLabel:Hide()
+        borderDropdown:Hide()
+        borderSizeSlider:Hide()
+        borderSizeBox:Hide()
+        borderColorPicker:Hide()
         opacitySlider:Hide()
         opacityBox:Hide()
         slotSlider:Hide()
@@ -597,8 +701,13 @@ function updateSelectedBarControls()
     end
 
     removeBarButton:Show()
-    bgCheckbox:Show()
-    borderCheckbox:Show()
+    borderLabel:Show()
+    borderDropdown:Show()
+    if SDT.profileBars[barName].borderName ~= "None" then
+        borderSizeSlider:Show()
+        borderSizeBox:Show()
+        borderColorPicker:Show()
+    end
     opacitySlider:Show()
     opacityBox:Show()
     slotSlider:Show()
@@ -616,17 +725,15 @@ function updateSelectedBarControls()
     local b = SDT.profileBars[barName]
     if not b then return end
 
-    -- Background / Border
-    bgCheckbox:SetChecked(b.showBackground)
-    bgCheckbox:SetScript("OnClick", function(self)
-        b.showBackground = self:GetChecked()
-        if SDT.bars[barName] then SDT.bars[barName]:ApplyBackground() end
-    end)
-    borderCheckbox:SetChecked(b.showBorder)
-    borderCheckbox:SetScript("OnClick", function(self)
-        b.showBorder = self:GetChecked()
-        if SDT.bars[barName] then SDT.bars[barName]:ApplyBackground() end
-    end)
+    -- Border
+    UIDropDownMenu_Initialize(borderDropdown, BorderDropdown_Initialize)
+    UIDropDownMenu_SetSelectedName(borderDropdown, b.borderName or "None")
+    UIDropDownMenu_SetText(borderDropdown, b.borderName or "None")
+
+    -- Border Size
+    local borderSize = b.borderSize or 8
+    borderSizeSlider:SetValue(borderSize)
+    borderSizeBox:SetText(borderSize)
 
     -- Slots
     local numSlots = b.numSlots or 3
@@ -662,7 +769,7 @@ end
 addBarButton:SetScript("OnClick", function()
     local id = SDT:NextBarID()
     local name = "SDT_Bar" .. id
-    SDT.profileBars[name] = { numSlots = 3, slots = {}, showBackground = true, showBorder = true, width = 300, height = 22 }
+    SDT.profileBars[name] = { numSlots = 3, slots = {}, bgOpacity = 50, border = "None", width = 300, height = 22 }
     SDT:CreateDataBar(id, 3)
     UIDropDownMenu_Initialize(panelDropdown, PanelDropdown_Initialize)
     UIDropDownMenu_SetText(panelDropdown, name)
@@ -704,8 +811,11 @@ StaticPopupDialogs["SDT_CONFIRM_DELETE_BAR"] = {
         slotSelectors = {}
 
         removeBarButton:Hide()
-        bgCheckbox:Hide()
-        borderCheckbox:Hide()
+        borderLabel:Hide()
+        borderDropdown:Hide()
+        borderSizeSlider:Hide()
+        borderSizeBox:Hide()
+        borderColorPicker:Hide()
         opacitySlider:Hide()
         opacityBox:Hide()
         slotSlider:Hide()
@@ -999,6 +1109,7 @@ loader:SetScript("OnEvent", function(self, event, arg)
         UIDropDownMenu_Initialize(fontDropdown, FontDropdown_Initialize)
         UIDropDownMenu_SetSelectedValue(fontDropdown, currentFont)
         UIDropDownMenu_SetText(fontDropdown, currentFont)
+        UIDropDownMenu_Initialize(borderDropdown, BorderDropdown_Initialize)
         UIDropDownMenu_Initialize(profileSelectDropdown, ProfileSelectDropdown_Init)
         local activeProfile
         if SDT.SDTDB_CharDB.useSpecProfiles then
