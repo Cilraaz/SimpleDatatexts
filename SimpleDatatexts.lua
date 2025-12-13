@@ -128,6 +128,11 @@ function SDT:RebuildSlots(bar)
 
     -- hide and clear existing slot frames
     for _, s in ipairs(bar.slots or {}) do
+        if s.moduleFrame then
+            if s.moduleFrame.Hide then s.moduleFrame:Hide() end
+            if s.moduleFrame.SetParent then s.moduleFrame:SetParent(nil) end
+            s.moduleFrame = nil
+        end
         s:SetParent(nil)
         s:Hide()
     end
@@ -200,7 +205,7 @@ end
 -- Rebuild Slots on All Bars
 -------------------------------------------------
 function SDT:RebuildAllSlots()
-    for _, bar in pairs(SDT.profileBars) do
+    for _, bar in pairs(SDT.bars) do
         SDT:RebuildSlots(bar)
     end
 end
@@ -210,9 +215,11 @@ end
 -------------------------------------------------
 function SDT:UpdateAllModules()
     for _, bar in pairs(SDT.bars) do
-        for _, slot in pairs(bar.slots) do
-            if slot.moduleFrame and slot.moduleFrame.Update then
-                slot.moduleFrame.Update()
+        if bar.slots then
+            for _, slot in pairs(bar.slots) do
+                if slot.moduleFrame and slot.moduleFrame.Update then
+                    slot.moduleFrame.Update()
+                end
             end
         end
     end
@@ -237,7 +244,7 @@ function SDT:ShowSlotDropdown(slot, bar)
         end
     end
 
-	UIDropDownMenu_Initialize(dropdownFrame, InitializeDropdown)
+    UIDropDownMenu_Initialize(dropdownFrame, InitializeDropdown)
     ToggleDropDownMenu(1, nil, dropdownFrame, "cursor", 0, 0)
 end
 
@@ -278,13 +285,13 @@ end
 local loader = CreateFrame("Frame")
 loader:RegisterEvent("PLAYER_ENTERING_WORLD")
 loader:SetScript("OnEvent", function(self, event, arg)
-    --if arg == addonName then
-        CreateModuleList()
-        CreateAddonList()
+    self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
-        -- Update modules to be safe
-        SDT:UpdateAllModules()
-    --end
+    CreateModuleList()
+    CreateAddonList()
+
+    -- Update modules to be safe
+    SDT:UpdateAllModules()
 end)
 
 local function SlashHelp()
