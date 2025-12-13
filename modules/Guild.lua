@@ -73,7 +73,7 @@ function mod.Create(slotFrame)
     SDT.guildFrame = f
 
     ----------------------------------------------------
-    -- Tooltip: forward to Ara
+    -- Tooltip from Ara
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
@@ -84,7 +84,7 @@ function mod.Create(slotFrame)
     end)
 
     ----------------------------------------------------
-    -- Click: forward to Ara
+    -- Click from Ara
     ----------------------------------------------------
     slotFrame:RegisterForClicks("AnyUp")
     slotFrame:SetScript("OnClick", function(self, button)
