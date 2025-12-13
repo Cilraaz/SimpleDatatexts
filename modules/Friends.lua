@@ -39,16 +39,14 @@ function mod.Create(slotFrame)
     -- Update function simply reflects Ara's text
     ----------------------------------------------------
     local function Update()
-        for k,v in pairs(ara) do
-            SDT.Print(tostring(k), tostring(v))
-        end
-        text:SetFormattedText(SDT:ColorText(ara.text or ""))
+        local txt = ara.text or ""
+        text:SetText(SDT:ColorText(txt))
     end
     f.Update = Update
     SDT.friendFrame = f
 
     ----------------------------------------------------
-    -- Tooltip: forward to Ara
+    -- Tooltip from Ara
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
@@ -59,7 +57,7 @@ function mod.Create(slotFrame)
     end)
 
     ----------------------------------------------------
-    -- Click: forward to Ara
+    -- Click from Ara
     ----------------------------------------------------
     slotFrame:RegisterForClicks("AnyUp")
     slotFrame:SetScript("OnClick", function(self, button)
