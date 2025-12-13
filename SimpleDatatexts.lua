@@ -46,6 +46,21 @@ local UnitClass                 = UnitClass
 local UnitName                  = UnitName
 
 -------------------------------------------------
+-- Bar Position Helper
+-------------------------------------------------
+local function SaveBarPosition(bar)
+    local point, _, relativePoint, xOfs, yOfs = bar:GetPoint()
+    if SDT.profileBars[bar:GetName()] then
+        SDT.profileBars[bar:GetName()].point = {
+            point = point,
+            relativePoint = relativePoint,
+            x = xOfs,
+            y = yOfs
+        }
+    end
+end
+
+-------------------------------------------------
 -- Movable Frame Helper
 -------------------------------------------------
 local function CreateMovableFrame(name)
@@ -62,10 +77,7 @@ local function CreateMovableFrame(name)
 
     f:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
-        local point, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
-        if SDT.profileBars[self:GetName()] then
-            SDT.profileBars[self:GetName()].point = { point = point, relativePoint = relativePoint, x = xOfs, y = yOfs }
-        end
+        SaveBarPosition(self)
     end)
 
     return f
@@ -95,11 +107,14 @@ function SDT:CreateDataBar(id, numSlots)
     bar:SetScale(scale / 100)
 
     function bar:ApplyBackground()
-        if saved.bgOpacity and saved.bgOpacity > 0 or saved.borderName and saved.borderName ~= "None" then
+        local hasBackground = saved.bgOpacity and saved.bgOpacity > 0
+        local hasBorder = saved.borderName and saved.borderName ~= "None"
+
+        if hasBackground or hasBorder then
             bar:SetBackdrop({ 
                 bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-                edgeFile = saved.borderName ~= "None" and saved.border or nil, 
-                edgeSize = saved.borderName ~= "None" and saved.borderSize or 0 
+                edgeFile = hasBorder and saved.border or nil, 
+                edgeSize = hasBorder and saved.borderSize or 0 
             })
             local alpha = (saved.bgOpacity or 50) / 100
             bar:SetBackdropColor(0,0,0,alpha)
@@ -189,10 +204,7 @@ function SDT:RebuildSlots(bar)
         end)
         slot:SetScript("OnDragStop", function(self)
             bar:StopMovingOrSizing()
-            local point, relativeTo, relativePoint, xOfs, yOfs = bar:GetPoint()
-            if SDT.profileBars[bar:GetName()] then
-                SDT.profileBars[bar:GetName()].point = { point = point, relativePoint = relativePoint, x = xOfs, y = yOfs }
-            end
+            SaveBarPosition(bar)
         end)
 
         bar.slots[i] = slot
@@ -237,8 +249,10 @@ function SDT:ShowSlotDropdown(slot, bar)
         for _, moduleName in ipairs(SDT.cache.moduleNames) do
             info.text = moduleName
             info.func = function()
-                SDT.profileBars[bar:GetName()].slots[slot.index] = moduleName
-                SDT:RebuildSlots(bar)
+                if SDT.profileBars[bar:GetName()] then
+                    SDT.profileBars[bar:GetName()].slots[slot.index] = moduleName
+                    SDT:RebuildSlots(bar)
+                end
             end
             UIDropDownMenu_AddButton(info)
         end
@@ -342,8 +356,8 @@ local function BarAdjustments(adj, bar, num)
     if adj == "width" then
         if num >= 100 and num <= 800 then
             SDT.profileBars[bar].width = num
-            widthSlider:SetValue(num)
-            widthBox:SetText(num)
+            if SDT.UI and SDT.UI.widthSlider then SDT.UI.widthSlider:SetValue(num) end
+            if SDT.UI and SDT.UI.widthBox then SDT.UI.widthBox:SetText(num) end
             SDT:RebuildSlots(SDT.bars[bar])
         else
             SDT.Print("Invalid panel width specified.")
@@ -351,8 +365,8 @@ local function BarAdjustments(adj, bar, num)
     elseif adj == "height" then
         if num >= 16 and num <= 128 then
             SDT.profileBars[bar].height = num
-            heightSlider:SetValue(num)
-            heightBox:SetText(num)
+            if SDT.UI and SDT.UI.heightSlider then SDT.UI.heightSlider:SetValue(num) end
+            if SDT.UI and SDT.UI.heightBox then SDT.UI.heightBox:SetText(num) end
             SDT:RebuildSlots(SDT.bars[bar])
         else
             SDT.Print("Invalid panel height specified.")
@@ -360,8 +374,8 @@ local function BarAdjustments(adj, bar, num)
     elseif adj == "scale" then
         if num >= 50 and num <= 500 then
             SDT.profileBars[bar].scale = num
-            scaleSlider:SetValue(num)
-            scaleBox:SetText(num)
+            if SDT.UI and SDT.UI.scaleSlider then SDT.UI.scaleSlider:SetValue(num) end
+            if SDT.UI and SDT.UI.scaleBox then SDT.UI.scaleBox:SetText(num) end
             SDT.bars[bar]:SetScale(num / 100)
         else
             SDT.Print("Invalid panel scale specified.")
@@ -388,7 +402,9 @@ SlashCmdList["SDT"] = function(msg)
         Settings.OpenToCategory(SDT.SettingsPanel.ID)
     elseif command == "lock" then
         SDT.SDTDB_CharDB.settings.locked = not SDT.SDTDB_CharDB.settings.locked
-        lockCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.locked)
+        if SDT.UI and SDT.UI.lockCheckbox then
+            SDT.UI.lockCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.locked)
+        end
         SDT.Print("SDT panels are now: ", SDT.SDTDB_CharDB.settings.locked and "|cffff0000LOCKED|r" or "|cff00ff00UNLOCKED|r")
     elseif command == "width" or command == "height" or command == "scale" then
         BarAdjustments(command, bar, num)

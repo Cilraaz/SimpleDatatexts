@@ -15,32 +15,17 @@ local LSM = LibStub("LibSharedMedia-3.0")
 ----------------------------------------------------
 local format           = string.format
 local print            = print
-local strsplit         = strsplit
-local stringlower      = string.lower
-local tconcat          = table.concat
-local tinsert          = table.insert
 local tonumber         = tonumber
 local tostring         = tostring
-local tsort            = table.sort
 local wipe             = table.wipe
 
 ----------------------------------------------------
 -- WoW API Locals
 ----------------------------------------------------
 local CopyTable                 = CopyTable
-local CreateFrame               = CreateFrame
 local GetAddOnMetadata          = C_AddOns.GetAddOnMetadata
 local GetClassColor             = C_ClassColor.GetClassColor
 local GetRealmName              = GetRealmName
-local GetScreenWidth            = GetScreenWidth
-local GetScreenHeight           = GetScreenHeight
-local IsControlKeyDown          = IsControlKeyDown
-local IsShiftKeyDown            = IsShiftKeyDown
-local ToggleDropDownMenu        = ToggleDropDownMenu
-local UIDropDownMenu_AddButton  = UIDropDownMenu_AddButton
-local UIDropDownMenu_CreateInfo = UIDropDownMenu_CreateInfo
-local UIDropDownMenu_Initialize = UIDropDownMenu_Initialize
-local UIDropDownMenu_SetText    = UIDropDownMenu_SetText
 local UIParent                  = UIParent
 local UnitClass                 = UnitClass
 local UnitName                  = UnitName
@@ -65,6 +50,11 @@ SDT.cache.colorB = colors[3]
 SDT.cache.colorHex = GetClassColor(SDT.cache.playerClass):GenerateHexColor()
 SDT.cache.version = GetAddOnMetadata(addonName, "Version") or "not defined"
 SDT.cache.moduleNames = {}
+
+-------------------------------------------------
+-- Utility: No Operation Function
+-------------------------------------------------
+local noop = function() end
 
 -------------------------------------------------
 -- Utility: Apply Chosen Font
@@ -94,14 +84,13 @@ function SDT:ColorText(text)
 end
 
 -------------------------------------------------
--- Utility: Format Percentage
+-- Utility: Find Best Anchor Point
 -------------------------------------------------
 function SDT:FindBestAnchorPoint(frame)
     local x, y = frame:GetCenter()
     local screenWidth = UIParent:GetRight()
     local screenHeight = UIParent:GetTop()
 
-    local anchor, relPoint
     if not x or not y then
         return "ANCHOR_BOTTOM"
     else
@@ -148,24 +137,24 @@ function SDT:HandleMenuList(root, menuList, submenu, depth)
 
     for _, list in next, menuList do
         local previous
-		if list.isTitle then
-			root:CreateTitle(list.text)
-		elseif list.func or list.hasArrow then
-			local name = list.text or ('test'..depth)
+        if list.isTitle then
+            root:CreateTitle(list.text)
+        elseif list.func or list.hasArrow then
+            local name = list.text or ('test'..depth)
 
-			local func = (list.arg1 or list.arg2) and (function() list.func(nil, list.arg1, list.arg2) end) or list.func
-			local checked = list.checked and (not list.notCheckable and function() return list.checked(list) end or E.noop)
-			if checked then
-				previous = root:CreateCheckbox(list.text or name, checked, func)
-			else
-				previous = root:CreateButton(list.text or name, func)
-			end
-		end
+            local func = (list.arg1 or list.arg2) and (function() list.func(nil, list.arg1, list.arg2) end) or list.func
+            local checked = list.checked and (not list.notCheckable and function() return list.checked(list) end or noop)
+            if checked then
+                previous = root:CreateCheckbox(list.text or name, checked, func)
+            else
+                previous = root:CreateButton(list.text or name, func)
+            end
+        end
 
-		if list.menuList then -- loop it
-			HandleMenuList(root, list.menuList, list.hasArrow and previous, depth + 1)
-		end
-	end
+        if list.menuList then -- loop it
+            HandleMenuList(root, list.menuList, list.hasArrow and previous, depth + 1)
+        end
+    end
 end
 
 -------------------------------------------------

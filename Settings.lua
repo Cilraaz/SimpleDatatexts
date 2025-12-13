@@ -301,8 +301,6 @@ local function showColorPicker()
         colorPickerButton:SetText(SDT.SDTDB_CharDB.settings.customColorHex)
     end
 
-    local previousValues = { initR, initG, initB }
-
     local options = {
         swatchFunc = onColorPicked,
         cancelFunc = onCancel,
@@ -553,6 +551,16 @@ local slotSlider, slotBox = CreateSliderWithBox(panelsSubPanel, "Slots", "Slots"
 local widthSlider, widthBox = CreateSliderWithBox(panelsSubPanel, "Width", "Width", 100, 800, 1, slotSlider, 0, -20)
 local heightSlider, heightBox = CreateSliderWithBox(panelsSubPanel, "Height", "Height", 16, 128, 1, widthSlider, 0, -20)
 
+-- Store sliders in the SDT namespace for accessibility
+SDT.UI = SDT.UI or {}
+SDT.UI.lockCheckbox = lockCheckbox
+SDT.UI.scaleSlider = scaleSlider
+SDT.UI.scaleBox = scaleBox
+SDT.UI.widthSlider = widthSlider
+SDT.UI.widthBox = widthBox
+SDT.UI.heightSlider = heightSlider
+SDT.UI.heightBox = heightBox
+
 local borderLabel = panelsSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 borderLabel:SetPoint("TOPLEFT", nameEditBox, "BOTTOMLEFT", -5, -20)
 borderLabel:SetText("Select Border:")
@@ -593,8 +601,6 @@ local function showBorderColorPicker()
         SDT.bars[panelsSubPanel.selectedBar]:ApplyBackground()
         borderColorPicker:SetText(SDT.profileBars[panelsSubPanel.selectedBar].borderColor)
     end
-
-    local previousValues = { initR, initG, initB }
 
     local options = {
         swatchFunc = onColorPicked,
