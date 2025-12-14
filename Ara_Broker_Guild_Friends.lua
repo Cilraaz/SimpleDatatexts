@@ -1485,8 +1485,17 @@ end
 function f:ADDON_LOADED( addon )
 	if addon ~= addonName then return end
 
-	AraBrokerGuildFriendsDB = AraBrokerGuildFriendsDB or defaultConfig
-	config = AraBrokerGuildFriendsDB
+	SDTDB = SDTDB or {}
+	SDTDB.AraBroker = SDTDB.AraBroker or {}
+
+	-- Migrate old settings if they exist
+	if AraBrokerGuildFriendsDB and not SDTDB.AraBroker.migrated then
+		SDTDB.AraBroker = AraBrokerGuildFriendsDB
+		SDTDB.AraBroker.migrated = true
+	end
+
+	SDTDB.AraBroker = SDTDB.AraBroker or defaultConfig
+	config = SDTDB.AraBroker
 	UpdateConfig( defaultConfig, config )
 
 	colors = config.colors
