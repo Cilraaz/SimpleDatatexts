@@ -29,6 +29,7 @@ local wipe             = table.wipe
 ----------------------------------------------------
 local CopyTable                 = CopyTable
 local CreateFrame               = CreateFrame
+local Delay                     = C_Timer.After
 local GetAddOnInfo              = C_AddOns.GetAddOnInfo
 local GetAddOnMetadata          = C_AddOns.GetAddOnMetadata
 local GetClassColor             = C_ClassColor.GetClassColor
@@ -306,6 +307,11 @@ loader:SetScript("OnEvent", function(self, event, arg)
 
     -- Update modules to be safe
     SDT:UpdateAllModules()
+
+    -- Init print
+    Delay(2, function()
+        SDT.Print("Loaded. Total modules: " .. #SDT.cache.moduleNames)
+    end)
 end)
 
 local function SlashHelp()
