@@ -69,6 +69,7 @@ local function CreateMovableFrame(name)
     f:SetMovable(true)
     f:EnableMouse(true)
     f:RegisterForDrag("LeftButton")
+    f:SetClampedToScreen(true)
 
     f:SetScript("OnDragStart", function(self)
         if not SDT.SDTDB_CharDB.settings.locked then
