@@ -26,7 +26,7 @@ end
 
 local function StripColorCodes(text)
     if not text then return nil end
-    return text:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
+    return tostring(text):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
 end
 
 ----------------------------------------------------
