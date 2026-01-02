@@ -4,6 +4,7 @@
 -- Addon Locals
 ----------------------------------------------------
 local addonName, SDT = ...
+local L = SDT.L
 
 ----------------------------------------------------
 -- Library Instances
@@ -211,23 +212,23 @@ function SDT:ProfileCopy(profileName)
         StaticPopup_Show("SDT_CANT_COPY_ACTIVE_PROFILE")
         return
     end
-    local confirmString = format("Are you sure you want to overwrite your\n'%s' profile?\nThis action cannot be undone.", SDT.activeProfile)
+    local confirmString = format(L["Are you sure you want to overwrite your\n'%s' profile?\nThis action cannot be undone."], SDT.activeProfile)
     StaticPopupDialogs.SDT_CONFIRM_COPY_PROFILE.text = confirmString
     StaticPopup_Show("SDT_CONFIRM_COPY_PROFILE", nil, nil, profileName)
 end
 
 StaticPopupDialogs["SDT_CANT_COPY_ACTIVE_PROFILE"] = {
-    text = "You cannot copy the active profile onto itself. Please change your active profile first.",
-    button1 = "Ok",
+    text = L["You cannot copy the active profile onto itself. Please change your active profile first."],
+    button1 = L["Ok"],
     timeout = 0,
     whileDead = true,
     hideOnEscape = true,
     preferredIndex = 3
 }
 StaticPopupDialogs["SDT_CONFIRM_COPY_PROFILE"] = {
-    text = "Are you sure you want to overwrite your %s profile?\nThis action cannot be undone.",
-    button1 = "Yes",
-    button2 = "No",
+    text = L["Are you sure you want to overwrite your\n'%s' profile?\nThis action cannot be undone."],
+    button1 = L["Yes"],
+    button2 = L["No"],
     timeout = 0,
     whileDead = true,
     hideOnEscape = true,
@@ -235,7 +236,7 @@ StaticPopupDialogs["SDT_CONFIRM_COPY_PROFILE"] = {
     OnAccept = function(self, profileName)
         local src = SDTDB.profiles[profileName]
         if not src then
-            SDT.Print("Invalid source profile specified.")
+            SDT.Print(L["Invalid source profile specified."])
             SDT:RefreshProfileList()
             return
         end
@@ -281,17 +282,17 @@ function SDT:ProfileDelete(profileName)
 end
 
 StaticPopupDialogs["SDT_CANT_DELETE_ACTIVE_PROFILE"] = {
-    text = "You cannot delete the active profile. Please change your active profile first.",
-    button1 = "Ok",
+    text = L["You cannot delete the active profile. Please change your active profile first."],
+    button1 = L["Ok"],
     timeout = 0,
     whileDead = true,
     hideOnEscape = true,
     preferredIndex = 3
 }
 StaticPopupDialogs["SDT_CONFIRM_DELETE_PROFILE"] = {
-    text = "Are you sure you want to delete this profile?\nThis action cannot be undone.",
-    button1 = "Yes",
-    button2 = "No",
+    text = L["Are you sure you want to delete this profile?\nThis action cannot be undone."],
+    button1 = L["Yes"],
+    button2 = L["No"],
     timeout = 0,
     whileDead = true,
     hideOnEscape = true,

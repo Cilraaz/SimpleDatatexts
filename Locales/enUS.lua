@@ -1,8 +1,11 @@
 local _, SDT = ...
 local L = SDT.L
 
+-- ----------------------------
+-- SimpleDatatexts.lua
+-- ----------------------------
+-- Used in: Settings.lua, SimpleDatatexts.lua
 L["(empty)"] = "(empty)"
-L["(none)"] = "(none)"
 L["Loaded. Total modules: %d"] = "Loaded. Total modules: %d"
 L["|cffffff00--[Options]--|r"] = "|cffffff00--[Options]--|r"
 L["Lock/Unlock: |cff8888ff/sdt lock|r"] = "Lock/Unlock: |cff8888ff/sdt lock|r"
@@ -23,12 +26,15 @@ L["|cffff0000LOCKED|r"] = "|cffff0000LOCKED|r"
 L["|cff00ff00UNLOCKED|r"] = "|cff00ff00UNLOCKED|r"
 L["Simple Datatexts Version: |cff8888ff%s|r"] = "Simple Datatexts Version: |cff8888ff%s|r"
 
+-- ----------------------------
+-- Settings.lua
+-- ----------------------------
 L["Simple DataTexts"] = "Simple DataTexts"
 L["Global"] = "Global"
-L["Panels"] = "Panels"
-L["Profiles"] = "Profiles"
 L["Simple DataTexts - Global Settings"] = "Simple DataTexts - Global Settings"
+L["Panels"] = "Panels"
 L["Simple DataTexts - Panel Settings"] = "Simple DataTexts - Panel Settings"
+L["Profiles"] = "Profiles"
 L["Simple DataTexts - Profile Settings"] = "Simple DataTexts - Profile Settings"
 L["Lock Panels (disable movement)"] = "Lock Panels (disable movement)"
 L["Use Class Color"] = "Use Class Color"
@@ -41,16 +47,19 @@ L["Select Panel:"] = "Select Panel:"
 L["Rename Panel:"] = "Rename Panel:"
 L["Remove Selected Panel"] = "Remove Selected Panel"
 L["Slot %d:"] = "Slot %d:"
-L["Select Border:"] = "Select Border:"
 L["Scale"] = "Scale"
 L["Background Opacity"] = "Background Opacity"
 L["Slots"] = "Slots"
 L["Width"] = "Width"
 L["Height"] = "Height"
+L["Select Border:"] = "Select Border:"
 L["Border Size"] = "Border Size"
 L["Are you sure you want to delete this bar?\nThis action cannot be undone."] = "Are you sure you want to delete this bar?\nThis action cannot be undone."
+-- Used in: Settings.lua, Utilities.lua
 L["Yes"] = "Yes"
+-- Used in: Settings.lua, Utilities.lua
 L["No"] = "No"
+L["(none)"] = "(none)"
 L["Create New Profile:"] = "Create New Profile:"
 L["Current Profile:"] = "Current Profile:"
 L["Enable Per-Spec Profiles"] = "Enable Per-Spec Profiles"
@@ -58,25 +67,56 @@ L["Copy Profile:"] = "Copy Profile:"
 L["Delete Profile:"] = "Delete Profile:"
 L["NYI:"] = "NYI:"
 L["The profile name you have entered already exists. Please enter a new name."] = "The profile name you have entered already exists. Please enter a new name."
+-- Used in: Settings.lua, Utilities.lua
 L["Ok"] = "Ok"
 L["Saved font not found. Resetting font to Friz Quadrata TT."] = "Saved font not found. Resetting font to Friz Quadrata TT."
 
-L["Bags"] = "Bags"
+-- ----------------------------
+-- Utilities.lua
+-- ----------------------------
+L["Are you sure you want to overwrite your\n'%s' profile?\nThis action cannot be undone."] = "Are you sure you want to overwrite your\n'%s' profile?\nThis action cannot be undone."
+L["You cannot copy the active profile onto itself. Please change your active profile first."] = "You cannot copy the active profile onto itself. Please change your active profile first."
+L["Invalid source profile specified."] = "Invalid source profile specified."
+L["You cannot delete the active profile. Please change your active profile first."] = "You cannot delete the active profile. Please change your active profile first."
+L["Are you sure you want to delete this profile?\nThis action cannot be undone."] = "Are you sure you want to delete this profile?\nThis action cannot be undone."
+
+-- ----------------------------
+-- modules/Armor.lua
+-- ----------------------------
 L["Mitigation By Level:"] = "Mitigation By Level:"
 L["Level %d"] = "Level %d"
 L["Target Mitigation"] = "Target Mitigation"
-L["SYSTEM"] = "SYSTEM"
-L["FPS:"] = "FPS:"
-L["Home Latency:"] = "Home Latency:"
-L["World Latency:"] = "World Latency:"
-L["Total Memory:"] = "Total Memory:"
-L["(Shift Click) Collect Garbage"] = "(Shift Click) Collect Garbage"
-L["MB_SUFFIX"] = "mb"
-L["KB_SUFFIX"] = "kb"
-L["FPS"] = "FPS"
-L["MS"] = "MS"
+
+-- ----------------------------
+-- modules/Bags.lua
+-- ----------------------------
+L["Bags"] = "Bags"
+
+-- ----------------------------
+-- modules/Crit.lua
+-- ----------------------------
+L["Crit: "] = "Crit: "
+
+-- ----------------------------
+-- modules/Currency.lua
+-- ----------------------------
 L["CURRENCIES"] = "CURRENCIES"
+-- Used in: modules/Currency.lua, modules/Gold.lua
 L["GOLD"] = "GOLD"
+
+-- ----------------------------
+-- modules/Durability.lua
+-- ----------------------------
+L["Durability: "] = "Durability: "
+
+-- ----------------------------
+-- modules/Friends.lua
+-- ----------------------------
+L["Ara Friends LDB object not found! SDT Friends datatext disabled."] = "Ara Friends LDB object not found! SDT Friends datatext disabled."
+
+-- ----------------------------
+-- modules/Gold.lua
+-- ----------------------------
 L["Session:"] = "Session:"
 L["Earned:"] = "Earned:"
 L["Spent:"] = "Spent:"
@@ -90,9 +130,76 @@ L["Total:"] = "Total:"
 L["Warband:"] = "Warband:"
 L["WoW Token:"] = "WoW Token:"
 L["Reset Session Data: Hold Ctrl + Right Click"] = "Reset Session Data: Hold Ctrl + Right Click"
+
+-- ----------------------------
+-- modules/Guild.lua
+-- ----------------------------
+L["Ara Guild LDB object not found! SDT Guild datatext disabled."] = "Ara Guild LDB object not found! SDT Guild datatext disabled."
+
+-- ----------------------------
+-- modules/Haste.lua
+-- ----------------------------
+L["Haste: "] = "Haste: "
+
+-- ----------------------------
+-- modules/LDBObjects.lua
+-- ----------------------------
+L["NO TEXT"] = "NO TEXT"
+
+-- ----------------------------
+-- modules/Mail.lua
+-- ----------------------------
+L["New Mail"] = "New Mail"
+L["No Mail"] = "No Mail"
+
+-- ----------------------------
+-- modules/Mastery.lua
+-- ----------------------------
+L["Mastery: "] = "Mastery: "
+
+-- ----------------------------
+-- modules/SpecSwitch.lua
+-- ----------------------------
+L["Active"] = "Active"
+L["Inactive"] = "Inactive"
+L["Loadouts"] = "Loadouts"
+L["Failed to load Blizzard_PlayerSpells: %s"] = "Failed to load Blizzard_PlayerSpells: %s"
+L["Starter Build"] = "Starter Build"
+L["Spec"] = "Spec"
+L["Left Click: Change Talent Specialization"] = "Left Click: Change Talent Specialization"
+L["Control + Left Click: Change Loadout"] = "Control + Left Click: Change Loadout"
+L["Shift + Left Click: Show Talent Specialization UI"] = "Shift + Left Click: Show Talent Specialization UI"
+L["Shift + Right Click: Change Loot Specialization"] = "Shift + Right Click: Change Loot Specialization"
+
+-- ----------------------------
+-- modules/System.lua
+-- ----------------------------
+L["MB_SUFFIX"] = "mb"
+L["KB_SUFFIX"] = "kb"
+L["SYSTEM"] = "SYSTEM"
+L["FPS:"] = "FPS:"
+L["Home Latency:"] = "Home Latency:"
+L["World Latency:"] = "World Latency:"
+L["Total Memory:"] = "Total Memory:"
+L["(Shift Click) Collect Garbage"] = "(Shift Click) Collect Garbage"
+L["FPS"] = "FPS"
+L["MS"] = "MS"
+
+-- ----------------------------
+-- modules/Time.lua
+-- ----------------------------
 L["TIME"] = "TIME"
 L["Saved Raid(s)"] = "Saved Raid(s)"
 L["Saved Dungeon(s)"] = "Saved Dungeon(s)"
+
+-- ----------------------------
+-- modules/Versatility.lua
+-- ----------------------------
+L["Vers: "] = "Vers: "
+
+-- ----------------------------
+-- modules/Volume.lua
+-- ----------------------------
 L["Select Volume Stream"] = "Select Volume Stream"
 L["Toggle Volume Stream"] = "Toggle Volume Stream"
 L["Output Audio Device"] = "Output Audio Device"
@@ -103,37 +210,21 @@ L["Middle Click: Toggle Mute Master Stream"] = "Middle Click: Toggle Mute Master
 L["Shift + Middle Click: Toggle Volume Stream"] = "Shift + Middle Click: Toggle Volume Stream"
 L["Shift + Left Click: Open System Audio Panel"] = "Shift + Left Click: Open System Audio Panel"
 L["Shift + Right Click: Select Output Audio Device"] = "Shift + Right Click: Select Output Audio Device"
-L["New Mail"] = "New Mail"
-L["No Mail"] = "No Mail"
-L["Durability: "] = "Durability: "
-L["Crit: "] = "Crit: "
-L["Haste: "] = "Haste: "
-L["Mastery: "] = "Mastery: "
-L["Vers: "] = "Vers: "
-L["Ara Friends LDB object not found! SDT Friends datatext disabled."] = "Ara Friends LDB object not found! SDT Friends datatext disabled."
-L["Ara Guild LDB object not found! SDT Guild datatext disabled."] = "Ara Guild LDB object not found! SDT Guild datatext disabled."
-L["Active"] = "Active"
-L["Inactive"] = "Inactive"
-L["Loadouts"] = "Loadouts"
-L["Starter Build"] = "Starter Build"
-L["Spec"] = "Spec"
-L["Failed to load Blizzard_PlayerSpells: %s"] = "Failed to load Blizzard_PlayerSpells: %s"
-L["NO TEXT"] = "NO TEXT"
-L["Left Click: Change Talent Specialization"] = "Left Click: Change Talent Specialization"
-L["Shift + Left Click: Show Talent Specialization UI"] = "Shift + Left Click: Show Talent Specialization UI"
-L["Shift + Right Click: Change Loot Specialization"] = "Shift + Right Click: Change Loot Specialization"
-L["Control + Left Click: Change Loadout"] = "Control + Left Click: Change Loadout"
-L["<Mobile>"] = "<Mobile>"
+
+-- ----------------------------
+-- Ara_Broker_Guild_Friends.lua
+-- ----------------------------
 L["Guild"] = "Guild"
 L["No Guild"] = "No Guild"
 L["Friends: "] = "Friends: "
-L["Hints"] = "Hints"
+L["<Mobile>"] = "<Mobile>"
 L["Hints [|cffffffffBlock|r]"] = "Hints [|cffffffffBlock|r]"
 L["|cffff8020Click|r to open panel."] = "|cffff8020Click|r to open panel."
 L["|cffff8020RightClick|r to display config menu."] = "|cffff8020RightClick|r to display config menu."
 L["|cffff8020MiddleClick|r to add a friend."] = "|cffff8020MiddleClick|r to add a friend."
 L["|cffff8020Modifier+Click|r to add a friend."] = "|cffff8020Modifier+Click|r to add a friend."
 L["|cffff8020Button4|r to toggle notes."] = "|cffff8020Button4|r to toggle notes."
+L["Hints"] = "Hints"
 L["|cffff8020Click|r to whisper."] = "|cffff8020Click|r to whisper."
 L["|cffff8020Alt+Click|r to invite."] = "|cffff8020Alt+Click|r to invite."
 L["|cffff8020Shift+Click|r to query informations."] = "|cffff8020Shift+Click|r to query informations."
@@ -148,8 +239,8 @@ L["Mobile App"] = "Mobile App"
 L["Desktop App"] = "Desktop App"
 L["OFFLINE FAVORITE"] = "OFFLINE FAVORITE"
 L["MOTD"] = "MOTD"
-L["Broadcast"] = "Broadcast"
 L["No friends online."] = "No friends online."
+L["Broadcast"] = "Broadcast"
 L["Invalid scale.\nShould be a number between 70 and 200%"] = "Invalid scale.\nShould be a number between 70 and 200%"
 L["Set a custom tooltip scale.\nEnter a value between 70 and 200 (%%)."] = "Set a custom tooltip scale.\nEnter a value between 70 and 200 (%%)."
 L["|cffffb366Ara|r Guild & Friends (%s)"] = "|cffffb366Ara|r Guild & Friends (%s)"
@@ -221,3 +312,4 @@ L["Sort second column"] = "Sort second column"
 L["Sort third column"] = "Sort third column"
 L["Resize tooltip"] = "Resize tooltip"
 L["Remove friend"] = "Remove friend"
+

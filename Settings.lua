@@ -861,9 +861,9 @@ end)
 
 -- Confirmation Pop-up
 StaticPopupDialogs["SDT_CONFIRM_DELETE_BAR"] = {
-    text = "Are you sure you want to delete this bar?\nThis action cannot be undone.",
-    button1 = "Yes",
-    button2 = "No",
+    text = L["Are you sure you want to delete this bar?\nThis action cannot be undone."],
+    button1 = L["Yes"],
+    button2 = L["No"],
     timeout = 0,
     whileDead = true,
     hideOnEscape = true,
@@ -878,7 +878,7 @@ StaticPopupDialogs["SDT_CONFIRM_DELETE_BAR"] = {
 
         -- Clear UI state
         panelsSubPanel.selectedBar = nil
-        UIDropDownMenu_SetText(panelDropdown, "(none)")
+        UIDropDownMenu_SetText(panelDropdown, L["(none)"])
         UIDropDownMenu_Initialize(panelDropdown, PanelDropdown_Initialize)
 
         for _, f in ipairs(slotSelectors) do f:Hide() end
@@ -910,7 +910,7 @@ StaticPopupDialogs["SDT_CONFIRM_DELETE_BAR"] = {
 -------------------------------------------------
 local profileCreateLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 profileCreateLabel:SetPoint("TOPLEFT", profilesTitle, "BOTTOMLEFT", 0, -16)
-profileCreateLabel:SetText("Create New Profile:")
+profileCreateLabel:SetText(L["Create New Profile:"])
 
 local profileCreateName = CreateFrame("EditBox", nil, profilesSubPanel, "InputBoxTemplate")
 profileCreateName:SetSize(160, 24)
@@ -921,7 +921,7 @@ profileCreateName:SetJustifyV("MIDDLE")
 
 local profileSelectLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 profileSelectLabel:SetPoint("LEFT", profileCreateLabel, "RIGHT", 100, 0)
-profileSelectLabel:SetText("Current Profile:")
+profileSelectLabel:SetText(L["Current Profile:"])
 
 local profileSelectDropdown = CreateFrame("Frame", addonName .. "_ProfileSelectDropdown", profilesSubPanel, "UIDropDownMenuTemplate")
 profileSelectDropdown:SetPoint("LEFT", profileCreateName, "RIGHT", 20, -4)
@@ -929,7 +929,7 @@ UIDropDownMenu_SetWidth(profileSelectDropdown, 140)
 
 local perSpecCheck = CreateFrame("CheckButton", nil, profilesSubPanel, "InterfaceOptionsCheckButtonTemplate")
 perSpecCheck:SetPoint("TOPLEFT", profileCreateName, "BOTTOMLEFT", 0, -20)
-perSpecCheck.Text:SetText("Enable Per-Spec Profiles")
+perSpecCheck.Text:SetText(L["Enable Per-Spec Profiles"])
 perSpecCheck:SetChecked(false)
 perSpecCheck:SetScript("OnClick", function(self)
     SDT.SDTDB_CharDB.useSpecProfiles = self:GetChecked()
@@ -980,7 +980,7 @@ end
 
 local copyProfileLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 copyProfileLabel:SetPoint("TOPLEFT", specOneDropdown, "BOTTOMLEFT", 20, -20)
-copyProfileLabel:SetText("Copy Profile:")
+copyProfileLabel:SetText(L["Copy Profile:"])
 
 local copyProfileDropdown = CreateFrame("Frame", addonName .. "_CopyProfileDropdown", profilesSubPanel, "UIDropDownMenuTemplate")
 copyProfileDropdown:SetPoint("TOPLEFT", copyProfileLabel, "BOTTOMLEFT", -20, -4)
@@ -990,7 +990,7 @@ UIDropDownMenu_SetText(copyProfileDropdown, "")
 
 local deleteProfileLabel = profilesSubPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 deleteProfileLabel:SetPoint("TOPLEFT", copyProfileDropdown, "BOTTOMLEFT", 20, -20)
-deleteProfileLabel:SetText("Delete Profile:")
+deleteProfileLabel:SetText(L["Delete Profile:"])
 
 local deleteProfileDropdown = CreateFrame("Frame", addonName .. "_DeleteProfileDropdown", profilesSubPanel, "UIDropDownMenuTemplate")
 deleteProfileDropdown:SetPoint("TOPLEFT", deleteProfileLabel, "BOTTOMLEFT", -20, -4)
@@ -1009,7 +1009,7 @@ local function UpdateProfileSpecs()
     if specThreeName then
         specThreeLabel:SetText(specThreeName..":")
     else
-        specThreeLabel:SetText("NYI:")
+        specThreeLabel:SetText(L["NYI:"])
     end
     local specFourName
     if SDT.cache.playerClass == "DRUID" then
@@ -1107,8 +1107,8 @@ profileCreateName:SetScript("OnEnterPressed", function(self)
 end)
 
 StaticPopupDialogs["SDT_PROFILE_ALREADY_EXISTS"] = {
-    text = "The profile name you have entered already exists. Please enter a new name.",
-    button1 = "Ok",
+    text = L["The profile name you have entered already exists. Please enter a new name."],
+    button1 = L["Ok"],
     timeout = 0,
     whileDead = true,
     hideOnEscape = true,
@@ -1226,7 +1226,7 @@ loader:SetScript("OnEvent", function(self, event, arg)
             end
         end
         if not found then
-            SDT.Print("Saved font not found. Resetting font to Friz Quadrata TT.")
+            SDT.Print(L["Saved font not found. Resetting font to Friz Quadrata TT."])
             currentFont = "Friz Quadrata TT"
             SDT.SDTDB_CharDB.settings.font = currentFont
         end
