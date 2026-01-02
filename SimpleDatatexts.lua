@@ -4,6 +4,7 @@
 -- Addon Locals
 ----------------------------------------------------
 local addonName, SDT = ...
+local L = SDT.L
 
 ----------------------------------------------------
 -- Library Instances
@@ -188,7 +189,7 @@ function SDT:RebuildSlots(bar)
         else
             slot.module = nil
             if slot.moduleFrame and slot.moduleFrame.Hide then slot.moduleFrame:Hide() end
-            slot.text:SetText(assignedName or "(empty)")
+            slot.text:SetText(assignedName or L["(empty)"])
         end
 
         slot:EnableMouse(true)
@@ -313,24 +314,24 @@ loader:SetScript("OnEvent", function(self, event, arg)
 
     -- Init print
     Delay(2, function()
-        SDT.Print("Loaded. Total modules: " .. #SDT.cache.moduleNames)
+        SDT.Print(format(L["Loaded. Total modules: %d"], #SDT.cache.moduleNames))
     end)
 end)
 
 local function SlashHelp()
-    SDT.Print("|cffffff00--[Options]--|r")
-    SDT.Print("Lock/Unlock: |cff8888ff/sdt lock|r")
-    SDT.Print("Width: |cff8888ff/sdt width <barName> <newWidth>|r")
-    SDT.Print("Height: |cff8888ff/sdt height <barName> <newHeight>|r")
-    SDT.Print("Scale: |cff8888ff/sdt scale <barName> <newScale>|r")
-    SDT.Print("Settings: |cff8888ff/sdt config|r")
-    SDT.Print("Version: |cff8888ff/sdt version|r")
+    SDT.Print(L["|cffffff00--[Options]--|r"])
+    SDT.Print(L["Lock/Unlock: |cff8888ff/sdt lock|r"])
+    SDT.Print(L["Width: |cff8888ff/sdt width <barName> <newWidth>|r"])
+    SDT.Print(L["Height: |cff8888ff/sdt height <barName> <newHeight>|r"])
+    SDT.Print(L["Scale: |cff8888ff/sdt scale <barName> <newScale>|r"])
+    SDT.Print(L["Settings: |cff8888ff/sdt config|r"])
+    SDT.Print(L["Version: |cff8888ff/sdt version|r"])
 end
 
 local function BarAdjustments(adj, bar, num)
     -- Make sure we have all of our values
     if not adj or not bar or not num then
-        SDT.Print("Usage: /sdt " .. adj .. " <barName> <value>")
+        SDT.Print(format(L["Usage: /sdt %s <barName> <value>"], adj))
         SlashHelp()
         return
     end
@@ -345,7 +346,7 @@ local function BarAdjustments(adj, bar, num)
             end
         end
         if not resolved then
-            SDT.Print("Invalid panel name supplied. Valid panel names are:")
+            SDT.Print(L["Invalid panel name supplied. Valid panel names are:"])
             for j,k in pairs(SDT.profileBars) do
                 SDT.Print("- ", tostring(j), "("..tostring(k.name)..")")
             end
@@ -356,7 +357,7 @@ local function BarAdjustments(adj, bar, num)
 
     -- Validate the number supplied
     if type(num) ~= "number" then
-        SDT.Print("A valid numeric value for the adjustment must be specified.")
+        SDT.Print(L["A valid numeric value for the adjustment must be specified."])
         SlashHelp()
         return
     end
@@ -369,7 +370,7 @@ local function BarAdjustments(adj, bar, num)
             if SDT.UI and SDT.UI.widthBox then SDT.UI.widthBox:SetText(num) end
             SDT:RebuildSlots(SDT.bars[bar])
         else
-            SDT.Print("Invalid panel width specified.")
+            SDT.Print(L["Invalid panel width specified."])
         end
     elseif adj == "height" then
         if num >= 16 and num <= 128 then
@@ -378,7 +379,7 @@ local function BarAdjustments(adj, bar, num)
             if SDT.UI and SDT.UI.heightBox then SDT.UI.heightBox:SetText(num) end
             SDT:RebuildSlots(SDT.bars[bar])
         else
-            SDT.Print("Invalid panel height specified.")
+            SDT.Print(L["Invalid panel height specified."])
         end
     elseif adj == "scale" then
         if num >= 50 and num <= 500 then
@@ -387,10 +388,10 @@ local function BarAdjustments(adj, bar, num)
             if SDT.UI and SDT.UI.scaleBox then SDT.UI.scaleBox:SetText(num) end
             SDT.bars[bar]:SetScale(num / 100)
         else
-            SDT.Print("Invalid panel scale specified.")
+            SDT.Print(L["Invalid panel scale specified."])
         end
     else
-        SDT.Print("Invalid adjustment type specified.")
+        SDT.Print(L["Invalid adjustment type specified."])
     end
 end
 
@@ -414,13 +415,13 @@ SlashCmdList["SDT"] = function(msg)
         if SDT.UI and SDT.UI.lockCheckbox then
             SDT.UI.lockCheckbox:SetChecked(SDT.SDTDB_CharDB.settings.locked)
         end
-        SDT.Print("SDT panels are now: ", SDT.SDTDB_CharDB.settings.locked and "|cffff0000LOCKED|r" or "|cff00ff00UNLOCKED|r")
+        SDT.Print(L["SDT panels are now: "], SDT.SDTDB_CharDB.settings.locked and L["|cffff0000LOCKED|r"] or L["|cff00ff00UNLOCKED|r"])
     elseif command == "width" or command == "height" or command == "scale" then
         BarAdjustments(command, bar, num)
     elseif command == "update" then
         SDT:UpdateAllModules()
     elseif command == "version" then
-        SDT.Print("Simple Datatexts Version: |cff8888ff" ..tostring(SDT.cache.version) .. "|r")
+        SDT.Print(format(L["Simple Datatexts Version: |cff8888ff%s|r"], tostring(SDT.cache.version)))
     else
         SlashHelp()
     end

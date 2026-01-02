@@ -1,6 +1,7 @@
 -- modules/Time.lua
 -- Time & Lockout datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local L = SDT.L
 local SDTC = SDT.cache
 
 local mod = {}
@@ -175,13 +176,13 @@ function mod.Create(slotFrame)
         local anchor = SDT:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
-        GameTooltip:AddLine("TIME")
+        GameTooltip:AddLine(L["TIME"])
         GameTooltip:AddLine(" ")
         enteredFrame = true
 
         -- Saved instances
         if next(lockedInstances.raids) then
-            GameTooltip:AddLine("Saved Raid(s)")
+            GameTooltip:AddLine(L["Saved Raid(s)"])
             tsort(lockedInstances.raids, function(a,b) return a[1]<b[1] end)
             for _, info in next, lockedInstances.raids do
                 local difficultyLetter, buttonImg = info[2], info[3]
@@ -198,7 +199,7 @@ function mod.Create(slotFrame)
 
         -- Saved dungeons
         if next(lockedInstances.dungeons) then
-            GameTooltip:AddLine("Saved Dungeon(s)")
+            GameTooltip:AddLine(L["Saved Dungeon(s)"])
             tsort(lockedInstances.dungeons, function(a,b) return a[1]<b[1] end)
             for _, info in next, lockedInstances.dungeons do
                 local difficultyLetter, buttonImg = info[2], info[3]

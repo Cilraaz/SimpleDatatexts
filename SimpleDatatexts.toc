@@ -11,6 +11,11 @@ libs/CallbackHandler-1.0.lua
 libs/LibDataBroker-1.1.lua
 libs/LibSharedMedia-3.0.lua
 
+# Locales
+Locales/Locale.lua
+Locales/enUS.lua
+Locales/frFR.lua
+
 # Core
 Utilities.lua
 Settings.lua

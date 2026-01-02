@@ -2,6 +2,7 @@
 -- Crit datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 
 local mod = {}
 
@@ -76,7 +77,7 @@ function mod.Create(slotFrame)
 		    ratingIndex = CR_CRIT_MELEE
 	    end
 
-        local textString = "Crit: "..SDT:FormatPercent(critChance)
+        local textString = L["Crit: "] .. SDT:FormatPercent(critChance)
         text:SetText(SDT:ColorText(textString))
     end
     f.Update = UpdateCrit

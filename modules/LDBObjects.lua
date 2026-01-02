@@ -2,6 +2,7 @@
 -- Datatexts for LDB objects not already handled by other modules
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 local LDB = LibStub("LibDataBroker-1.1")
 
 if not SDT.LDBDatatexts then SDT.LDBDatatexts = {} end
@@ -66,7 +67,7 @@ local function HandleLDBObject(name, obj)
             elseif cleanName == "Core Loot Manager" then
                 txt = "CLM" .. (cleanObjText and (": " .. cleanObjText) or "")
             else
-                txt = cleanObjText or cleanName or "NO TEXT"
+                txt = cleanObjText or cleanName or L["NO TEXT"]
             end
             text:SetText(SDT:ColorText(txt))
         end

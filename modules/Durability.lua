@@ -2,6 +2,7 @@
 -- Durability datatext adapted ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 
 local mod = {}
 
@@ -136,7 +137,7 @@ function mod.Create(slotFrame)
         -- colorize percent
         local r, g, b = ColorGradient(totalDurability / 100)
         local durabilityHex = format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
-        local textString = SDT:ColorText("Durability: ")..format("%s%s|r", durabilityHex, SDT:FormatPercent(totalDurability))
+        local textString = SDT:ColorText(L["Durability: "]) .. format("%s%s|r", durabilityHex, SDT:FormatPercent(totalDurability))
         text:SetText(textString)
 
         -- pulse if below threshold

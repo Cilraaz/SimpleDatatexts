@@ -2,6 +2,7 @@
 -- SpecSwitch datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 
 local mod = {}
 
@@ -65,8 +66,8 @@ local STARTER_ID              = Constants.TraitConsts.STARTER_BUILD_TRAIT_CONFIG
 ----------------------------------------------------
 -- File Locals
 ----------------------------------------------------
-local activeString = strjoin('', '|cff00FF00', _G.ACTIVE_PETS or "Active", '|r')
-local inactiveString = strjoin('', '|cffFF0000', _G.FACTION_INACTIVE or "Inactive", '|r')
+local activeString = strjoin('', '|cff00FF00', _G.ACTIVE_PETS or L["Active"], '|r')
+local inactiveString = strjoin('', '|cffFF0000', _G.FACTION_INACTIVE or L["Inactive"], '|r')
 
 ----------------------------------------------------
 -- Lists
@@ -77,7 +78,7 @@ local menuList = {
 }
 
 local specList = { { text = SPECIALIZATION, isTitle = true, notCheckable = true } }
-local loadoutList = { { text = "Loadouts", isTitle = true, notCheckable = true } }
+local loadoutList = { { text = L["Loadouts"], isTitle = true, notCheckable = true } }
 
 ----------------------------------------------------
 -- Helpers
@@ -100,7 +101,7 @@ local function EnsureTalentUI()
     local loaded, reason = UIParentLoadAddOn("Blizzard_PlayerSpells")
 
     if not loaded then
-        print("Failed to load Blizzard_PlayerSpells:", reason)
+        print(format(L["Failed to load Blizzard_PlayerSpells: %s"], tostring(reason)))
         return false
     end
 
@@ -186,7 +187,7 @@ function mod.Create(slotFrame)
         local specIndex = GetSpecialization()
         local info = specIndex and (select(1, GetSpecializationInfo(specIndex)) and { id = select(1, GetSpecializationInfo(specIndex)), icon = select(4, GetSpecializationInfo(specIndex)), name = select(2, GetSpecializationInfo(specIndex)) } or nil)
 
-        loadoutList = { { text = "Loadouts", isTitle = true, notCheckable = true } } -- recreate
+        loadoutList = { { text = L["Loadouts"], isTitle = true, notCheckable = true } } -- recreate
         if classTalentsAvailable and info and info.id then
             builds = GetConfigIDsBySpecID(info.id) or {}
             -- include starter if supported
@@ -197,7 +198,7 @@ function mod.Create(slotFrame)
             for idx, configID in ipairs(builds) do
                 if configID == STARTER_ID then
                     tinsert(loadoutList, {
-                        text = format('|cff%02x%02x%02x%s|r', BLUE_FONT_COLOR.r*255, BLUE_FONT_COLOR.g*255, BLUE_FONT_COLOR.b*255, "Starter Build"),
+                        text = format('|cff%02x%02x%02x%s|r', BLUE_FONT_COLOR.r*255, BLUE_FONT_COLOR.g*255, BLUE_FONT_COLOR.b*255, L["Starter Build"]),
                         checked = StarterChecked,
                         func = WrapMenuFunc(LoadoutFunc, menuFrame),
                         arg1 = STARTER_ID
@@ -272,7 +273,7 @@ function mod.Create(slotFrame)
                 end
             end
             if lootIcon then
-                display = format('%s: %s %s: %s', "Spec", specIcon .. " " .. infoName or UNKNOWN, LOOT, format('|T%s:%d:%d:0:0:64:64:4:60:4:60|t', lootIcon, mainIconSize, mainIconSize))
+                display = format('%s: %s %s: %s', L["Spec"], specIcon .. " " .. infoName or UNKNOWN, LOOT, format('|T%s:%d:%d:0:0:64:64:4:60:4:60|t', lootIcon, mainIconSize, mainIconSize))
             end
         end
 
@@ -320,7 +321,7 @@ function mod.Create(slotFrame)
         end
 
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine("Loadouts", 0.69, 0.31, 0.31)
+        GameTooltip:AddLine(L["Loadouts"], 0.69, 0.31, 0.31)
 
         BuildLoadoutList()
         for index, loadout in ipairs(loadoutList) do
@@ -348,10 +349,10 @@ function mod.Create(slotFrame)
         end
 
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine("|cffFFFFFFLeft Click:|r Change Talent Specialization")
-        GameTooltip:AddLine("|cffFFFFFFControl + Left Click:|r Change Loadout")
-        GameTooltip:AddLine("|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI")
-        GameTooltip:AddLine("|cffFFFFFFShift + Right Click:|r Change Loot Specialization")
+        GameTooltip:AddLine("|cffFFFFFF" .. L["Left Click: Change Talent Specialization"] .. "|r")
+        GameTooltip:AddLine("|cffFFFFFF" .. L["Control + Left Click: Change Loadout"] .. "|r")
+        GameTooltip:AddLine("|cffFFFFFF" .. L["Shift + Left Click: Show Talent Specialization UI"] .. "|r")
+        GameTooltip:AddLine("|cffFFFFFF" .. L["Shift + Right Click: Change Loot Specialization"] .. "|r")
         GameTooltip:Show()
     end)
 

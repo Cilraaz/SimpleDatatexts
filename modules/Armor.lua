@@ -2,6 +2,7 @@
 -- Armor datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 
 local mod = {}
 
@@ -75,7 +76,7 @@ function mod.Create(slotFrame)
         local anchor = SDT:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
-        GameTooltip:AddLine("Mitigation By Level: ")
+        GameTooltip:AddLine(L["Mitigation By Level:"])
         GameTooltip:AddLine(' ')
 
         -- Armor
@@ -83,7 +84,7 @@ function mod.Create(slotFrame)
         local upperLevel = UnitLevel("player") + 3
         for _ = 1, 4 do
             local armorReduction = C_PDI_GetArmorEffectiveness(currentArmor, upperLevel) * 100
-            GameTooltip:AddDoubleLine(format('Level %d', upperLevel), format("%.2f%%", armorReduction), 1, 1, 1)
+            GameTooltip:AddDoubleLine(format(L["Level %d"], upperLevel), format("%.2f%%", armorReduction), 1, 1, 1)
             upperLevel = upperLevel - 1
         end
         
@@ -91,7 +92,7 @@ function mod.Create(slotFrame)
 	    if targetLevel and targetLevel > 0 and (targetLevel > upperLevel + 3 or targetLevel < upperLevel) then
 		    local armorReduction = C_PDI_GetArmorEffectiveness(currentArmor, targetLevel) * 100
 		    GameTooltip:AddLine(' ')
-		    GameTooltip:AddDoubleLine("Target Mitigation", format("%.2f%%", armorReduction), 1, 1, 1)
+		    GameTooltip:AddDoubleLine(L["Target Mitigation"], format("%.2f%%", armorReduction), 1, 1, 1)
 	    end
 
         GameTooltip:Show()

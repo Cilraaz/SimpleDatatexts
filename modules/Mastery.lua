@@ -2,6 +2,7 @@
 -- Mastery datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 
 local mod = {}
 
@@ -27,7 +28,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateMastery()
         currentMastery = GetMasteryEffect() or 0
-        local textString = "Mastery: "..SDT:FormatPercent(currentMastery)
+        local textString = L["Mastery: "] .. SDT:FormatPercent(currentMastery)
         text:SetText(SDT:ColorText(textString))
     end
     f.Update = UpdateMastery

@@ -2,6 +2,7 @@
 -- Guild list datatext imported from Ara_Broker_Guild_Friends for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 local LDB = LibStub("LibDataBroker-1.1")
 
 local mod = {}
@@ -27,7 +28,7 @@ local ara = LDB:GetDataObjectByName("|cFFFFB366Ara|r Guild")
 ----------------------------------------------------
 function mod.Create(slotFrame)
     if not ara then
-        SDT.Print("Ara Guild LDB object not found! SDT Guild datatext disabled.")
+        SDT.Print(L["Ara Guild LDB object not found! SDT Guild datatext disabled."])
         return
     end
     local f = CreateFrame("Frame", nil, slotFrame)

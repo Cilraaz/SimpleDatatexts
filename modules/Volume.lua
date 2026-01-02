@@ -2,6 +2,7 @@
 -- Agility datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 
 local mod = {}
 
@@ -58,9 +59,9 @@ local AudioStreams = {
 local panelText
 local activeIndex = 1
 local activeStream = AudioStreams[activeIndex]
-local menu = {{ text = "Select Volume Stream", isTitle = true, notCheckable = true }}
-local toggleMenu = {{ text = "Toggle Volume Stream", isTitle = true, notCheckable = true }}
-local deviceMenu = {{ text = "Output Audio Device", isTitle = true, notCheckable = true }}
+local menu = {{ text = L["Select Volume Stream"], isTitle = true, notCheckable = true }}
+local toggleMenu = {{ text = L["Toggle Volume Stream"], isTitle = true, notCheckable = true }}
+local deviceMenu = {{ text = L["Output Audio Device"], isTitle = true, notCheckable = true }}
 
 ----------------------------------------------------
 -- Constants Locals
@@ -183,10 +184,10 @@ function mod.Create(slotFrame)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
 
-	    GameTooltip:AddLine("Active Output Audio Device", 1, 1, 1)
+	    GameTooltip:AddLine(L["Active Output Audio Device"], 1, 1, 1)
 	    GameTooltip:AddLine(Sound_GameSystem_GetOutputDriverNameByIndex(GetCVar('Sound_OutputDriverIndex')))
 	    GameTooltip:AddLine(' ')
-	    GameTooltip:AddLine("Volume Streams", 1, 1, 1)
+	    GameTooltip:AddLine(L["Volume Streams"], 1, 1, 1)
 
 	    for _, Stream in ipairs(AudioStreams) do
 		    GameTooltip:AddDoubleLine(Stream.Name, GetStreamString(Stream, true))
@@ -194,11 +195,11 @@ function mod.Create(slotFrame)
 
 	    GameTooltip:AddLine(' ')
 
-	    GameTooltip:AddLine("|cFFffffffLeft Click:|r Select Volume Stream")
-	    GameTooltip:AddLine("|cFFffffffMiddle Click:|r Toggle Mute Master Stream")
-	    GameTooltip:AddLine("|cFFffffffShift + Middle Click:|r Toggle Volume Stream")
-	    GameTooltip:AddLine("|cFFffffffShift + Left Click:|r Open System Audio Panel")
-	    GameTooltip:AddLine("|cFFffffffShift + Right Click:|r Select Output Audio Device")
+	    GameTooltip:AddLine("|cFFffffff" .. L["Left Click: Select Volume Stream"] .. "|r")
+	    GameTooltip:AddLine("|cFFffffff" .. L["Middle Click: Toggle Mute Master Stream"] .. "|r")
+	    GameTooltip:AddLine("|cFFffffff" .. L["Shift + Middle Click: Toggle Volume Stream"] .. "|r")
+	    GameTooltip:AddLine("|cFFffffff" .. L["Shift + Left Click: Open System Audio Panel"] .. "|r")
+	    GameTooltip:AddLine("|cFFffffff" .. L["Shift + Right Click: Select Output Audio Device"] .. "|r")
 
 	    GameTooltip:Show()
     end)

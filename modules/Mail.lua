@@ -2,6 +2,7 @@
 -- Mail datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 
 local mod = {}
 
@@ -32,7 +33,7 @@ function mod.Create(slotFrame)
     -- Event Handler
     ----------------------------------------------------
     local function OnEvent(self, event, ...)
-        local mailText = HasNewMail() and "New Mail" or "No Mail"
+        local mailText = HasNewMail() and L["New Mail"] or L["No Mail"]
         text:SetText(SDT:ColorText(mailText))
     end
 

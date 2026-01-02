@@ -2,6 +2,7 @@
 -- Haste datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 
 local mod = {}
 
@@ -51,7 +52,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateHaste()
         currentHaste = GetHaste() or 0
-        local textString = "Haste: "..SDT:FormatPercent(currentHaste)
+        local textString = L["Haste: "] .. SDT:FormatPercent(currentHaste)
         text:SetText(SDT:ColorText(textString))
     end
     f.Update = UpdateHaste

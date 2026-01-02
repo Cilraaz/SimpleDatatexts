@@ -2,6 +2,7 @@
 -- Bags datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 
 local mod = {}
 
@@ -90,7 +91,7 @@ function mod.Create(slotFrame)
             end
         end
 
-        local textString = "Bags: "..(totalNormal - freeNormal).."/"..totalNormal
+        local textString = L["Bags"] .. ": " .. (totalNormal - freeNormal) .. "/" .. totalNormal
         text:SetText(SDT:ColorText(textString))
     end
     f.Update = UpdateBags
@@ -123,7 +124,7 @@ function mod.Create(slotFrame)
         local anchor = SDT:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
-        GameTooltip:AddLine("Bags")
+        GameTooltip:AddLine(L["Bags"])
         GameTooltip:AddLine(" ")
 
         for i = 0, NUM_BAG_SLOTS do

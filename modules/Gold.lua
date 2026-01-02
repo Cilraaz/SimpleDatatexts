@@ -2,6 +2,7 @@
 -- Gold & Currency datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 
 local mod = {}
 
@@ -151,22 +152,22 @@ local function ShowTooltip(self)
     local anchor = SDT:FindBestAnchorPoint(self)
     tooltip:SetOwner(self, anchor)
     tooltip:ClearLines()
-    tooltip:AddLine("GOLD")
+    tooltip:AddLine(L["GOLD"])
     tooltip:AddLine(" ")
 
     -- Session info
-    tooltip:AddLine("Session:")
-    tooltip:AddDoubleLine("Earned:", FormatMoney(Profit), 1,1,1,1,1,1)
-    tooltip:AddDoubleLine("Spent:", FormatMoney(Spent), 1,1,1,1,1,1)
+    tooltip:AddLine(L["Session:"])
+    tooltip:AddDoubleLine(L["Earned:"], FormatMoney(Profit), 1,1,1,1,1,1)
+    tooltip:AddDoubleLine(L["Spent:"], FormatMoney(Spent), 1,1,1,1,1,1)
     if Spent ~= 0 then
         local gained = Profit > Spent
-        tooltip:AddDoubleLine(gained and "Profit:" or "Deficit:",
+        tooltip:AddDoubleLine(gained and L["Profit:"] or L["Deficit:"],
             FormatMoney(Profit-Spent),
             gained and 0 or 1, gained and 1 or 0, 0, 1,1,1)
     end
 
     tooltip:AddLine(" ")
-    tooltip:AddLine("Character:")
+    tooltip:AddLine(L["Character:"])
     sort(myGold, SortFunction)
     local total, limit = #myGold, nil
     local useLimit = limit and limit > 0
@@ -180,20 +181,20 @@ local function ShowTooltip(self)
     end
 
     tooltip:AddLine(" ")
-    tooltip:AddLine("Server:")
-    if totalAlliance > 0 then tooltip:AddDoubleLine("Alliance: ", FormatMoney(totalAlliance), 0, .376,1,1,1,1) end
-    if totalHorde > 0 then tooltip:AddDoubleLine("Horde: ", FormatMoney(totalHorde), 1, .2, .2, 1,1,1) end
+    tooltip:AddLine(L["Server:"])
+    if totalAlliance > 0 then tooltip:AddDoubleLine(L["Alliance:"], FormatMoney(totalAlliance), 0, .376,1,1,1,1) end
+    if totalHorde > 0 then tooltip:AddDoubleLine(L["Horde:"], FormatMoney(totalHorde), 1, .2, .2, 1,1,1) end
     tooltip:AddLine(" ")
-    tooltip:AddDoubleLine("Total: ", FormatMoney(totalGold), 1,1,1,1,1,1)
-    tooltip:AddDoubleLine("Warband: ", FormatMoney(warbandGold), 1,1,1,1,1,1)
+    tooltip:AddDoubleLine(L["Total:"], FormatMoney(totalGold), 1,1,1,1,1,1)
+    tooltip:AddDoubleLine(L["Warband:"], FormatMoney(warbandGold), 1,1,1,1,1,1)
     if C_WowTokenPublic_GetCurrentMarketPrice then
         tooltip:AddLine(" ")
-        tooltip:AddDoubleLine("WoW Token:", FormatMoney(C_WowTokenPublic_GetCurrentMarketPrice() or 0), 0,.8,1,1,1,1)
+        tooltip:AddDoubleLine(L["WoW Token:"], FormatMoney(C_WowTokenPublic_GetCurrentMarketPrice() or 0), 0,.8,1,1,1,1)
     end
     DisplayCurrencyInfo()
 
     tooltip:AddLine(" ")
-    tooltip:AddLine(strjoin('', '|cffaaaaaa', "Reset Session Data: Hold Ctrl + Right Click", '|r'))
+    tooltip:AddLine(strjoin('', '|cffaaaaaa', L["Reset Session Data: Hold Ctrl + Right Click"], '|r'))
     --tooltip:AddLine(strjoin('', '|cffaaaaaa', "Reset Character Data: Hold Shift + Right Click", '|r'))
     tooltip:Show()
 end

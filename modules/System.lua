@@ -2,6 +2,7 @@
 -- System datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 
 local mod = {}
 
@@ -42,9 +43,9 @@ local statusColors = {
 ----------------------------------------------------
 local function FormatMem(memory)
     if memory >= 1024 then
-        return format("%.2f mb", memory / 1024)
+        return format("%.2f %s", memory / 1024, L["MB_SUFFIX"])
     else
-        return format("%d kb", memory)
+        return format("%d %s", memory, L["KB_SUFFIX"])
     end
 end
 
@@ -70,11 +71,11 @@ function mod.OnEnter(self)
     local fps = floor(GetFramerate())
     local _, _, homePing, worldPing = GetNetStats()
 
-    GameTooltip:AddLine("SYSTEM")
+    GameTooltip:AddLine(L["SYSTEM"])
     GameTooltip:AddLine(" ")
-    GameTooltip:AddDoubleLine("FPS:", fps, .69, .31, .31, .84, .75, .65)
-    GameTooltip:AddDoubleLine("Home Latency:", homePing.." ms", .69, .31, .31, .84, .75, .65)
-    GameTooltip:AddDoubleLine("World Latency:", worldPing.." ms", .69, .31, .31, .84, .75, .65)
+    GameTooltip:AddDoubleLine(L["FPS:"], fps, .69, .31, .31, .84, .75, .65)
+    GameTooltip:AddDoubleLine(L["Home Latency:"], homePing .. " ms", .69, .31, .31, .84, .75, .65)
+    GameTooltip:AddDoubleLine(L["World Latency:"], worldPing .. " ms", .69, .31, .31, .84, .75, .65)
 
     -- Update memory & CPU usage
     UpdateAddOnMemoryUsage()
@@ -107,7 +108,7 @@ function mod.OnEnter(self)
     tsort(infoDisplay, function(a,b) return a.sort > b.sort end)
 
     -- Display addons
-    GameTooltip:AddDoubleLine("Total Memory:", FormatMem(totalMEM), .69, .31, .31, .84, .75, .65)
+    GameTooltip:AddDoubleLine(L["Total Memory:"], FormatMem(totalMEM), .69, .31, .31, .84, .75, .65)
     GameTooltip:AddLine(" ")
     for _, data in ipairs(infoDisplay) do
         local memStr = FormatMem(data.mem or 0)
@@ -122,7 +123,7 @@ function mod.OnEnter(self)
     end
 
     GameTooltip:AddLine(" ")
-    GameTooltip:AddLine("(Shift Click) Collect Garbage")
+    GameTooltip:AddLine(L["(Shift Click) Collect Garbage"])
     GameTooltip:Show()
 end
 
@@ -171,7 +172,7 @@ function mod.Create(slotFrame)
         local fps = floor(GetFramerate())
         local _, _, homePing, worldPing = GetNetStats()
         local latency = homePing
-        local textString = SDT:ColorText("FPS: ") .. StatusColor(fps) .. SDT:ColorText(" MS: ") .. StatusColor(nil, latency)
+        local textString = SDT:ColorText(L["FPS"] .. ": ") .. StatusColor(fps) .. SDT:ColorText(" " .. L["MS"] .. ": ") .. StatusColor(nil, latency)
         text:SetText(textString)
     end
 

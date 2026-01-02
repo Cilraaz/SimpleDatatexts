@@ -1,6 +1,7 @@
 -- modules/Currency.lua
 -- Backpack Currency datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local L = SDT.L
 local SDTC = SDT.cache
 
 local mod = {}
@@ -95,7 +96,7 @@ local function ShowTooltip(self)
     ------------------------------------------------
     -- HEADER: CURRENCIES
     ------------------------------------------------
-    tooltip:AddLine("CURRENCIES")
+    tooltip:AddLine(L["CURRENCIES"])
     tooltip:AddLine(" ")
 
     for i = 1, 3 do
@@ -113,7 +114,7 @@ local function ShowTooltip(self)
     -- HEADER: GOLD
     ------------------------------------------------
     tooltip:AddLine(" ")
-    tooltip:AddLine("GOLD")
+    tooltip:AddLine(L["GOLD"])
     tooltip:AddDoubleLine(UnitName("player"), FormatMoney(GetMoney()), 1,1,1, 1,1,1)
 
     tooltip:Show()

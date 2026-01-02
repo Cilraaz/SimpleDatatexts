@@ -1,0 +1,18 @@
+tag a6af69aa7ac5d306d8943dd4a8dc2a85dc5d40d0 12.0.0.25
+Author:	Cilraaz <cilraaz@gmail.com>
+Date:	Thu Jan 1 18:51:09 2026 -0500
+
+commit 0fee6cd113a8abc30dcb03e2a284ea4f2616b17f
+Author: Cilraaz <cilraaz@gmail.com>
+Date:   Thu Jan 1 18:49:47 2026 -0500
+
+    build(TOC): 12.0.0.25 release
+
+commit 18b4926190c75b2b1f8c823151c897e7fa0a32a3
+Author: Cilraaz <cilraaz@gmail.com>
+Date:   Thu Jan 1 18:48:36 2026 -0500
+
+    feat(Ara): Add "Guild:" and "Friends:" text options
+    
+    - Note: Guild name supercedes "Guild:"
+

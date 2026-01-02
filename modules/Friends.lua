@@ -2,6 +2,7 @@
 -- Friends list datatext imported from Ara_Broker_Guild_Friends for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 local LDB = LibStub("LibDataBroker-1.1")
 
 local mod = {}
@@ -22,7 +23,7 @@ local ara = LDB:GetDataObjectByName("|cFFFFB366Ara|r Friends")
 ----------------------------------------------------
 function mod.Create(slotFrame)
     if not ara then
-        SDT.Print("Ara Friends LDB object not found! SDT Friends datatext disabled.")
+        SDT.Print(L["Ara Friends LDB object not found! SDT Friends datatext disabled."])
         return
     end
     local f = CreateFrame("Frame", nil, slotFrame)

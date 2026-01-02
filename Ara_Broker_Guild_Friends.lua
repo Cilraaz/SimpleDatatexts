@@ -12,7 +12,9 @@ local f = CreateFrame( "Frame", "AraBrokerGuildFriends", UIParent)
 Mixin(f, BackdropTemplateMixin)
 f:Hide()
 local t = CreateFrame"Frame"
-local addonName, L = ...
+local addonName, _ = ...
+local L = SDT.L
+local ClassL = {}
 
 local defaultConfig = {
 	highlightOrder = true,
@@ -192,18 +194,18 @@ end
 local function UpdateGuildBlockText()
 	if IsInGuild() then
 		local guildName = config.showGuildName and GetGuildInfo("player") or ""
-		if guildName == "" and config.showGuildTag then guildName = "Guild" end
+		if guildName == "" and config.showGuildTag then guildName = L["Guild"] end
 		if guildName ~= "" then guildName = guildName .. ": " end
 		f.GuildBlock.text = (config.showGuildTotal and "%s%d/%d" or "%s%d"):format(guildName, #guildEntries, (GetNumGuildMembers()))
 	else
-		f.GuildBlock.text = "No Guild"
+		f.GuildBlock.text = L["No Guild"]
 	end
 	SDT:UpdateGuild()
 end
 
 local function UpdateFriendBlockText(updatePanel)
 	local totalRF, onlineRF = BNGetNumFriends()
-	local friendsTag = config.showFriendsTag and "Friends: " or ""
+	local friendsTag = config.showFriendsTag and L["Friends: "] or ""
 	f.FriendsBlock.text = (config.showFriendsTotal and "%s%d/%d" or "%s%d"):format( friendsTag, onlineFriends + onlineRF, totalFriends + totalRF )
 	SDT:UpdateFriends()
 	if updatePanel then f:BN_FRIEND_INFO_CHANGED() end
@@ -230,7 +232,7 @@ function f:FRIENDLIST_UPDATE()
 		else
 			status = ""
 		end
-		friendEntries[i] = new( L[class] or "", name or "", level or "", zone or UNKNOWN, note or "|cffffcc00-", status or "", "", "", i )
+		friendEntries[i] = new( ClassL[class] or "", name or "", level or "", zone or UNKNOWN, note or "|cffffcc00-", status or "", "", "", i )
 	end
 	UpdateFriendBlockText()
 	if not isGuild and f:IsShown() then UpdateTablet() end
@@ -255,7 +257,7 @@ function f:GUILD_ROSTER_UPDATE()
 			elseif status == 2 then status = CHAT_FLAG_DND
 			end
 		if(isMobile and not connected) then zone = REMOTE_CHAT; end;--They are mobile only.
-		guildEntries[#guildEntries+1] = new( L[class] or "", name or "", level or "", zone or UNKNOWN, notes, isMobile and "<Mobile>" or status or "", rankIndex or 0, rank or 0, i, isMobile )
+		guildEntries[#guildEntries+1] = new( ClassL[class] or "", name or "", level or "", zone or UNKNOWN, notes, isMobile and L["<Mobile>"] or status or "", rankIndex or 0, rank or 0, i, isMobile )
 	end end
 	UpdateGuildBlockText()
 	if isGuild and f:IsShown() then UpdateTablet() end
@@ -284,16 +286,16 @@ local function UpdateBlockHints()
 		if config.showBlockHints then
 			tip:SetOwner(f, "ANCHOR_NONE")
 			tip:SetPoint( f.isTop and "TOP" or "BOTTOM", f, f.isTop and "BOTTOM" or "TOP" )
-			tip:AddLine("Hints [|cffffffffBlock|r]")
-			if config.hbOpenPanel then tip:AddLine("|cffff8020Click|r to open panel.", 0.2, 1, 0.2) end
-			if config.hbConfig then tip:AddLine("|cffff8020RightClick|r to display config menu.", 0.2, 1, 0.2) end
+			tip:AddLine(L["Hints [|cffffffffBlock|r]"])
+			if config.hbOpenPanel then tip:AddLine(L["|cffff8020Click|r to open panel."], 0.2, 1, 0.2) end
+			if config.hbConfig then tip:AddLine(L["|cffff8020RightClick|r to display config menu."], 0.2, 1, 0.2) end
 			if not isGuild then
 				if config.hbAddFriend then
-					tip:AddLine("|cffff8020MiddleClick|r to add a friend.", 0.2, 1, 0.2)
-					tip:AddLine("|cffff8020Modifier+Click|r to add a friend.", 0.2, 1, 0.2)
+					tip:AddLine(L["|cffff8020MiddleClick|r to add a friend."], 0.2, 1, 0.2)
+					tip:AddLine(L["|cffff8020Modifier+Click|r to add a friend."], 0.2, 1, 0.2)
 				end
 			end
-			if config.hbToggleNotes then tip:AddLine("|cffff8020Button4|r to toggle notes.", 0.2, 1, 0.2) end
+			if config.hbToggleNotes then tip:AddLine(L["|cffff8020Button4|r to toggle notes."], 0.2, 1, 0.2) end
 			if tip:NumLines() > 1 then tip:Show() else tip:Hide() end
 		else
 			tip:Hide()
@@ -307,22 +309,22 @@ local function ShowHints(btn,config)
 		local showBelow = UIParent:GetHeight()/config.scale-f:GetTop() < f:GetBottom()
 		tip:SetOwner(f, "ANCHOR_NONE")
 		tip:SetPoint(showBelow and "TOP" or "BOTTOM", f, showBelow and "BOTTOM" or "TOP")
-		tip:AddLine"Hints"
-		if config.hWhisp then tip:AddLine("|cffff8020Click|r to whisper.", .2,1,.2) end
-		if config.hInvite and (not btn.presenceID or btn.sameRealm) then tip:AddLine("|cffff8020Alt+Click|r to invite.", .2,1,.2) end
-		if config.hQuery and not btn.presenceID then tip:AddLine("|cffff8020Shift+Click|r to query informations.", .2, 1, .2) end
-		if config.hNote and (not isGuild or CanEditPublicNote()) then tip:AddLine("|cffff8020Ctrl+Click|r to edit note.", .2, 1, .2) end
+		tip:AddLine(L["Hints"])
+		if config.hWhisp then tip:AddLine(L["|cffff8020Click|r to whisper."], .2,1,.2) end
+		if config.hInvite and (not btn.presenceID or btn.sameRealm) then tip:AddLine(L["|cffff8020Alt+Click|r to invite."], .2,1,.2) end
+		if config.hQuery and not btn.presenceID then tip:AddLine(L["|cffff8020Shift+Click|r to query informations."], .2, 1, .2) end
+		if config.hNote and (not isGuild or CanEditPublicNote()) then tip:AddLine(L["|cffff8020Ctrl+Click|r to edit note."], .2, 1, .2) end
 		if isGuild then
-			if config.hONote and CanEditOfficerNote() then tip:AddLine("|cffff8020Ctrl+RightClick|r to edit officer note.", .2, 1, .2) end
+			if config.hONote and CanEditOfficerNote() then tip:AddLine(L["|cffff8020Ctrl+RightClick|r to edit officer note."], .2, 1, .2) end
 		else
-			if config.hRemoveFriend then tip:AddLine("|cffff8020MiddleClick|r to remove friend.", .2, 1, .2) end
+			if config.hRemoveFriend then tip:AddLine(L["|cffff8020MiddleClick|r to remove friend."], .2, 1, .2) end
 		end
 		if not btn.presenceID then
-			if config.hOrderA then tip:AddLine("|cffff8020RightClick|r to sort main column.", .2, 1, .2) end
-			if config.hOrderB then tip:AddLine("|cffff8020Shift+RightClick|r to sort second column.", .2, 1, .2) end
-			if config.hOrderC then tip:AddLine("|cffff8020Alt+RightClick|r to sort third column.", .2, 1, .2) end
+			if config.hOrderA then tip:AddLine(L["|cffff8020RightClick|r to sort main column."], .2, 1, .2) end
+			if config.hOrderB then tip:AddLine(L["|cffff8020Shift+RightClick|r to sort second column."], .2, 1, .2) end
+			if config.hOrderC then tip:AddLine(L["|cffff8020Alt+RightClick|r to sort third column."], .2, 1, .2) end
 		end
-		if config.hResizeTip then tip:AddLine("|cffff8020Ctrl+MouseWheel|r to resize tooltip.", .2, 1, .2) end
+		if config.hResizeTip then tip:AddLine(L["|cffff8020Ctrl+MouseWheel|r to resize tooltip."], .2, 1, .2) end
 		if tip:NumLines() > 1 then tip:Show() end
 	end
 end
@@ -675,7 +677,7 @@ local function SetToastData( index, inGroup )
 			local r,g,b = unpack(colors.realm)
 			zone = ("%1$s |cff%3$.2x%4$.2x%5$.2x- %2$s"):format(zone, realm or UNKNOWN, r*255, g*255, b*255)
 		end
-		class = L[class]
+		class = ClassL[class]
 		if class and class~="" then
 			SetClassOrCheckIcon( toast.class, inGroup, toonName, class )
 			color = RAID_CLASS_COLORS[class]
@@ -690,7 +692,7 @@ local function SetToastData( index, inGroup )
 		toast.class:SetTexCoord( .2, .8, .2, .8 )
 		toast.name:SetTextColor( .8, .8, .8 )
 		toast.faction:SetTexture""
-		zone = "Mobile App"
+		zone = L["Mobile App"]
 		toast.zone:SetPoint("TOPLEFT", toast.name, "TOPRIGHT", GAP, 0)
 		toast.zone:SetTextColor( 1, .77, 0 )
 	elseif client == 5 or client == 8 then--Battle.net Desktop
@@ -699,9 +701,9 @@ local function SetToastData( index, inGroup )
 		toast.name:SetTextColor( .8, .8, .8 )
 		toast.faction:SetTexture""
 		if isOnline then
-			zone = "Desktop App"
+			zone = L["Desktop App"]
 		else
-			zone = "OFFLINE FAVORITE"
+			zone = L["OFFLINE FAVORITE"]
 			toast.class:SetTexture"Interface\\FriendsFrame\\StatusIcon-Offline"
 		end
 		toast.zone:SetPoint("TOPLEFT", toast.name, "TOPRIGHT", GAP, 0)
@@ -965,16 +967,16 @@ UpdateTablet = function()
 		local r, g, b = unpack(colors.motd)
 		local motdText = ("%%s:  |cff%.2x%.2x%.2x%%s"):format(r*255, g*255, b*255)
 		if isGuild then
-			SetButtonData( 0, nbTotalEntries>0 and motdText:format("MOTD", guildMOTD) or "     |cffff2020"..ERR_GUILD_PLAYER_NOT_IN_GUILD )
+			SetButtonData( 0, nbTotalEntries>0 and motdText:format(L["MOTD"], guildMOTD) or "     |cffff2020"..ERR_GUILD_PLAYER_NOT_IN_GUILD )
 			if nbTotalEntries>0 and canEditMOTD then motd:SetScript( "OnClick", EditMOTD ) end
 		else
 			if nbTotalEntries == 0 then
-				SetButtonData( 0, "     |cffff2020".."No friends online." )
+				SetButtonData( 0, "     |cffff2020"..L["No friends online."] )
 			elseif not BNConnected() then
 				motd.name:SetJustifyH"CENTER"
 				SetButtonData( 0, "|cffff2020"..BATTLENET_UNAVAILABLE )
 			else
-				SetButtonData( 0, motdText:format("Broadcast", select(4, BNGetInfo()) or "") )
+				SetButtonData( 0, motdText:format(L["Broadcast"], select(4, BNGetInfo()) or "") )
 				motd:SetScript("OnClick", EditBroadcast)
 			end
 		end
@@ -1126,7 +1128,7 @@ function f:SetupConfigMenu()
 		if not val or val<70 or val>200 then
 			baseScript = BasicScriptErrors:GetScript"OnHide"
 			BasicScriptErrors:SetScript("OnHide",Error_OnHide)
-			BasicScriptErrorsText:SetText"Invalid scale.\nShould be a number between 70 and 200%"
+			BasicScriptErrorsText:SetText(L["Invalid scale.\nShould be a number between 70 and 200%"])
 			return BasicScriptErrors:Show()
 		end
 		config.scale = val/100
@@ -1134,7 +1136,7 @@ function f:SetupConfigMenu()
 
 	StaticPopupDialogs.SET_ABGF_SCALE = {
 		preferredIndex = STATICPOPUP_NUMDIALOGS,
-		text = "Set a custom tooltip scale.\nEnter a value between 70 and 200 (%%).",
+		text = L["Set a custom tooltip scale.\nEnter a value between 70 and 200 (%%)."],
 		button1 = ACCEPT,
 		button2 = CANCEL,
 		hasEditBox = 1,
@@ -1151,65 +1153,65 @@ function f:SetupConfigMenu()
 	}
 
 	options = {
-		{ text = ("|cffffb366Ara|r Guild & Friends (%s)"):format( GetAddOnMetadata( addonName, "Version" ) ), isTitle = true },
-		{ text = "Show guild name", check = "showGuildName" },
-		{ text = "Show 'Guild' tag", check = "showGuildTag" },
-		{ text = "Show total number of guildmates", check = "showGuildTotal" },
-		{ text = "Show 'Friends' tag", check = "showFriendsTag" },
-		{ text = "Show total number of friends", check = "showFriendsTotal" },
-		{ text = "Show guild XP", check = "showGuildXP", submenu = {
-			{ text = "Show guild XP tooltip", check = "showGuildXPTooltip" },
+		{ text = format(L["|cffffb366Ara|r Guild & Friends (%s)"], GetAddOnMetadata( addonName, "Version" ) ), isTitle = true },
+		{ text = L["Show guild name"], check = "showGuildName" },
+		{ text = L["Show 'Guild' tag"], check = "showGuildTag" },
+		{ text = L["Show total number of guildmates"], check = "showGuildTotal" },
+		{ text = L["Show 'Friends' tag"], check = "showFriendsTag" },
+		{ text = L["Show total number of friends"], check = "showFriendsTotal" },
+		{ text = L["Show guild XP"], check = "showGuildXP", submenu = {
+			{ text = L["Show guild XP tooltip"], check = "showGuildXPTooltip" },
 		} },
-		{ text = "Show own broadcast", check = "showOwnBroadcast" },
-		{ text = "Show bnet friends broadcast", check = "enableBnetFriendsBroadcasts" },
-		{ text = "Show guild notes", check = "showGuildNotes" },
-		{ text = "Show friend notes", check = "showFriendNotes" },
-		{ text = "Show class icon when grouped", check = "showUngroupedClassIcon" },
-		{ text = "Highlight sorted column", check = "highlightOrder", submenu = {
-			{ text = "Simple", radio = "highlightMode", val = "simple" },
-			{ text = "Gradient", radio = "highlightMode", val = "gradientAZ" },
-			{ text = "Reverse gradient", radio = "highlightMode", val = "gradientZA" },
+		{ text = L["Show own broadcast"], check = "showOwnBroadcast" },
+		{ text = L["Show bnet friends broadcast"], check = "enableBnetFriendsBroadcasts" },
+		{ text = L["Show guild notes"], check = "showGuildNotes" },
+		{ text = L["Show friend notes"], check = "showFriendNotes" },
+		{ text = L["Show class icon when grouped"], check = "showUngroupedClassIcon" },
+		{ text = L["Highlight sorted column"], check = "highlightOrder", submenu = {
+			{ text = L["Simple"], radio = "highlightMode", val = "simple" },
+			{ text = L["Gradient"], radio = "highlightMode", val = "gradientAZ" },
+			{ text = L["Reverse gradient"], radio = "highlightMode", val = "gradientZA" },
 			} },
-		{ text = "Status as...", submenu = {
-			{ text = "Class colored text", radio = "statusMode", val = "classColored" },
-			{ text = "Custom colored text", radio = "statusMode", val = "customColored" },
-			{ text = "Icon", radio = "statusMode", val = "icon" },
+		{ text = L["Status as..."], submenu = {
+			{ text = L["Class colored text"], radio = "statusMode", val = "classColored" },
+			{ text = L["Custom colored text"], radio = "statusMode", val = "customColored" },
+			{ text = L["Icon"], radio = "statusMode", val = "icon" },
 		} },
-		{ text = "Real ID...", submenu = {
-			{ text = "Before nickname", radio = "realID", val = "before" },
-			{ text = "Instead of nickname", radio = "realID", val = "instead" },
-			{ text = "After nickname", radio = "realID", val = "after" },
-			{ text = "Don't show", radio = "realID", val = "none" }
+		{ text = L["Real ID..."], submenu = {
+			{ text = L["Before nickname"], radio = "realID", val = "before" },
+			{ text = L["Instead of nickname"], radio = "realID", val = "instead" },
+			{ text = L["After nickname"], radio = "realID", val = "after" },
+			{ text = L["Don't show"], radio = "realID", val = "none" }
 			} },
-		{ text = "Column alignments", submenu = {
-			{ text = "Name", submenu = "alignName" },
-			{ text = "Zone", submenu = "alignZone" },
-			{ text = "Notes",submenu = "alignNote" },
-			{ text = "Rank", submenu = "alignRank" },
+		{ text = L["Column alignments"], submenu = {
+			{ text = L["Name"], submenu = "alignName" },
+			{ text = L["Zone"], submenu = "alignZone" },
+			{ text = L["Notes"],submenu = "alignNote" },
+			{ text = L["Rank"], submenu = "alignRank" },
 		} },
-		{ text = "Tooltip Size", submenu = {
-			{ text =  "90%", radio = "scale", val = 0.9 },
-			{ text = "100%", radio = "scale", val = 1.0 },
-			{ text = "110%", radio = "scale", val = 1.1 },
-			{ text = "120%", radio = "scale", val = 1.2 },
-			{ text = "Custom...", radio="scaleX", func=function() StaticPopup_Show"SET_ABGF_SCALE" end }, } },
-		{ text = "Use TipTac skin (requires TipTac)", check = "useTipTacSkin" },
-		{ text = "Colors", submenu = {
-			{ text = "Background", color = "background" },
-			{ text = "Borders", color = "border" },
-			{ text = "Order highlight", color = "orderA" },
-			{ text = "Headers", color = "title" },
-			{ text = "MotD / broadcast", color = "motd" },
-			{ text = "Friendly zone", color = "friendlyZone" },
-			{ text = "Contested zone", color = "contestedZone" },
-			{ text = "Enemy zone", color = "enemyZone" },
-			{ text = "Notes", color = "note" },
-			{ text = "Officer notes", color = "officerNote" },
-			{ text = "Status", color = "status" },
-			{ text = "Ranks", color = "rank" },
-			{ text = "Friends broadcast", color = "broadcast" },
-			{ text = "Realms", color = "realm" },
-			{ text = "|cffaaaaffRestore default colors", func=
+		{ text = L["Tooltip Size"], submenu = {
+			{ text = L["90%"], radio = "scale", val = 0.9 },
+			{ text = L["100%"], radio = "scale", val = 1.0 },
+			{ text = L["110%"], radio = "scale", val = 1.1 },
+			{ text = L["120%"], radio = "scale", val = 1.2 },
+			{ text = L["Custom..."], radio="scaleX", func=function() StaticPopup_Show"SET_ABGF_SCALE" end }, } },
+		{ text = L["Use TipTac skin (requires TipTac)"], check = "useTipTacSkin" },
+		{ text = L["Colors"], submenu = {
+			{ text = L["Background"], color = "background" },
+			{ text = L["Borders"], color = "border" },
+			{ text = L["Order highlight"], color = "orderA" },
+			{ text = L["Headers"], color = "title" },
+			{ text = L["MotD / broadcast"], color = "motd" },
+			{ text = L["Friendly zone"], color = "friendlyZone" },
+			{ text = L["Contested zone"], color = "contestedZone" },
+			{ text = L["Enemy zone"], color = "enemyZone" },
+			{ text = L["Notes"], color = "note" },
+			{ text = L["Officer notes"], color = "officerNote" },
+			{ text = L["Status"], color = "status" },
+			{ text = L["Ranks"], color = "rank" },
+			{ text = L["Friends broadcast"], color = "broadcast" },
+			{ text = L["Realms"], color = "realm" },
+			{ text = L["|cffaaaaffRestore default colors"], func=
 				function()
 					for k, v in next, defaultConfig.colors do
 						local color = colors[k]
@@ -1218,23 +1220,23 @@ function f:SetupConfigMenu()
 					end
 				end }
 		} },
-		{ text = "Show Block Hints", check = "showBlockHints", submenu = {
-			{ text = "Open panel", check = "hbOpenPanel" },
-			{ text = "Config menu", check = "hbConfig" },
-			{ text = "Toggle notes", check = "hbToggleNotes" },
-			{ text = "Add a friend", check = "hbAddFriend" },
+		{ text = L["Show Block Hints"], check = "showBlockHints", submenu = {
+			{ text = L["Open panel"], check = "hbOpenPanel" },
+			{ text = L["Config menu"], check = "hbConfig" },
+			{ text = L["Toggle notes"], check = "hbToggleNotes" },
+			{ text = L["Add a friend"], check = "hbAddFriend" },
 		} },
-		{ text = "Show Hints", check = "hideHints", inv=true, submenu = {
-			{ text = "Whisper", check = "hWhisp" },
-			{ text = "Invite", check = "hInvite" },
-			{ text = "Query", check = "hQuery" },
-			{ text = "Edit note", check = "hNote" },
-			{ text = "Edit officer note", check = "hONote" },
-			{ text = "Sort main column", check = "hOrderA" },
-			{ text = "Sort second column", check = "hOrderB" },
-			{ text = "Sort third column", check = "hOrderC" },
-			{ text = "Resize tooltip", check = "hResizeTip" },
-			{ text = "Remove friend", check = "hRemoveFriend" },
+		{ text = L["Show Hints"], check = "hideHints", inv=true, submenu = {
+			{ text = L["Whisper"], check = "hWhisp" },
+			{ text = L["Invite"], check = "hInvite" },
+			{ text = L["Query"], check = "hQuery" },
+			{ text = L["Edit note"], check = "hNote" },
+			{ text = L["Edit officer note"], check = "hONote" },
+			{ text = L["Sort main column"], check = "hOrderA" },
+			{ text = L["Sort second column"], check = "hOrderB" },
+			{ text = L["Sort third column"], check = "hOrderC" },
+			{ text = L["Resize tooltip"], check = "hResizeTip" },
+			{ text = L["Remove friend"], check = "hRemoveFriend" },
 		} }
 	}
 	local aligns = { "LEFT", "CENTER", "RIGHT" }
@@ -1512,8 +1514,8 @@ function f:ADDON_LOADED( addon )
 	}
 	texOrder1:SetVertexColor(unpack(colors.orderA))
 
-	for eng, loc in next, LOCALIZED_CLASS_NAMES_MALE   do L[loc] = eng end
-	for eng, loc in next, LOCALIZED_CLASS_NAMES_FEMALE do L[loc] = eng end
+for eng, loc in next, LOCALIZED_CLASS_NAMES_MALE   do ClassL[loc] = eng end
+for eng, loc in next, LOCALIZED_CLASS_NAMES_FEMALE do ClassL[loc] = eng end
 
 	tip = GameTooltip
 	horde = UnitFactionGroup"player" == "Horde"

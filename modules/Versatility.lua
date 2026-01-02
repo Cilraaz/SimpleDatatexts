@@ -2,6 +2,7 @@
 -- Versatility datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local SDTC = SDT.cache
+local L = SDT.L
 
 local mod = {}
 
@@ -53,7 +54,7 @@ function mod.Create(slotFrame)
     local function UpdateVersatility()
         currentVers = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE)
         versReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN)
-        local textString = "Vers: "..SDT:FormatPercent(currentVers)
+        local textString = L["Vers: "] .. SDT:FormatPercent(currentVers)
         text:SetText(SDT:ColorText(textString))
     end
 
