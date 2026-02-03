@@ -26,6 +26,8 @@ local UIParent = UIParent
 -- Modules that have no settings panels
 SDT.excludedModules = {
     ["HidingBar1"] = true,
+    ["SDT Friends"] = true,
+    ["SDT Guild"] = true,
 }
 
 SDT.allowedLDBModules = {

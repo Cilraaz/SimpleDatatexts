@@ -1,5 +1,7 @@
 -- modules/Friends.lua
--- Friends list datatext imported from Ara_Broker_Guild_Friends for Simple DataTexts (SDT)
+-- Friends datatext for Simple DataTexts (SDT)
+-- Uses SDT_Social core for friends list tracking
+
 local SDT = SimpleDatatexts
 local L = SDT.L
 local LDB = LibStub("LibDataBroker-1.1")
@@ -13,10 +15,10 @@ local CreateFrame = CreateFrame
 local format      = string.format
 
 ----------------------------------------------------
--- LDB Object Local
+-- File Locals
 ----------------------------------------------------
-local ara = LDB:GetDataObjectByName("|cFFFFB366Ara|r Friends")
 local moduleName = "Friends"
+local ldbObject
 
 ----------------------------------------------------
 -- Module Config Settings
@@ -45,51 +47,113 @@ end
 SetupModuleConfig()
 
 ----------------------------------------------------
--- Module wrapper for SDT
+-- Module Creation
 ----------------------------------------------------
 function mod.Create(slotFrame)
-    if not ara then
-        SDT.Print(L["Ara Friends LDB object not found! SDT Friends datatext disabled."])
-        return
-    end
     local f = CreateFrame("Frame", nil, slotFrame)
     f:SetAllPoints(slotFrame)
 
-    local text = slotFrame.text
-    if not text then
-        text = slotFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-        text:SetPoint("CENTER")
-        slotFrame.text = text
+    local text = f:CreateFontString(nil, "OVERLAY")
+    text:SetPoint("CENTER")
+    text:SetJustifyH("CENTER")
+    text:SetJustifyV("MIDDLE")
+    f.text = text
+
+    -- Try to get LDB object, with retry logic
+    local function TryGetLDBObject()
+        ldbObject = LDB:GetDataObjectByName("SDT Friends")
+        return ldbObject ~= nil
+    end
+
+    -- If LDB object doesn't exist yet, wait for it
+    if not TryGetLDBObject() then
+        local retryFrame = CreateFrame("Frame")
+        local attempts = 0
+        retryFrame:SetScript("OnUpdate", function(self, elapsed)
+            attempts = attempts + 1
+            if TryGetLDBObject() or attempts > 100 then  -- Try for ~1.6 seconds
+                self:SetScript("OnUpdate", nil)
+                if ldbObject then
+                    f.Update()
+                else
+                    SDT.Print(L["Ara Friends LDB object not found! SDT Friends datatext disabled."] or "Friends LDB object not found!")
+                end
+            end
+        end)
     end
 
     ----------------------------------------------------
-    -- Update function simply reflects Ara's text
+    -- Update Function
     ----------------------------------------------------
     local function Update()
-        local txt = ara.text or ""
-        text:SetText(SDT:ColorModuleText(moduleName, txt))
-        SDT:ApplyModuleFont(moduleName, text)
+        if not ldbObject then return end
+
+        -- Apply font settings
+        local overrideFont = SDT:GetModuleSetting(moduleName, "overrideFont", false)
+        if overrideFont then
+            local font = SDT:GetModuleSetting(moduleName, "font", "Friz Quadrata TT")
+            local fontSize = SDT:GetModuleSetting(moduleName, "fontSize", 12)
+            local fontOutline = SDT:GetModuleSetting(moduleName, "fontOutline", "NONE")
+            local fontPath = SDT.LSM:Fetch("font", font)
+            if fontPath then
+                text:SetFont(fontPath, fontSize, fontOutline)
+            end
+        else
+            local globalFont = SDT.LSM:Fetch("font", SDT.db.profile.font)
+            if globalFont then
+                text:SetFont(globalFont, SDT.db.profile.fontSize, SDT.db.profile.fontOutline)
+            end
+        end
+
+        -- Get text from LDB object
+        local displayText = ldbObject.text or FRIENDS
+
+        -- Apply color and set text
+        text:SetText(SDT:ColorModuleText(moduleName, displayText))
     end
+
     f.Update = Update
-    SDT.friendFrame = f
 
     ----------------------------------------------------
-    -- Tooltip from Ara
+    -- Tooltip
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        if ara.OnEnter then ara.OnEnter(self) end
+        if ldbObject and ldbObject.OnEnter then
+            ldbObject.OnEnter(self)
+        elseif ldbObject and ldbObject.OnTooltipShow then
+            local anchor = SDT:FindBestAnchorPoint(self)
+            GameTooltip:SetOwner(self, anchor)
+            GameTooltip:ClearLines()
+            ldbObject.OnTooltipShow(GameTooltip)
+            GameTooltip:Show()
+        end
     end)
+
     slotFrame:SetScript("OnLeave", function(self)
-        if ara.OnLeave then ara.OnLeave(self) end
+        if ldbObject and ldbObject.OnLeave then
+            ldbObject.OnLeave(self)
+        end
+        GameTooltip:Hide()
     end)
 
     ----------------------------------------------------
-    -- Click from Ara
+    -- Click Handling
     ----------------------------------------------------
     slotFrame:RegisterForClicks("AnyUp")
     slotFrame:SetScript("OnClick", function(self, button)
-        if ara.OnClick then ara.OnClick(self, button) end
+        if ldbObject and ldbObject.OnClick then
+            ldbObject.OnClick(self, button)
+        end
+    end)
+
+    ----------------------------------------------------
+    -- LDB Callback for Updates
+    ----------------------------------------------------
+    LDB.RegisterCallback(f, "LibDataBroker_AttributeChanged", function(event, name, attr, value)
+        if name == "SDT Friends" and attr == "text" then
+            Update()
+        end
     end)
 
     Update()
@@ -98,17 +162,6 @@ function mod.Create(slotFrame)
 end
 
 ----------------------------------------------------
--- Update the frame when an Ara option changes
-----------------------------------------------------
-function SDT:UpdateFriends()
-    if self.friendFrame then
-        self.friendFrame:Update()
-    end
-end
-
-----------------------------------------------------
--- Register with SDT
+-- Register Module
 ----------------------------------------------------
 SDT:RegisterDataText(moduleName, mod)
-
-return mod

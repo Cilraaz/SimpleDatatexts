@@ -38,9 +38,10 @@ Database.lua
 Config.lua
 Utilities.lua
 UpdateTicker.lua
+Social.lua
 
 # Ara
-Ara_Broker_Guild_Friends.lua
+#Ara_Broker_Guild_Friends.lua
 
 # Datatext Modules
 modules/Agility.lua
