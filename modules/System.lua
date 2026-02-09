@@ -57,6 +57,19 @@ end
 SetupModuleConfig()
 
 ----------------------------------------------------
+-- Format CPU
+----------------------------------------------------
+local function FormatCpu(time)
+    if time >= 60000 then
+        return format("%.2f %s", time / 60000, L["MIN_SUFFIX"])
+    elseif time >= 1000 then
+        return format("%.2f %s", time / 1000, L["SEC_SUFFIX"])
+    else
+        return format("%d %s", time, L["MS_SUFFIX"])
+    end
+end
+
+----------------------------------------------------
 -- Format Memory
 ----------------------------------------------------
 local function FormatMem(memory)
@@ -162,7 +175,7 @@ function mod.OnEnter(self)
     SDT:AddTooltipLine(GameTooltip, 12, " ")
 
     if cachedData.cpuProfiling then
-        SDT:AddTooltipLine(GameTooltip, 12, L["Total CPU:"], FormatMem(cachedData.totalCPU), .69, .31, .31, .84, .75, .65)
+        SDT:AddTooltipLine(GameTooltip, 12, L["Total CPU:"], FormatCpu(cachedData.totalCPU), .69, .31, .31, .84, .75, .65)
         SDT:AddTooltipLine(GameTooltip, 12, " ")
         SDT:AddTooltipLine(GameTooltip, 12, L["Top Addons by CPU:"])
     else
@@ -177,7 +190,7 @@ function mod.OnEnter(self)
         if cachedData.cpuProfiling then
             SDT:AddTooltipLine(GameTooltip, 11, 
                 addon.title, 
-                FormatMem(addon.cpu) .. " / " .. FormatMem(addon.mem), 
+                FormatCpu(addon.cpu) .. " / " .. FormatMem(addon.mem), 
                 .84, .75, .65, .84, .75, .65
             )
         else
