@@ -221,6 +221,12 @@ L["Ara Friends LDB object not found! SDT Friends datatext disabled."] = "Ara Fri
 -- ----------------------------
 -- modules/Gold.lua
 -- ----------------------------
+L["Show Silver"] = "Show Silver"
+L["Show Copper"] = "Show Copper"
+L["Use Coin Icons"] = "Use Coin Icons"
+L["Display Quantities"] = "Display Quantities"
+L["Characters to Show"] = "Characters to Show"
+L["Servers to Show"] = "Servers to Show"
 L["Session:"] = "Session:"
 L["Earned:"] = "Earned:"
 L["Spent:"] = "Spent:"
@@ -228,6 +234,7 @@ L["Profit:"] = "Profit:"
 L["Deficit:"] = "Deficit:"
 L["Character:"] = "Character:"
 L["Server:"] = "Server:"
+L["Faction:"] = "Faction:"
 L["Alliance:"] = "Alliance:"
 L["Horde:"] = "Horde:"
 L["Total:"] = "Total:"
@@ -351,6 +358,9 @@ L["Str"] = "Str"
 -- ----------------------------
 L["MB_SUFFIX"] = "mb"
 L["KB_SUFFIX"] = "kb"
+L["MIN_SUFFIX"] = "min"
+L["SEC_SUFFIX"] = "sec"
+L["MS_SUFFIX"] = "ms"
 L["SYSTEM"] = "SYSTEM"
 L["FPS:"] = "FPS:"
 L["Home Latency:"] = "Home Latency:"
@@ -361,6 +371,8 @@ L["FPS"] = "FPS"
 L["MS"] = "MS"
 L["Top Addons by Memory:"] = "Top Addons by Memory:"
 L["Top Addons in Tooltip"] = "Top Addons in Tooltip"
+L["Total CPU:"] = "Total CPU:"
+L["Top Addons by CPU:"] = "Top Addons by CPU:"
 
 -- ----------------------------
 -- modules/Time.lua

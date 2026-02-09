@@ -53,7 +53,10 @@ local function SetupModuleConfig()
     SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Silver"], "showSilver", true)
     SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Copper"], "showCopper", true)
     SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Use Coin Icons"], "useCoinIcons", true)
+
+    SDT:AddModuleConfigSeparator(moduleName, L["Display Quantities"])
     SDT:AddModuleConfigSetting(moduleName, "range", L["Characters to Show"], "characterQty", 20, 1, 100, 1)
+    SDT:AddModuleConfigSetting(moduleName, "range", L["Servers to Show"], "serverQty", 20, 1, 100, 1)
 
     SDT:GlobalModuleSettings(moduleName)
 end
@@ -219,7 +222,7 @@ local function ShowGoldDeleteMenu(slotFrame)
     local characters = {}
     for realmName, realmData in pairs(SDT.db.global.gold or {}) do
         for charName, charData in pairs(realmData) do
-            table.insert(characters, {
+            tinsert(characters, {
                 name = charName,
                 realm = realmName,
                 faction = charData.faction,
@@ -229,7 +232,7 @@ local function ShowGoldDeleteMenu(slotFrame)
     end
     
     -- Sort by realm then name
-    table.sort(characters, function(a, b)
+    sort(characters, function(a, b)
         if a.realm == b.realm then
             return a.name < b.name
         end
@@ -582,6 +585,27 @@ local function ShowTooltip(self)
 
     SDT:AddTooltipLine(tooltip, 12, " ")
     SDT:AddTooltipLine(tooltip, 12, L["Server:"])
+    local serverGold = {}
+    for _, charData in pairs(myGold) do
+        if not serverGold[charData.realm] then
+            serverGold[charData.realm] = charData.amount
+        else
+            serverGold[charData.realm] = serverGold[charData.realm] + charData.amount
+        end
+    end
+    local sortedServerGold = {}
+    for realm, amount in pairs(serverGold) do
+        tinsert(sortedServerGold, {realm = realm, amount = amount})
+    end
+    sort(sortedServerGold, SortFunction)
+    local maxServers = SDT:GetModuleSetting(moduleName, "serverQty", 20)
+    for i = 1, math.min(maxServers, #sortedServerGold) do
+        local data = sortedServerGold[i]
+        SDT:AddTooltipLine(tooltip, 12, data.realm, FormatMoney(data.amount), 1,1,1,1,1,1)
+    end
+
+    SDT:AddTooltipLine(tooltip, 12, " ")
+    SDT:AddTooltipLine(tooltip, 12, L["Faction:"])
     if totalAlliance > 0 then
         SDT:AddTooltipLine(tooltip, 12, L["Alliance:"], FormatMoney(totalAlliance), 0, .376,1,1,1,1)
     end

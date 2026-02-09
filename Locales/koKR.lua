@@ -225,6 +225,12 @@ L["Ara Friends LDB object not found! SDT Friends datatext disabled."] = "Ara Fri
 -- ----------------------------
 -- modules/Gold.lua
 -- ----------------------------
+L["Show Silver"] = "은화 표시"
+L["Show Copper"] = "동화 표시"
+L["Use Coin Icons"] = "화폐 아이콘 사용"
+L["Display Quantities"] = "수량 표시"
+L["Characters to Show"] = "표시할 캐릭터"
+L["Servers to Show"] = "표시할 서버"
 L["Session:"] = "세션:"
 L["Earned:"] = "획득:"
 L["Spent:"] = "지출:"
@@ -232,6 +238,7 @@ L["Profit:"] = "수익:"
 L["Deficit:"] = "적자:"
 L["Character:"] = "캐릭터:"
 L["Server:"] = "서버:"
+L["Faction:"] = "진영:"
 L["Alliance:"] = "얼라이언스:"
 L["Horde:"] = "호드:"
 L["Total:"] = "총계:"
@@ -366,6 +373,8 @@ L["FPS"] = "FPS"
 L["MS"] = "MS"
 L["Top Addons by Memory:"] = "메모리 사용량 상위 애드온:"
 L["Top Addons in Tooltip"] = "툴팁에 상위 애드온 표시"
+L["Total CPU:"] = "총 CPU:"
+L["Top Addons by CPU:"] = "CPU 사용량 상위 애드온:"
 
 -- ----------------------------
 -- modules/Time.lua

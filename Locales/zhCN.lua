@@ -225,6 +225,12 @@ L["Ara Friends LDB object not found! SDT Friends datatext disabled."] = "未找�
 -- ----------------------------
 -- modules/Gold.lua
 -- ----------------------------
+L["Show Silver"] = "显示银币"
+L["Show Copper"] = "显示铜币"
+L["Use Coin Icons"] = "使用货币图标"
+L["Display Quantities"] = "显示数量"
+L["Characters to Show"] = "显示角色"
+L["Servers to Show"] = "显示服务器"
 L["Session:"] = "本次登录："
 L["Earned:"] = "获得："
 L["Spent:"] = "花费："
@@ -232,6 +238,7 @@ L["Profit:"] = "盈利："
 L["Deficit:"] = "亏损："
 L["Character:"] = "角色："
 L["Server:"] = "服务器："
+L["Faction:"] = "阵营："
 L["Alliance:"] = "联盟："
 L["Horde:"] = "部落："
 L["Total:"] = "总计："
@@ -366,6 +373,8 @@ L["FPS"] = "帧数"
 L["MS"] = "毫秒"
 L["Top Addons by Memory:"] = "内存占用最高的插件："
 L["Top Addons in Tooltip"] = "在提示框中显示占用最高的插件"
+L["Total CPU:"] = "总 CPU："
+L["Top Addons by CPU:"] = "按 CPU 排名前列的插件："
 
 -- ----------------------------
 -- modules/Time.lua

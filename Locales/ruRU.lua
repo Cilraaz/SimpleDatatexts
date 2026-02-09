@@ -225,6 +225,12 @@ L["Ara Friends LDB object not found! SDT Friends datatext disabled."] = "Объ�
 -- ----------------------------
 -- modules/Gold.lua
 -- ----------------------------
+L["Show Silver"] = "Показать серебро"
+L["Show Copper"] = "Показать медь"
+L["Use Coin Icons"] = "Использовать значки монет"
+L["Display Quantities"] = "Показать количество"
+L["Characters to Show"] = "Персонажи для показа"
+L["Servers to Show"] = "Серверы для показа"
 L["Session:"] = "Сессия:"
 L["Earned:"] = "Заработано:"
 L["Spent:"] = "Потрачено:"
@@ -232,6 +238,7 @@ L["Profit:"] = "Прибыль:"
 L["Deficit:"] = "Дефицит:"
 L["Character:"] = "Персонаж:"
 L["Server:"] = "Сервер:"
+L["Faction:"] = "Фракция:"
 L["Alliance:"] = "Альянс:"
 L["Horde:"] = "Орда:"
 L["Total:"] = "Итого:"
@@ -366,6 +373,8 @@ L["FPS"] = "FPS"
 L["MS"] = "мс"
 L["Top Addons by Memory:"] = "Топ аддонов по памяти:"
 L["Top Addons in Tooltip"] = "Лучшие аддоны в подсказке"
+L["Total CPU:"] = "Всего CPU:"
+L["Top Addons by CPU:"] = "Топ аддонов по CPU:"
 
 -- ----------------------------
 -- modules/Time.lua
