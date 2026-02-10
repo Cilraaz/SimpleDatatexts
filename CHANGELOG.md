@@ -1,4 +1,3 @@
 ## Changes
-- d6a004b build(TOC): 12.0.0.62 release
-- 3343ebb feat(Gold): Show per-server gold amounts
-- 022d4ae fix(System): Fix labels for CPU time when profiling CPU usage
+- 94e6c5c build(TOC): 12.0.0.63 release
+- 4f8310f build(TOC): Include TOC version 120001 for beta (and possibly patch 12.0.1?)
