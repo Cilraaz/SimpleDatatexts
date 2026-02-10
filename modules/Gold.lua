@@ -504,18 +504,25 @@ end
 local function UpdateGold(self)
     if not IsLoggedIn() then return end
 
+    -- Player info
     local playerName = SDT.cache.playerName
     local realmName = SDT.cache.playerRealmProper
     local faction = SDT.cache.playerFaction
-    SDT.db.global.gold[realmName] = SDT.db.global.gold[realmName] or {}
-    SDT.db.global.gold[realmName][playerName] = SDT.db.global.gold[realmName][playerName] or {}
-    SDT.db.global.gold[realmName][playerName].faction = faction
 
-    local oldMoney = SDT.db.global.gold[realmName][playerName].amount
-    local newMoney = GetMoney()
-    SDT.db.global.gold[realmName][playerName].amount = newMoney
+    -- Get previous gold amount
+    local oldMoney = 0
+    if SDT.db.global.gold[realmName] and SDT.db.global.gold[realmName][playerName] then
+        oldMoney = SDT.db.global.gold[realmName][playerName].amount or 0
+    end
 
-    local change = (oldMoney and (newMoney - oldMoney)) or 0
+    -- Update gold amount
+    SDT:UpdateGlobalGold()
+
+    -- Get new gold amount
+    local newMoney = SDT.db.global.gold[realmName][playerName].amount or 0
+
+    -- Calculate change
+    local change = newMoney - oldMoney
     if change ~= 0 then
         if change > 0 then
             Profit = Profit + change

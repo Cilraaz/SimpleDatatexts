@@ -485,3 +485,25 @@ function SDT:UpdateAllModules()
         end
     end
 end
+
+----------------------------------------------------
+-- Global Gold Tracking (runs regardless of module loading)
+----------------------------------------------------
+function SDT:UpdateGlobalGold()
+    if not IsLoggedIn() then return end
+    if not self.cache then return end
+    if not self.db.global.gold then return end
+    
+    local playerName = self.cache.playerName
+    local realmName = self.cache.playerRealmProper
+    local faction = self.cache.playerFaction
+    
+    -- Ensure the database structure exists
+    self.db.global.gold = self.db.global.gold or {}
+    self.db.global.gold[realmName] = self.db.global.gold[realmName] or {}
+    self.db.global.gold[realmName][playerName] = self.db.global.gold[realmName][playerName] or {}
+    
+    -- Update faction and gold amount
+    self.db.global.gold[realmName][playerName].faction = faction
+    self.db.global.gold[realmName][playerName].amount = GetMoney()
+end

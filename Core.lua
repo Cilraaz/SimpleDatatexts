@@ -209,6 +209,16 @@ function SDT:OnEnable()
     self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "SwitchToSpecProfile")
     self:SwitchToSpecProfile()
 
+    -- Update the global gold cache
+    self:RegisterEvent("PLAYER_MONEY", "UpdateGlobalGold")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD", "UpdateGlobalGold")
+    self:RegisterEvent("SEND_MAIL_MONEY_CHANGED", "UpdateGlobalGold")
+    self:RegisterEvent("SEND_MAIL_COD_CHANGED", "UpdateGlobalGold")
+    self:RegisterEvent("PLAYER_TRADE_MONEY", "UpdateGlobalGold")
+    self:RegisterEvent("TRADE_MONEY_CHANGED", "UpdateGlobalGold")
+    self:RegisterEvent("CURRENCY_DISPLAY_UPDATE", "UpdateGlobalGold")
+    self:UpdateGlobalGold()
+
     if SDT.db.profile.debugMode then
         C_Timer.After(1, function() self:ShowProfileData() end)
     end
