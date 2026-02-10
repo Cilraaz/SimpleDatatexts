@@ -24,6 +24,7 @@ local UnitXP          = UnitXP
 local UnitXPMax       = UnitXPMax
 local UnitLevel       = UnitLevel
 local GetBuildInfo    = GetBuildInfo
+local GetMaxLevelForPlayerExpansion = GetMaxLevelForPlayerExpansion
 
 ----------------------------------------------------
 -- Constants
@@ -191,7 +192,7 @@ function mod.Create(slotFrame)
     local function UpdateExperience()
         -- Check if player is max level
         local _, _, _, TOC = GetBuildInfo()
-        local isMaxLevel = TOC < 120001 and SDTC.playerLevel >= 80 or SDTC.playerLevel >= 90
+        local isMaxLevel = SDTC.playerLevel >= GetMaxLevelForPlayerExpansion()
         
         if isMaxLevel then
             text:SetText(SDT:ColorModuleText(moduleName, L["Max Level"]))
