@@ -30,10 +30,10 @@ local combatEndTime = nil
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
-    SDT:AddModuleConfigSetting(moduleName, "range", L["Display Duration"], "displayDuration", 10, 0, 60, 1)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "range", L["Display Duration"], "displayDuration", 10, 0, 60, 1)
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -91,8 +91,8 @@ function mod.Create(slotFrame)
             textString = L["Out of Combat"]
         end
         
-        text:SetText(SDT:ColorModuleText(moduleName, textString))
-        SDT:ApplyModuleFont(moduleName, text)
+        text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
 
     f.Update = UpdateDisplay
@@ -163,25 +163,25 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = SDT:FindBestAnchorPoint(self)
+        local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
         if not SDT.db.profile.hideModuleTitle then
-            SDT:AddTooltipHeader(GameTooltip, 14, L["Combat Timer"])
-            SDT:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Combat Timer"])
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
         end
 
         if InCombatLockdown() and combatStartTime then
             local elapsed = GetTime() - combatStartTime
-            SDT:AddTooltipLine(GameTooltip, 12, format("%s %s: %s", L["Current"], L["combat duration"], FormatTime(elapsed)))
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format("%s %s: %s", L["Current"], L["combat duration"], FormatTime(elapsed)))
         elseif lastCombatDuration then
-            SDT:AddTooltipLine(GameTooltip, 12, format("%s %s: %s", L["Last"], L["combat duration"], FormatTime(lastCombatDuration)))
-            SDT:AddTooltipLine(GameTooltip, 12, " ")
-            SDT:AddTooltipLine(GameTooltip, 12, format("|cff00FF00%s|r %s", L["Left-click"], L["to reset"]))
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format("%s %s: %s", L["Last"], L["combat duration"], FormatTime(lastCombatDuration)))
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format("|cff00FF00%s|r %s", L["Left-click"], L["to reset"]))
         else
-            SDT:AddTooltipLine(GameTooltip, 12, L["Currently out of combat"])
-            SDT:AddTooltipLine(GameTooltip, 12, " ")
-            SDT:AddTooltipLine(GameTooltip, 12, L["Enter combat to start tracking"])
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Currently out of combat"])
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Enter combat to start tracking"])
         end
 
         GameTooltip:Show()
@@ -199,6 +199,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

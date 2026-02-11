@@ -82,7 +82,7 @@ local defaultHearthstone = "random"
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -173,9 +173,9 @@ local function UpdateDisplay(slotFrame)
     -- Update cooldown text
     local cdText = GetCooldownText(hsID)
     if cdText ~= "" then
-        cooldownText:SetText(SDT:ColorModuleText(moduleName, cdText))
+        cooldownText:SetText(SDT.FormatUtils:ColorModuleText(moduleName, cdText))
         cooldownText:Show()
-        SDT:ApplyModuleFont(moduleName, cooldownText)
+        SDT.FontManager:ApplyModuleFont(moduleName, cooldownText)
     else
         cooldownText:Hide()
     end
@@ -188,46 +188,46 @@ end
 -- Tooltip Handler
 ----------------------------------------------------
 local function ShowTooltip(slotFrame)
-    local anchor = SDT:FindBestAnchorPoint(slotFrame)
+    local anchor = SDT.FormatUtils:FindBestAnchorPoint(slotFrame)
     GameTooltip:SetOwner(slotFrame, anchor)
     GameTooltip:ClearLines()
     
     if not SDT.db.profile.hideModuleTitle then
-        SDT:AddTooltipHeader(GameTooltip, 14, L["Hearthstone"])
-        SDT:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Hearthstone"])
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
     end
     
     local selectedHS = GetSelectedHearthstone()
     local hsID = selectedHS == "random" and "random" or tonumber(selectedHS)
     
     if hsID == "random" then
-        SDT:AddTooltipLine(GameTooltip, 12, L["Selected:"], L["Random"], 1, 1, 1, 0.5, 1, 0.5)
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Selected:"], L["Random"], 1, 1, 1, 0.5, 1, 0.5)
     else
         local itemName = GetItemInfo(hsID)
         if itemName then
-            SDT:AddTooltipLine(GameTooltip, 12, L["Selected:"], itemName, 1, 1, 1, 0.5, 1, 0.5)
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Selected:"], itemName, 1, 1, 1, 0.5, 1, 0.5)
         end
     end
     
     -- Show available hearthstones
     local available = GetAvailableHearthstones()
     if #available > 0 then
-        SDT:AddTooltipLine(GameTooltip, 12, " ")
-        SDT:AddTooltipLine(GameTooltip, 12, L["Available Hearthstones:"], nil, 0.69, 0.31, 0.31)
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Available Hearthstones:"], nil, 0.69, 0.31, 0.31)
         
         for _, hs in ipairs(available) do
             local itemName = GetItemInfo(hs.id)
             if itemName then
                 local _, _, _, _, icon = GetItemInfoInstant(hs.id)
                 local iconStr = string.format("|T%s:14:14:0:0:64:64:4:60:4:60|t", icon or "")
-                SDT:AddTooltipLine(GameTooltip, 12, iconStr .. " " .. itemName, nil, 1, 1, 1)
+                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, iconStr .. " " .. itemName, nil, 1, 1, 1)
             end
         end
     end
     
-    SDT:AddTooltipLine(GameTooltip, 12, " ")
-    SDT:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Left Click: Use Hearthstone"] .. "|r")
-    SDT:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Right Click: Select Hearthstone"] .. "|r")
+    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Left Click: Use Hearthstone"] .. "|r")
+    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Right Click: Select Hearthstone"] .. "|r")
     
     GameTooltip:Show()
 end
@@ -427,6 +427,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

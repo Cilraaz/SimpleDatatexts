@@ -85,11 +85,11 @@ end
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Short Label"], "showShortLabel", false)
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Hide Decimals"], "hideDecimals", false)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Short Label"], "showShortLabel", false)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Hide Decimals"], "hideDecimals", false)
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -156,11 +156,11 @@ function mod.Create(slotFrame)
         local durabilityHex = format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showShortLabel = SDT:GetModuleSetting(moduleName, "showShortLabel", false)
-        local labelString = (showLabel and SDT:ColorModuleText(moduleName, showShortLabel and L["Dur:"] or L["Durability:"]) or "")
+        local labelString = (showLabel and SDT.FormatUtils:ColorModuleText(moduleName, showShortLabel and L["Dur:"] or L["Durability:"]) or "")
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
-        local textString = format("%s%s%s|r", labelString.." ", durabilityHex, SDT:FormatPercent(totalDurability, hideDecimals, true))
+        local textString = format("%s%s%s|r", labelString.." ", durabilityHex, SDT.FormatUtils:FormatPercent(totalDurability, hideDecimals, true))
         text:SetText(textString)
-        SDT:ApplyModuleFont(moduleName, text)
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
 
         -- pulse if below threshold
         if totalDurability <= percThreshold then
@@ -197,12 +197,12 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = SDT:FindBestAnchorPoint(self)
+        local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
         if not SDT.db.profile.hideModuleTitle then
-            SDT:AddTooltipHeader(GameTooltip, 14, DURABILITY or moduleName)
-            SDT:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, DURABILITY or moduleName)
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
         end
 
         for slotIndex, perc in pairs(invDurability) do
@@ -210,13 +210,13 @@ function mod.Create(slotFrame)
             local link = GetInventoryItemLink("player", slotIndex) or UNKNOWN
             local colorR, colorG, colorB = ColorGradient((perc or 0) / 100)
             local left = format("|T%s:14:14:0:0:64:64:4:60:4:60|t %s", texture or "", link)
-            local right = SDT:FormatPercent(perc or 0, hideDecimals, true)
-            SDT:AddTooltipLine(GameTooltip, 12, left, right, 1, 1, 1, colorR, colorG, colorB)
+            local right = SDT.FormatUtils:FormatPercent(perc or 0, hideDecimals, true)
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, left, right, 1, 1, 1, colorR, colorG, colorB)
         end
 
         if totalRepairCost and totalRepairCost > 0 then
-            SDT:AddTooltipLine(GameTooltip, 12, " ")
-            SDT:AddTooltipLine(GameTooltip, 12, REPAIR_COST or "Repair Cost", GetCoinTextureString(totalRepairCost) or tostring(totalRepairCost), 0.6, 0.8, 1, 1, 1, 1)
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, REPAIR_COST or "Repair Cost", GetCoinTextureString(totalRepairCost) or tostring(totalRepairCost), 0.6, 0.8, 1, 1, 1, 1)
         end
 
         GameTooltip:Show()
@@ -245,6 +245,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

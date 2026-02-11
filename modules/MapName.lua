@@ -27,7 +27,7 @@ local moduleName = "Map Name"
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "select", L["Display Format"], "displayFormat", 1, {
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "select", L["Display Format"], "displayFormat", 1, {
         [1] = L["Zone Name"],
         [2] = L["Subzone Name"],
         [3] = L["Zone - Subzone"],
@@ -35,10 +35,10 @@ local function SetupModuleConfig()
         [5] = L["Minimap Zone"],
     })
 
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Zone on Tooltip"], "showZoneTooltip", true)
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Coordinates on Tooltip"], "showCoordinates", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Zone on Tooltip"], "showZoneTooltip", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Coordinates on Tooltip"], "showCoordinates", true)
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -102,8 +102,8 @@ function mod.Create(slotFrame)
             textString = minimapZone
         end
 
-        text:SetText(SDT:ColorModuleText(moduleName, textString))
-        SDT:ApplyModuleFont(moduleName, text)
+        text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
     f.Update = UpdateMapName
 
@@ -117,20 +117,20 @@ function mod.Create(slotFrame)
 
         if not showZoneTooltip then return end
 
-        local anchor = SDT:FindBestAnchorPoint(self)
+        local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
 
         if not SDT.db.profile.hideModuleTitle then
-            SDT:AddTooltipHeader(GameTooltip, 14, L["Map Name"])
-            SDT:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Map Name"])
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
         end
 
         -- Zone info
-        SDT:AddTooltipLine(GameTooltip, 12, L["Zone:"], currentZone, 1, 0.82, 0, 1, 1, 1)
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Zone:"], currentZone, 1, 0.82, 0, 1, 1, 1)
         
         if currentSubzone ~= "" and currentSubzone ~= currentZone then
-            SDT:AddTooltipLine(GameTooltip, 12, L["Subzone:"], currentSubzone, 1, 0.82, 0, 1, 1, 1)
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Subzone:"], currentSubzone, 1, 0.82, 0, 1, 1, 1)
         end
 
         -- Coordinates
@@ -142,7 +142,7 @@ function mod.Create(slotFrame)
                     local x, y = position:GetXY()
                     if x and y then
                         local coordString = string.format("%.1f, %.1f", x * 100, y * 100)
-                        SDT:AddTooltipLine(GameTooltip, 12, L["Coordinates:"], coordString, 1, 0.82, 0, 1, 1, 1)
+                        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Coordinates:"], coordString, 1, 0.82, 0, 1, 1, 1)
                     end
                 end
             end
@@ -181,6 +181,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

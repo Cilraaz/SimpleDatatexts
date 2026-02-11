@@ -33,9 +33,9 @@ local moduleName = "Armor"
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -62,8 +62,8 @@ function mod.Create(slotFrame)
         local _, currentArmor = UnitArmor("player")
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local textString = (showLabel and ARMOR..": " or "")..currentArmor
-        text:SetText(SDT:ColorModuleText(moduleName, textString))
-        SDT:ApplyModuleFont(moduleName, text)
+        text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
     f.Update = UpdateArmor
 
@@ -90,26 +90,26 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = SDT:FindBestAnchorPoint(self)
+        local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
-        SDT:AddTooltipHeader(GameTooltip, 14, L["Mitigation By Level:"])
-        SDT:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Mitigation By Level:"])
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
 
         -- Armor
         local _, currentArmor = UnitArmor("player")
         local upperLevel = UnitLevel("player") + 3
         for _ = 1, 4 do
             local armorReduction = C_PDI_GetArmorEffectiveness(currentArmor, upperLevel) * 100
-            SDT:AddTooltipLine(GameTooltip, 12, format(L["Level %d"], upperLevel), format("%.2f%%", armorReduction), 1, 1, 1, 0.1, 1, 0.1)
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format(L["Level %d"], upperLevel), format("%.2f%%", armorReduction), 1, 1, 1, 0.1, 1, 0.1)
             upperLevel = upperLevel - 1
         end
         
         local targetLevel = UnitLevel("target")
 	    if targetLevel and targetLevel > 0 and (targetLevel > upperLevel + 3 or targetLevel < upperLevel) then
 		    local armorReduction = C_PDI_GetArmorEffectiveness(currentArmor, targetLevel) * 100
-            SDT:AddTooltipLine(GameTooltip, 12, " ")
-		    SDT:AddTooltipLine(GameTooltip, 12, L["Target Mitigation"], format("%.2f%%", armorReduction), 1, 1, 1)
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+		    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Target Mitigation"], format("%.2f%%", armorReduction), 1, 1, 1)
 	    end
 
         GameTooltip:Show()
@@ -127,6 +127,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

@@ -35,14 +35,14 @@ local moduleName = "Currency"
 -- Helpers
 ----------------------------------------------------
 local function FormatMoney(copper, classColor)
-    local g = SDT:FormatLargeNumbers(floor(copper / 10000))
+    local g = SDT.FormatUtils:FormatLargeNumbers(floor(copper / 10000))
     local s = floor((copper % 10000) / 100)
     local c = copper % 100
 
     if classColor then
-        local goldPart   = SDT:ColorText(g) .. GOLD_ICON
-        local silverPart = SDT:ColorText(s) .. SILVER_ICON
-        local copperPart = SDT:ColorText(c) .. COPPER_ICON
+        local goldPart   = SDT.FormatUtils:ColorText(g) .. GOLD_ICON
+        local silverPart = SDT.FormatUtils:ColorText(s) .. SILVER_ICON
+        local copperPart = SDT.FormatUtils:ColorText(c) .. COPPER_ICON
         return goldPart .. " " .. silverPart .. " " .. copperPart
     else
         return format(
@@ -177,17 +177,17 @@ local goldText = "0"
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "range", L["Tracked Currency Qty"], "trackedQty", 3, 1, 8, 1)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "range", L["Tracked Currency Qty"], "trackedQty", 3, 1, 8, 1)
 
     -- Add separator for ordering section
-    SDT:AddModuleConfigSeparator(moduleName, L["Currency Display Order"])
+    SDT.ModuleRegistry:AddModuleConfigSeparator(moduleName, L["Currency Display Order"])
     
     -- Add 8 currency order dropdowns
     for i = 1, 8 do
-        SDT:AddModuleConfigSetting(moduleName, "currencyOrder", format(L["Position %d"], i), "currencyOrder" .. i, i)
+        SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "currencyOrder", format(L["Position %d"], i), "currencyOrder" .. i, i)
     end
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -205,7 +205,7 @@ local function UpdateDisplay(self)
     for i = 1, #orderedIndices do
         local info = C_CurrencyInfo_GetBackpackCurrencyInfo(orderedIndices[i])
         if info and info.quantity and info.iconFileID then
-            local formattedQty = SDT:FormatLargeNumbers(info.quantity)
+            local formattedQty = SDT.FormatUtils:FormatLargeNumbers(info.quantity)
             local icon = format(ICON_FMT, info.iconFileID)
             display = display == ""
                 and format("%s %s", icon, formattedQty)
@@ -219,8 +219,8 @@ local function UpdateDisplay(self)
     if display == "" then display = goldText end -- fallback
 
     if self.text then
-        self.text:SetText(SDT:ColorModuleText(moduleName, display))
-        SDT:ApplyModuleFont(moduleName, self.text)
+        self.text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, display))
+        SDT.FontManager:ApplyModuleFont(moduleName, self.text)
     end
 end
 
@@ -229,7 +229,7 @@ end
 ----------------------------------------------------
 local function ShowTooltip(self)
     local tooltip = GameTooltip
-    local anchor = SDT:FindBestAnchorPoint(self)
+    local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
     tooltip:SetOwner(self, anchor)
     tooltip:ClearLines()
 
@@ -237,8 +237,8 @@ local function ShowTooltip(self)
     -- HEADER: CURRENCIES
     ------------------------------------------------
     if not SDT.db.profile.hideModuleTitle then
-        SDT:AddTooltipHeader(tooltip, 14, L["CURRENCIES"])
-        SDT:AddTooltipLine(tooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipHeader(tooltip, 14, L["CURRENCIES"])
+        SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
     end
 
     -- Get ordered currency indices
@@ -247,9 +247,9 @@ local function ShowTooltip(self)
     for i = 1, #orderedIndices do
         local info = C_CurrencyInfo_GetBackpackCurrencyInfo(orderedIndices[i])
         if info and info.quantity and info.iconFileID then
-            SDT:AddTooltipLine(tooltip, 12, 
+            SDT.FormatUtils:AddTooltipLine(tooltip, 12, 
                 format("%s %s", format(ICON_FMT, info.iconFileID), info.name or "?"),
-                SDT:FormatLargeNumbers(info.quantity),
+                SDT.FormatUtils:FormatLargeNumbers(info.quantity),
                 1,1,1, 1,1,1
             )
         end
@@ -258,11 +258,11 @@ local function ShowTooltip(self)
     ------------------------------------------------
     -- HEADER: GOLD
     ------------------------------------------------
-    SDT:AddTooltipLine(tooltip, 12, " ")
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
     if not SDT.db.profile.hideModuleTitle then
-        SDT:AddTooltipHeader(tooltip, 14, L["GOLD"])
+        SDT.FormatUtils:AddTooltipHeader(tooltip, 14, L["GOLD"])
     end
-    SDT:AddTooltipLine(tooltip, 12, UnitName("player"), FormatMoney(GetMoney()), 1,1,1, 1,1,1)
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, UnitName("player"), FormatMoney(GetMoney()), 1,1,1, 1,1,1)
 
     tooltip:Show()
 end
@@ -327,6 +327,6 @@ end
 ----------------------------------------------------
 -- Register
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

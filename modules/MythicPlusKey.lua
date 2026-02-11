@@ -265,9 +265,9 @@ end
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -276,22 +276,22 @@ SetupModuleConfig()
 -- Tooltip Functions
 ----------------------------------------------------
 local function ShowTooltip(slotFrame, keystoneLevel, dungeonName)
-    local anchor = SDT:FindBestAnchorPoint(slotFrame)
+    local anchor = SDT.FormatUtils:FindBestAnchorPoint(slotFrame)
     GameTooltip:SetOwner(slotFrame, anchor)
     GameTooltip:ClearLines()
 
     if not SDT.db.profile.hideModuleTitle then
-        SDT:AddTooltipHeader(GameTooltip, 14, L["Mythic+ Keystone"])
-        SDT:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Mythic+ Keystone"])
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
     end
 
     if keystoneLevel and dungeonName then
-        SDT:AddTooltipLine(GameTooltip, 14, L["Current Key:"], format("+%d %s", keystoneLevel, dungeonName), 1, 0.82, 0, 1, 1, 1)
-        SDT:AddTooltipLine(GameTooltip, 12, " ")
-        SDT:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Left Click: Teleport to Dungeon"] .. "|r")
-        SDT:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Right Click: List Group in Finder"] .. "|r")
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 14, L["Current Key:"], format("+%d %s", keystoneLevel, dungeonName), 1, 0.82, 0, 1, 1, 1)
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Left Click: Teleport to Dungeon"] .. "|r")
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Right Click: List Group in Finder"] .. "|r")
     else
-        SDT:AddTooltipLine(GameTooltip, 14, L["No Mythic+ Keystone"], nil, 1, 0.82, 0)
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 14, L["No Mythic+ Keystone"], nil, 1, 0.82, 0)
     end
 
     GameTooltip:Show()
@@ -422,8 +422,8 @@ function mod.Create(slotFrame)
             displayText = showLabel and L["Key: "] .. L["None"] or L["No Key"]
         end
         
-        text:SetText(SDT:ColorModuleText(moduleName, displayText))
-        SDT:ApplyModuleFont(moduleName, text)
+        text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, displayText))
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
     f.Update = UpdateKeystone
 
@@ -487,6 +487,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

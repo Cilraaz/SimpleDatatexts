@@ -68,7 +68,7 @@ end
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -107,8 +107,8 @@ function mod.Create(slotFrame)
         else
             textString = NOT_APPLICABLE
         end
-        text:SetText(SDT:ColorModuleText(moduleName, textString))
-        SDT:ApplyModuleFont(moduleName, text)
+        text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
     f.Update = UpdateCoordinates
 
@@ -160,6 +160,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

@@ -31,9 +31,9 @@ local ara = LDB:GetDataObjectByName("|cFFFFB366Ara|r Guild")
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "range", L["Max Guild Name Length"], "maxGuildNameLength", 12, 1, 50, 1)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "range", L["Max Guild Name Length"], "maxGuildNameLength", 12, 1, 50, 1)
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -83,8 +83,8 @@ function mod.Create(slotFrame)
     local function Update()
         local txt = ara.text or ""
         txt = shortenText(txt)
-        text:SetText(SDT:ColorModuleText(moduleName, txt))
-        SDT:ApplyModuleFont(moduleName, text)
+        text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, txt))
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
     f.Update = Update
     SDT.guildFrame = f
@@ -125,6 +125,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

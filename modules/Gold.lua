@@ -50,15 +50,15 @@ local moduleName = "Gold"
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Silver"], "showSilver", true)
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Copper"], "showCopper", true)
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Use Coin Icons"], "useCoinIcons", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Silver"], "showSilver", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Copper"], "showCopper", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Use Coin Icons"], "useCoinIcons", true)
 
-    SDT:AddModuleConfigSeparator(moduleName, L["Display Quantities"])
-    SDT:AddModuleConfigSetting(moduleName, "range", L["Characters to Show"], "characterQty", 20, 1, 100, 1)
-    SDT:AddModuleConfigSetting(moduleName, "range", L["Servers to Show"], "serverQty", 20, 1, 100, 1)
+    SDT.ModuleRegistry:AddModuleConfigSeparator(moduleName, L["Display Quantities"])
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "range", L["Characters to Show"], "characterQty", 20, 1, 100, 1)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "range", L["Servers to Show"], "serverQty", 20, 1, 100, 1)
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -99,7 +99,7 @@ local function DisplayCurrencyInfo(tooltip)
     while info and info.name do
         if index == 1 then GameTooltip:AddLine(" ") end
         if (info.name ~= "Valorstones" or toc < 120001) and info.quantity then
-            GameTooltip:AddDoubleLine(format(iconStringName, info.iconFileID, info.name), SDT:FormatLargeNumbers(info.quantity), 1,1,1, 1,1,1)
+            GameTooltip:AddDoubleLine(format(iconStringName, info.iconFileID, info.name), SDT.FormatUtils:FormatLargeNumbers(info.quantity), 1,1,1, 1,1,1)
         end
         index = index + 1
         info, name = C_CurrencyInfo_GetBackpackCurrencyInfo(index)
@@ -110,13 +110,13 @@ local function FormatMoney(copper, customColor)
     local showCopper = SDT:GetModuleSetting(moduleName, "showCopper", true)
     local showSilver = SDT:GetModuleSetting(moduleName, "showSilver", true)
     local useCoinIcons = SDT:GetModuleSetting(moduleName, "useCoinIcons", true)
-    local g = SDT:FormatLargeNumbers(floor(copper / 10000))
+    local g = SDT.FormatUtils:FormatLargeNumbers(floor(copper / 10000))
     local s = floor((copper % 10000) / 100)
     local c = copper % 100
     if customColor then
-        local goldPart = SDT:ColorModuleText(moduleName, g) .. (useCoinIcons and GOLD_ICON or SDT:ColorModuleText(moduleName, "g"))
-        local silverPart = SDT:ColorModuleText(moduleName, s) .. (useCoinIcons and SILVER_ICON or SDT:ColorModuleText(moduleName, "s"))
-        local copperPart = SDT:ColorModuleText(moduleName, c) .. (useCoinIcons and COPPER_ICON or SDT:ColorModuleText(moduleName, "c"))
+        local goldPart = SDT.FormatUtils:ColorModuleText(moduleName, g) .. (useCoinIcons and GOLD_ICON or SDT.FormatUtils:ColorModuleText(moduleName, "g"))
+        local silverPart = SDT.FormatUtils:ColorModuleText(moduleName, s) .. (useCoinIcons and SILVER_ICON or SDT.FormatUtils:ColorModuleText(moduleName, "s"))
+        local copperPart = SDT.FormatUtils:ColorModuleText(moduleName, c) .. (useCoinIcons and COPPER_ICON or SDT.FormatUtils:ColorModuleText(moduleName, "c"))
         local retString = goldPart
         if showSilver then
             retString = retString .. " " .. silverPart
@@ -353,7 +353,7 @@ local function ShowGoldDeleteMenu(slotFrame)
         
         -- Gold amount (right-aligned)
         local gold = math.floor(goldAmount / 10000)
-        local goldText = SDT:FormatLargeNumbers(gold)
+        local goldText = SDT.FormatUtils:FormatLargeNumbers(gold)
         local goldDisplay = btn:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
         goldDisplay:SetPoint("RIGHT", btn, "RIGHT", -5, 0)
         goldDisplay:SetText(string.format("|cFFFFD700%sg|r", goldText))
@@ -546,7 +546,7 @@ local function UpdateGold(self)
     -- Update displayed text
     if self.text then
         self.text:SetText(FormatMoney(newMoney, true))
-        SDT:ApplyModuleFont(moduleName, self.text)
+        SDT.FontManager:ApplyModuleFont(moduleName, self.text)
     end
 end
 
@@ -555,28 +555,28 @@ end
 ----------------------------------------------------
 local function ShowTooltip(self)
     local tooltip = GameTooltip
-    local anchor = SDT:FindBestAnchorPoint(self)
+    local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
     tooltip:SetOwner(self, anchor)
     tooltip:ClearLines()
     if not SDT.db.profile.hideModuleTitle then
-        SDT:AddTooltipHeader(tooltip, 14, L["GOLD"])
-        SDT:AddTooltipLine(tooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipHeader(tooltip, 14, L["GOLD"])
+        SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
     end
 
     -- Session info
-    SDT:AddTooltipLine(tooltip, 12, L["Session:"])
-    SDT:AddTooltipLine(tooltip, 12, L["Earned:"], FormatMoney(Profit), 1,1,1,1,1,1)
-    SDT:AddTooltipLine(tooltip, 12, L["Spent:"], FormatMoney(Spent), 1,1,1,1,1,1)
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Session:"])
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Earned:"], FormatMoney(Profit), 1,1,1,1,1,1)
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Spent:"], FormatMoney(Spent), 1,1,1,1,1,1)
     if Spent ~= 0 then
         local gained = Profit > Spent
-        SDT:AddTooltipLine(tooltip, 12, 
+        SDT.FormatUtils:AddTooltipLine(tooltip, 12, 
             gained and L["Profit:"] or L["Deficit:"],
             FormatMoney(Profit-Spent),
             gained and 0 or 1, gained and 1 or 0, 0, 1,1,1)
     end
 
-    SDT:AddTooltipLine(tooltip, 12, " ")
-    SDT:AddTooltipLine(tooltip, 12, L["Character:"])
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Character:"])
     sort(myGold, SortFunction)
     local total = #myGold
     local maxChars = SDT:GetModuleSetting(moduleName, "characterQty", 20)
@@ -586,12 +586,12 @@ local function ShowTooltip(self)
         if g.faction and g.faction ~= 'Neutral' and g.faction ~= '' then
             toonName = format('|TInterface\\FriendsFrame\\PlusManz-%s:14|t ', g.faction) .. toonName
         end
-        SDT:AddTooltipLine(tooltip, 12, (g.name == _G.UnitName("player") and toonName..' |TInterface\\COMMON\\Indicator-Green:14|t' or toonName),
+        SDT.FormatUtils:AddTooltipLine(tooltip, 12, (g.name == _G.UnitName("player") and toonName..' |TInterface\\COMMON\\Indicator-Green:14|t' or toonName),
             g.amountText, g.r, g.g, g.b, 1,1,1)
     end
 
-    SDT:AddTooltipLine(tooltip, 12, " ")
-    SDT:AddTooltipLine(tooltip, 12, L["Server:"])
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Server:"])
     local serverGold = {}
     for _, charData in pairs(myGold) do
         if not serverGold[charData.realm] then
@@ -608,29 +608,29 @@ local function ShowTooltip(self)
     local maxServers = SDT:GetModuleSetting(moduleName, "serverQty", 20)
     for i = 1, math.min(maxServers, #sortedServerGold) do
         local data = sortedServerGold[i]
-        SDT:AddTooltipLine(tooltip, 12, data.realm, FormatMoney(data.amount), 1,1,1,1,1,1)
+        SDT.FormatUtils:AddTooltipLine(tooltip, 12, data.realm, FormatMoney(data.amount), 1,1,1,1,1,1)
     end
 
-    SDT:AddTooltipLine(tooltip, 12, " ")
-    SDT:AddTooltipLine(tooltip, 12, L["Faction:"])
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Faction:"])
     if totalAlliance > 0 then
-        SDT:AddTooltipLine(tooltip, 12, L["Alliance:"], FormatMoney(totalAlliance), 0, .376,1,1,1,1)
+        SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Alliance:"], FormatMoney(totalAlliance), 0, .376,1,1,1,1)
     end
     if totalHorde > 0 then
-        SDT:AddTooltipLine(tooltip, 12, L["Horde:"], FormatMoney(totalHorde), 1, .2, .2, 1,1,1)
+        SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Horde:"], FormatMoney(totalHorde), 1, .2, .2, 1,1,1)
     end
-    SDT:AddTooltipLine(tooltip, 12, " ")
-    SDT:AddTooltipLine(tooltip, 12, L["Total:"], FormatMoney(totalGold), 1,1,1,1,1,1)
-    SDT:AddTooltipLine(tooltip, 12, L["Warband:"], FormatMoney(warbandGold), 1,1,1,1,1,1)
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Total:"], FormatMoney(totalGold), 1,1,1,1,1,1)
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Warband:"], FormatMoney(warbandGold), 1,1,1,1,1,1)
     if C_WowTokenPublic_GetCurrentMarketPrice then
-        SDT:AddTooltipLine(tooltip, 12, " ")
-        SDT:AddTooltipLine(tooltip, 12, L["WoW Token:"], FormatMoney(C_WowTokenPublic_GetCurrentMarketPrice() or 0), 0,.8,1,1,1,1)
+        SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["WoW Token:"], FormatMoney(C_WowTokenPublic_GetCurrentMarketPrice() or 0), 0,.8,1,1,1,1)
     end
     DisplayCurrencyInfo()
 
-    SDT:AddTooltipLine(tooltip, 12, " ")
-    SDT:AddTooltipLine(tooltip, 12, "|cffaaaaaa" .. L["Reset Session Data:"], L["Hold Shift + Right Click"] .. "|r")
-    SDT:AddTooltipLine(tooltip, 12, "|cffaaaaaa" .. L["Reset Character Gold Data:"], L["Hold Alt + Right Click"] .. "|r")
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, "|cffaaaaaa" .. L["Reset Session Data:"], L["Hold Shift + Right Click"] .. "|r")
+    SDT.FormatUtils:AddTooltipLine(tooltip, 12, "|cffaaaaaa" .. L["Reset Character Gold Data:"], L["Hold Alt + Right Click"] .. "|r")
     tooltip:Show()
 end
 
@@ -707,6 +707,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

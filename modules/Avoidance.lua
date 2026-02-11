@@ -34,10 +34,10 @@ local moduleName = "Avoidance"
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Hide Decimals"], "hideDecimals", false)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Hide Decimals"], "hideDecimals", false)
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -68,9 +68,9 @@ function mod.Create(slotFrame)
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
-        local textString = (showLabel and STAT_AVOIDANCE..": " or "") .. SDT:FormatPercent(avoidancePercent, hideDecimals)
-        text:SetText(SDT:ColorModuleText(moduleName, textString))
-        SDT:ApplyModuleFont(moduleName, text)
+        local textString = (showLabel and STAT_AVOIDANCE..": " or "") .. SDT.FormatUtils:FormatPercent(avoidancePercent, hideDecimals)
+        text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
 
     f.Update = UpdateAvoidance
@@ -98,16 +98,16 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = SDT:FindBestAnchorPoint(self)
+        local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
 
         local text = format('%s: |cffFFFFFF%.2f%%|r', STAT_AVOIDANCE, avoidancePercent)
         local tooltip = format(CR_AVOIDANCE_TOOLTIP, avoidanceRating, avoidancePercent)
 
-        SDT:AddTooltipHeader(GameTooltip, 14, text)
-        SDT:AddTooltipLine(GameTooltip, 12, " ")
-        SDT:AddTooltipLine(GameTooltip, 12, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
+        SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, text)
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
 
         GameTooltip:Show()
     end)
@@ -123,6 +123,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

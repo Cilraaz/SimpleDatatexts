@@ -41,9 +41,9 @@ local moduleName = "Spell Power"
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -83,8 +83,8 @@ function mod.Create(slotFrame)
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local textString = (showLabel and ITEM_MOD_SPELL_POWER_SHORT..": " or "") .. spellPower
-        text:SetText(SDT:ColorModuleText(moduleName, textString))
-        SDT:ApplyModuleFont(moduleName, text)
+        text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
 
     f.Update = UpdateSpellPower
@@ -112,21 +112,21 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = SDT:FindBestAnchorPoint(self)
+        local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
 
         local text = format('%s: |cffFFFFFF%d|r', ITEM_MOD_SPELL_POWER_SHORT, maxSpellPower)
-        SDT:AddTooltipHeader(GameTooltip, 14, text)
-        SDT:AddTooltipLine(GameTooltip, 12, " ")
-        SDT:AddTooltipLine(GameTooltip, 12, STAT_SPELLPOWER_TOOLTIP, nil, nil, nil, nil, nil, nil, nil, true)
-        SDT:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, text)
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, STAT_SPELLPOWER_TOOLTIP, nil, nil, nil, nil, nil, nil, nil, true)
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
         
         -- Show spell power for each school
         for i = 2, MAX_SPELL_SCHOOLS do
             local power = GetSpellBonusDamage(i)
             local schoolName = SPELL_SCHOOL_NAMES[i-1] or "Unknown"
-            SDT:AddTooltipLine(GameTooltip, 12, schoolName, power, 1, 1, 1)
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, schoolName, power, 1, 1, 1)
         end
 
         GameTooltip:Show()
@@ -143,6 +143,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

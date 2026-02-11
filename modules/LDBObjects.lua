@@ -54,9 +54,9 @@ local function HandleLDBObject(name, obj)
     ----------------------------------------------------
     local function SetupModuleConfig()
         if modulesWithSettings[moduleName] then
-            SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
+            SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
 
-            SDT:GlobalModuleSettings(moduleName)
+            SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
         end
     end
 
@@ -96,8 +96,8 @@ local function HandleLDBObject(name, obj)
             else
                 txt = cleanObjText or cleanName or L["NO TEXT"]
             end
-            text:SetText(SDT:ColorModuleText(moduleName, txt))
-            SDT:ApplyModuleFont(moduleName, text)
+            text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, txt))
+            SDT.FontManager:ApplyModuleFont(moduleName, text)
         end
         f.Update = Update
         SDT.LDBDatatexts[cleanName] = f
@@ -108,7 +108,7 @@ local function HandleLDBObject(name, obj)
         slotFrame:EnableMouse(true)
         slotFrame:SetScript("OnEnter", function(self)
             if obj.OnTooltipShow then
-                local anchor = SDT:FindBestAnchorPoint(self)
+                local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
                 GameTooltip:SetOwner(self, anchor)
                 GameTooltip:ClearLines()
                 obj.OnTooltipShow(GameTooltip)
@@ -138,7 +138,7 @@ local function HandleLDBObject(name, obj)
     ----------------------------------------------------
     -- Register with SDT
     ----------------------------------------------------
-    SDT:RegisterDataText("LDB: " .. cleanName, mod)
+    SDT.ModuleRegistry:RegisterDatatext("LDB: " .. cleanName, mod)
 
     return mod
 end
@@ -156,7 +156,7 @@ LDB:RegisterCallback("LibDataBroker_DataObjectCreated", function(_, name, obj)
     HandleLDBObject(name, obj)
     tinsert(SDT.cache.moduleNames, cleanName)
     tsort(SDT.cache.moduleNames)
-    SDT:RebuildAllSlots()
+    SDT.BarManager:RebuildAllSlots()
 end)
 
 LDB:RegisterCallback("LibDataBroker_AttributeChanged", function(_, name, attr, val)

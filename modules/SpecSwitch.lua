@@ -84,14 +84,14 @@ local loadoutList = { { text = L["Loadouts"], isTitle = true, notCheckable = tru
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", "Show Label", "showLabel", true)
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Specialization Icon"], "showSpecIcon", true)
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Specialization Text"], "showSpecText", true)
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Loot Specialization Icon"], "showLootSpecIcon", true)
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Loot Specialization Text"], "showLootSpecText", true)
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Loadout"], "showLoadout", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", "Show Label", "showLabel", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Specialization Icon"], "showSpecIcon", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Specialization Text"], "showSpecText", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Loot Specialization Icon"], "showLootSpecIcon", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Loot Specialization Text"], "showLootSpecText", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Loadout"], "showLoadout", true)
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -256,14 +256,14 @@ function mod.Create(slotFrame)
         local specIndex = GetSpecialization()
         if not specIndex then
             text:SetText("|cff9d9d9d?") -- can't determine spec yet
-            SDT:ApplyModuleFont(moduleName, text)
+            SDT.FontManager:ApplyModuleFont(moduleName, text)
             return
         end
 
         local infoID, infoName, _, infoIcon = GetSpecializationInfo(specIndex)
         if not infoID then
             text:SetText("|cff9d9d9d?") -- can't determine spec yet
-            SDT:ApplyModuleFont(moduleName, text)
+            SDT.FontManager:ApplyModuleFont(moduleName, text)
             return
         end
 
@@ -326,8 +326,8 @@ function mod.Create(slotFrame)
         end
 
         local display = table.concat(displayParts, " / ")
-        text:SetText(SDT:ColorModuleText(moduleName, display))
-        SDT:ApplyModuleFont(moduleName, text)
+        text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, display))
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
 
     f.Update = UpdateDisplay
@@ -337,21 +337,21 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, SDT:FindBestAnchorPoint(self))
+        GameTooltip:SetOwner(self, SDT.FormatUtils:FindBestAnchorPoint(self))
         GameTooltip:ClearLines()
         if not SDT.db.profile.hideModuleTitle then
-            SDT:AddTooltipHeader(GameTooltip, 14, SPECIALIZATION)
-            SDT:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, SPECIALIZATION)
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
         end
 
         for i = 1, GetNumSpecializations() or 0 do
             local id, name, _, icon = GetSpecializationInfo(i)
             if id and name then
-                SDT:AddTooltipLine(GameTooltip, 12, strjoin(' ', SDT:ColorModuleText(moduleName, name), AddTexture(icon), (i == activeSpecIndex and activeString or inactiveString)), nil, 1, 1, 1)
+                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, strjoin(' ', SDT.FormatUtils:ColorModuleText(moduleName, name), AddTexture(icon), (i == activeSpecIndex and activeString or inactiveString)), nil, 1, 1, 1)
             end
         end
 
-        SDT:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
 
         local specLoot = GetLootSpecialization()
         local sameSpec = (specLoot == 0) and GetSpecialization()
@@ -360,46 +360,46 @@ function mod.Create(slotFrame)
             local id, name, _, icon = GetSpecializationInfo((specIndex ~= 0 and specIndex) or GetSpecialization())
             if name then
                 if specLoot == 0 then
-                    SDT:AddTooltipLine(GameTooltip, 12, format('|cffFFFFFF%s:|r %s', SELECT_LOOT_SPECIALIZATION, format(LOOT_SPECIALIZATION_DEFAULT, name)))
+                    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format('|cffFFFFFF%s:|r %s', SELECT_LOOT_SPECIALIZATION, format(LOOT_SPECIALIZATION_DEFAULT, name)))
                 else
-                    SDT:AddTooltipLine(GameTooltip, 12, format('|cffFFFFFF%s:|r %s', SELECT_LOOT_SPECIALIZATION, name))
+                    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format('|cffFFFFFF%s:|r %s', SELECT_LOOT_SPECIALIZATION, name))
                 end
             end
         end
 
-        SDT:AddTooltipLine(GameTooltip, 12, " ")
-        SDT:AddTooltipLine(GameTooltip, 12, L["Loadouts"], nil, 0.69, 0.31, 0.31)
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Loadouts"], nil, 0.69, 0.31, 0.31)
 
         BuildLoadoutList()
         for index, loadout in ipairs(loadoutList) do
             if index > 1 then
                 local textStr = (type(loadout.checked) == "function" and loadout.checked(loadout) and activeString) or inactiveString
-                SDT:AddTooltipLine(GameTooltip, 12, strjoin(' - ', loadout.text, textStr), nil, 1, 1, 1)
+                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, strjoin(' - ', loadout.text, textStr), nil, 1, 1, 1)
             end
         end
 
         if C_SpecializationInfo_GetAllSelectedPvpTalentIDs then
             local pvpTalents = C_SpecializationInfo_GetAllSelectedPvpTalentIDs()
             if pvpTalents and next(pvpTalents) then
-                SDT:AddTooltipLine(GameTooltip, 12, " ")
-                SDT:AddTooltipLine(GameTooltip, 12, PVP_TALENTS, nil, 0.69, 0.31, 0.31)
+                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, PVP_TALENTS, nil, 0.69, 0.31, 0.31)
                 local i = 0
                 for _, talentID in next, pvpTalents do
                     i = i + 1
                     if i > 4 then break end
                     local name, _, icon, _, _, _, unlocked = GetPvpTalentInfoByID and GetPvpTalentInfoByID(talentID) or nil
                     if name and unlocked then
-                        SDT:AddTooltipLine(GameTooltip, 12, AddTexture(icon) .. ' ' .. name)
+                        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, AddTexture(icon) .. ' ' .. name)
                     end
                 end
             end
         end
 
-        SDT:AddTooltipLine(GameTooltip, 12, " ")
-        SDT:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Left Click: Change Talent Specialization"] .. "|r")
-        SDT:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Control + Left Click: Change Loadout"] .. "|r")
-        SDT:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Shift + Left Click: Show Talent Specialization UI"] .. "|r")
-        SDT:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Shift + Right Click: Change Loot Specialization"] .. "|r")
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Left Click: Change Talent Specialization"] .. "|r")
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Control + Left Click: Change Loadout"] .. "|r")
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Shift + Left Click: Show Talent Specialization UI"] .. "|r")
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Shift + Right Click: Change Loot Specialization"] .. "|r")
         GameTooltip:Show()
     end)
 
@@ -470,6 +470,6 @@ function mod.Create(slotFrame)
 end
 
 -- Register with SDT
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

@@ -41,25 +41,25 @@ local moduleName = "Experience"
 ----------------------------------------------------
 local function SetupModuleConfig()
     -- Format dropdown
-    SDT:AddModuleConfigSetting(moduleName, "select", L["Display Format"], "expFormat", 1, {
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "select", L["Display Format"], "expFormat", 1, {
         [1] = "XP / Max",
         [2] = "XP / Max (Percent)",
         [3] = "XP / Max (Percent) (Remaining)"
     })
 
     -- Bar Toggles
-    SDT:AddModuleConfigSeparator(moduleName, L["Bar Toggles"])
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Graphical Bar"], "expShowGraphicalBar", true)
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Hide Blizzard XP Bar"], "expHideBlizzardBar", false)
+    SDT.ModuleRegistry:AddModuleConfigSeparator(moduleName, L["Bar Toggles"])
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Graphical Bar"], "expShowGraphicalBar", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Hide Blizzard XP Bar"], "expHideBlizzardBar", false)
 
     -- Bar Appearance Settings
-    SDT:AddModuleConfigSeparator(moduleName, L["Bar Appearance"])
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Bar Use Class Color"], "expBarUseClassColor", true)
-    SDT:AddModuleConfigSetting(moduleName, "color", L["Bar Custom Color"], "expBarColor", "#4080FF")
-    SDT:AddModuleConfigSetting(moduleName, "range", L["Bar Height (%)"], "expBarHeightPercent", 100, 10, 100, 5)
-    SDT:AddModuleConfigSetting(moduleName, "statusbar", L["Bar Texture"], "expBarTexture", "Blizzard")
+    SDT.ModuleRegistry:AddModuleConfigSeparator(moduleName, L["Bar Appearance"])
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Bar Use Class Color"], "expBarUseClassColor", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "color", L["Bar Custom Color"], "expBarColor", "#4080FF")
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "range", L["Bar Height (%)"], "expBarHeightPercent", 100, 10, 100, 5)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "statusbar", L["Bar Texture"], "expBarTexture", "Blizzard")
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -195,8 +195,8 @@ function mod.Create(slotFrame)
         local isMaxLevel = SDTC.playerLevel >= GetMaxLevelForPlayerExpansion()
         
         if isMaxLevel then
-            text:SetText(SDT:ColorModuleText(moduleName, L["Max Level"]))
-            SDT:ApplyModuleFont(moduleName, text)
+            text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, L["Max Level"]))
+            SDT.FontManager:ApplyModuleFont(moduleName, text)
             if barFrame then barFrame:Hide() end
             return
         end
@@ -205,8 +205,8 @@ function mod.Create(slotFrame)
         maxXP = UnitXPMax("player")
 
         if maxXP <= 0 then
-            text:SetText(SDT:ColorModuleText(moduleName, L["N/A"]))
-            SDT:ApplyModuleFont(moduleName, text)
+            text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, L["N/A"]))
+            SDT.FontManager:ApplyModuleFont(moduleName, text)
             if barFrame then barFrame:Hide() end
             return
         end
@@ -279,12 +279,12 @@ function mod.Create(slotFrame)
             end
 
             -- Update font size from settings
-            SDT:ApplyModuleFont(moduleName, barText)
+            SDT.FontManager:ApplyModuleFont(moduleName, barText)
         elseif barFrame then
             barFrame:Hide()
         end
 
-        local textOutput = SDT:ColorModuleText(moduleName, textString)
+        local textOutput = SDT.FormatUtils:ColorModuleText(moduleName, textString)
         if showingBar then
             text:SetText("")
             barText:SetText(textOutput)
@@ -294,7 +294,7 @@ function mod.Create(slotFrame)
         end
 
         -- Apply Module Font
-        SDT:ApplyModuleFont(moduleName, text)
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
 
         -- Hide Blizzard XP bar
         if SDT:GetModuleSetting(moduleName, "expHideBlizzardBar", false) then
@@ -337,29 +337,29 @@ function mod.Create(slotFrame)
         
         if isMaxLevel then return end
 
-        local anchor = SDT:FindBestAnchorPoint(self)
+        local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
         if not SDT.db.profile.hideModuleTitle then
-            SDT:AddTooltipHeader(GameTooltip, 14, L["Experience"])
-            SDT:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Experience"])
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
         end
 
         local level = UnitLevel("player")
-        SDT:AddTooltipLine(GameTooltip, 12, format(L["Level %d"], SDTC.playerLevel), 1, 1, 1)
-        SDT:AddTooltipLine(GameTooltip, 12,
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format(L["Level %d"], SDTC.playerLevel), 1, 1, 1)
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12,
             "Progress:",
             format("%s / %s", 
                 FormatValue(currentXP), 
                 FormatValue(maxXP)),
             1, 0.82, 0, 1, 1, 1
         )
-        SDT:AddTooltipLine(GameTooltip, 12,
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12,
             "Remaining:",
             FormatValue(maxXP - currentXP),
             1, 0.82, 0, 1, 1, 1
         )
-        SDT:AddTooltipLine(GameTooltip, 12,
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12,
             "Percentage:",
             format("%.2f%%", xpPercent),
             1, 0.82, 0, 1, 1, 1
@@ -380,6 +380,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

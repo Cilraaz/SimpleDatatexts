@@ -24,14 +24,6 @@ local function GetBorderList()
     return borders
 end
 
-local function GetFontList()
-    local fonts = {}
-    for _, fontName in ipairs(SDT.LSM:List("font")) do
-        fonts[fontName] = fontName
-    end
-    return fonts
-end
-
 local function GetBarList()
     local bars = {}
     for barName, barData in pairs(SDT.db.profile.bars) do
@@ -146,7 +138,7 @@ function SDT:GetProfileOptions()
             set = function(_, val)
                 self.db.char.useSpecProfiles = val
                 if val then
-                    self:SwitchToSpecProfile()
+                    self.ProfileManager:SwitchToSpecProfile()
                 end
             end,
             order = 42,
@@ -253,7 +245,7 @@ function SDT:GetGeneralOptions()
                 get = function() return self.db.profile.hideModuleTitle end,
                 set = function(_, val)
                     self.db.profile.hideModuleTitle = val
-                    self:UpdateAllModules()
+                    self.ModuleRegistry:UpdateAllModules()
                 end,
                 order = 5,
             },
@@ -263,7 +255,7 @@ function SDT:GetGeneralOptions()
                 get = function() return self.db.profile.use24HourClock end,
                 set = function(_, val)
                     self.db.profile.use24HourClock = val
-                    self:UpdateAllModules()
+                    self.ModuleRegistry:UpdateAllModules()
                 end,
                 order = 6,
             },
@@ -281,7 +273,7 @@ function SDT:GetGeneralOptions()
                     if val then
                         self.db.profile.useCustomColor = false
                     end
-                    self:UpdateAllModules()
+                    self.ModuleRegistry:UpdateAllModules()
                 end,
                 order = 11,
             },
@@ -294,7 +286,7 @@ function SDT:GetGeneralOptions()
                     if val then
                         self.db.profile.useClassColor = false
                     end
-                    self:UpdateAllModules()
+                    self.ModuleRegistry:UpdateAllModules()
                 end,
                 order = 12,
             },
@@ -311,7 +303,7 @@ function SDT:GetGeneralOptions()
                 end,
                 set = function(_, r, g, b)
                     self.db.profile.customColorHex = format("#%02X%02X%02X", r*255, g*255, b*255)
-                    self:UpdateAllModules()
+                    self.ModuleRegistry:UpdateAllModules()
                 end,
                 order = 13,
             },
@@ -323,13 +315,12 @@ function SDT:GetGeneralOptions()
             font = {
                 type = "select",
                 name = L["Display Font:"],
-                --values = GetFontList,
                 dialogControl = "LSM30_Font",
                 values = function() return SDT.LSM:HashTable("font") end,
                 get = function() return self.db.profile.font end,
                 set = function(_, val)
                     self.db.profile.font = val
-                    self:ApplyFont()
+                    self.FontManager:ApplyFont()
                 end,
                 order = 21,
             },
@@ -342,7 +333,7 @@ function SDT:GetGeneralOptions()
                 get = function() return self.db.profile.fontSize end,
                 set = function(_, val)
                     self.db.profile.fontSize = val
-                    self:ApplyFont()
+                    self.FontManager:ApplyFont()
                 end,
                 order = 22,
             },
@@ -360,7 +351,7 @@ function SDT:GetGeneralOptions()
                 get = function() return self.db.profile.fontOutline end,
                 set = function(_, val)
                     self.db.profile.fontOutline = val
-                    self:ApplyFont()
+                    self.FontManager:ApplyFont()
                 end,
                 order = 23,
             },
@@ -381,11 +372,11 @@ function SDT:GetPanelOptions()
                 type = "execute",
                 name = L["Create New Panel"],
                 func = function()
-                    local id = self:NextBarID()
+                    local id = self.BarManager:GetNextBarID()
                     local name = "SDT_Bar" .. id
                     self.db.profile.bars[name] = CopyTable(self.db.profile.bars['*'])
                     self.db.profile.bars[name].name = name
-                    self:CreateDataBar(id, 3)
+                    self.BarManager:CreateDataBar(id, 3)
                     LibStub("AceConfigRegistry-3.0"):NotifyChange("SimpleDatatexts")
                 end,
                 order = 1,
@@ -456,7 +447,7 @@ function SDT:GetPanelOptions()
                         set = function(_, val)
                             if self.selectedBar then
                                 self.db.profile.bars[self.selectedBar].width = val
-                                self:RebuildSlots(self.bars[self.selectedBar])
+                                self.BarManager:RebuildSlots(self.bars[self.selectedBar])
                             end
                         end,
                         order = 11,
@@ -474,7 +465,7 @@ function SDT:GetPanelOptions()
                         set = function(_, val)
                             if self.selectedBar then
                                 self.db.profile.bars[self.selectedBar].height = val
-                                self:RebuildSlots(self.bars[self.selectedBar])
+                                self.BarManager:RebuildSlots(self.bars[self.selectedBar])
                             end
                         end,
                         order = 12,
@@ -525,7 +516,7 @@ function SDT:GetPanelOptions()
                                     -- Set strata on the panel frame
                                     self.bars[self.selectedBar]:SetFrameStrata(val)
                                     -- Also update all slot/module strata to be relative
-                                    self:UpdateAllModuleStrata()
+                                    self.ModuleRegistry:UpdateAllModuleStrata()
                                 end
                             end
                         end,
@@ -644,7 +635,7 @@ function SDT:GetPanelOptions()
                             if self.selectedBar then
                                 local oldValue = self.db.profile.bars[self.selectedBar].numSlots
                                 self.db.profile.bars[self.selectedBar].numSlots = val
-                                self:RebuildSlots(self.bars[self.selectedBar])
+                                self.BarManager:RebuildSlots(self.bars[self.selectedBar])
 
                                 if oldValue ~= val then
                                     self.needsSlotRebuild = true
@@ -733,7 +724,7 @@ function SDT:GetSlotArgs()
                         offsetY = offsetY,
                     }
                 end
-                self:RebuildSlots(self.bars[self.selectedBar])
+                self.BarManager:RebuildSlots(self.bars[self.selectedBar])
             end,
             order = i * 10,
         }
@@ -768,7 +759,7 @@ function SDT:GetSlotArgs()
                 elseif type(slotData) == "table" then
                     slotData.offsetX = val
                 end
-                self:RebuildSlots(self.bars[self.selectedBar])
+                self.BarManager:RebuildSlots(self.bars[self.selectedBar])
             end,
             order = i * 10 + 1,
         }
@@ -803,7 +794,7 @@ function SDT:GetSlotArgs()
                 elseif type(slotData) == "table" then
                     slotData.offsetY = val
                 end
-                self:RebuildSlots(self.bars[self.selectedBar])
+                self.BarManager:RebuildSlots(self.bars[self.selectedBar])
             end,
             order = i * 10 + 2,
         }
@@ -838,7 +829,7 @@ function SDT:BuildModuleArgs()
     local args = {}
     
     for _, moduleName in ipairs(self.cache.moduleNames) do
-        if not self:ExcludedModule(moduleName) then
+        if not self.ModuleRegistry:ExcludedModule(moduleName) then
             args[moduleName] = {
                 type = "group",
                 name = moduleName,
@@ -878,7 +869,7 @@ function SDT:ConvertSettingToArg(moduleName, setting, order)
             get = function() return self:GetModuleSetting(moduleName, setting.settingKey, setting.defaultValue) end,
             set = function(_, val)
                 self:SetModuleSetting(moduleName, setting.settingKey, val)
-                self:UpdateAllModules()
+                self.ModuleRegistry:UpdateAllModules()
             end,
             order = order,
         }
@@ -890,7 +881,7 @@ function SDT:ConvertSettingToArg(moduleName, setting, order)
             get = function() return self:GetModuleSetting(moduleName, setting.settingKey, setting.defaultValue) end,
             set = function(_, val)
                 self:SetModuleSetting(moduleName, setting.settingKey, val)
-                self:UpdateAllModules()
+                self.ModuleRegistry:UpdateAllModules()
             end,
             order = order,
         }
@@ -904,7 +895,7 @@ function SDT:ConvertSettingToArg(moduleName, setting, order)
             get = function() return self:GetModuleSetting(moduleName, setting.settingKey, setting.defaultValue) end,
             set = function(_, val)
                 self:SetModuleSetting(moduleName, setting.settingKey, val)
-                self:UpdateAllModules()
+                self.ModuleRegistry:UpdateAllModules()
             end,
             order = order,
         }
@@ -924,7 +915,7 @@ function SDT:ConvertSettingToArg(moduleName, setting, order)
             set = function(_, r, g, b)
                 local hexColor = string.format("#%02X%02X%02X", r*255, g*255, b*255)
                 self:SetModuleSetting(moduleName, setting.settingKey, hexColor)
-                self:UpdateAllModules()
+                self.ModuleRegistry:UpdateAllModules()
             end,
             order = order,
         }
@@ -937,7 +928,7 @@ function SDT:ConvertSettingToArg(moduleName, setting, order)
             get = function() return self:GetModuleSetting(moduleName, setting.settingKey, setting.defaultValue) end,
             set = function(_, val)
                 self:SetModuleSetting(moduleName, setting.settingKey, val)
-                self:UpdateAllModules()
+                self.ModuleRegistry:UpdateAllModules()
             end,
             disabled = function()
                 -- Disable font settings if override is not enabled
@@ -953,7 +944,7 @@ function SDT:ConvertSettingToArg(moduleName, setting, order)
             get = function() return self:GetModuleSetting(moduleName, setting.settingKey, setting.defaultValue) end,
             set = function(_, val)
                 self:SetModuleSetting(moduleName, setting.settingKey, val)
-                self:UpdateAllModules()
+                self.ModuleRegistry:UpdateAllModules()
             end,
             disabled = function()
                 -- Disable font settings if override is not enabled
@@ -971,7 +962,7 @@ function SDT:ConvertSettingToArg(moduleName, setting, order)
             get = function() return self:GetModuleSetting(moduleName, setting.settingKey, setting.defaultValue) end,
             set = function(_, val)
                 self:SetModuleSetting(moduleName, setting.settingKey, val)
-                self:UpdateAllModules()
+                self.ModuleRegistry:UpdateAllModules()
             end,
             disabled = function()
                 -- Disable font settings if override is not enabled
@@ -1001,7 +992,7 @@ function SDT:ConvertSettingToArg(moduleName, setting, order)
             get = function() return self:GetModuleSetting(moduleName, setting.settingKey, setting.defaultValue) end,
             set = function(_, val)
                 self:SetModuleSetting(moduleName, setting.settingKey, val)
-                self:UpdateAllModules()
+                self.ModuleRegistry:UpdateAllModules()
             end,
             order = order,
         }
@@ -1024,7 +1015,7 @@ function SDT:ConvertSettingToArg(moduleName, setting, order)
             get = function() return self:GetModuleSetting(moduleName, setting.settingKey, setting.defaultValue) end,
             set = function(_, val)
                 self:SetModuleSetting(moduleName, setting.settingKey, val)
-                self:UpdateAllModuleStrata()
+                self.ModuleRegistry:UpdateAllModuleStrata()
             end,
             order = order,
         }
@@ -1047,7 +1038,7 @@ function SDT:ConvertSettingToArg(moduleName, setting, order)
                         local module = type(slotData) == "table" and slotData.module or slotData
                         if module == moduleName then
                             if self.bars[barName] then
-                                self:RebuildSlots(self.bars[barName])
+                                self.BarManager:RebuildSlots(self.bars[barName])
                             end
                             break
                         end
@@ -1113,7 +1104,7 @@ function SDT:ConvertSettingToArg(moduleName, setting, order)
             set = function(_, val)
                 -- Store the currencyTypesID (not the backpack index)
                 self:SetModuleSetting(moduleName, typeIDKey, val)
-                self:UpdateAllModules()
+                self.ModuleRegistry:UpdateAllModules()
             end,
             disabled = function()
                 -- Extract position number from setting key (e.g., "currencyOrder3" -> 3)

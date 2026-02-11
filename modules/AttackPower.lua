@@ -43,10 +43,10 @@ local moduleName = "Attack Power"
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Short Label"], "showShortLabel", false)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Short Label"], "showShortLabel", false)
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -75,8 +75,8 @@ function mod.Create(slotFrame)
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showShortLabel = SDT:GetModuleSetting(moduleName, "showShortLabel", false)
         local textString = (showLabel and (showShortLabel and L["AP"] or ATTACK_POWER)..": " or "")..totalAP
-        text:SetText(SDT:ColorModuleText(moduleName, textString))
-        SDT:ApplyModuleFont(moduleName, text)
+        text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
     f.Update = UpdateAP
 
@@ -105,24 +105,24 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = SDT:FindBestAnchorPoint(self)
+        local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
-        SDT:AddTooltipLine(GameTooltip, 14, isHunter and RANGED_ATTACK_POWER or MELEE_ATTACK_POWER, totalAP, 1, 0.82, 0, 1, 1, 1)
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 14, isHunter and RANGED_ATTACK_POWER or MELEE_ATTACK_POWER, totalAP, 1, 0.82, 0, 1, 1, 1)
 
         local APBonus = format("%.2f", totalAP / ATTACK_POWER_MAGIC_NUMBER)
-        SDT:AddTooltipLine(GameTooltip, 12, format(isHunter and RANGED_ATTACK_POWER_TOOLTIP or MELEE_ATTACK_POWER_TOOLTIP, APBonus), nil, nil, nil, nil, nil, nil, true)
+        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format(isHunter and RANGED_ATTACK_POWER_TOOLTIP or MELEE_ATTACK_POWER_TOOLTIP, APBonus), nil, nil, nil, nil, nil, nil, true)
 
 	    if isHunter and ComputePetBonus then
 		    local petAPBonus = ComputePetBonus('PET_BONUS_RAP_TO_AP', totalAP)
 		    local petSpellDmgBonus = ComputePetBonus('PET_BONUS_RAP_TO_SPELLDMG', totalAP)
 
     		if petAPBonus > 0 then
-                SDT:AddTooltipLine(GameTooltip, 12, format(PET_BONUS_TOOLTIP_RANGED_ATTACK_POWER, format("%.2f", petAPBonus)))
+                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format(PET_BONUS_TOOLTIP_RANGED_ATTACK_POWER, format("%.2f", petAPBonus)))
 		    end
 
     		if petSpellDmgBonus > 0 then
-                SDT:AddTooltipLine(GameTooltip, 12, format(PET_BONUS_TOOLTIP_SPELLDAMAGE, format("%.2f", petSpellDmgBonus)))
+                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format(PET_BONUS_TOOLTIP_SPELLDAMAGE, format("%.2f", petSpellDmgBonus)))
 		    end
 	    end
 
@@ -141,6 +141,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

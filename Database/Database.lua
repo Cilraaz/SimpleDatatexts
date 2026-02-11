@@ -91,7 +91,7 @@ function SDT:InitializeDatabase()
     end
     
     -- Initialize spec profiles
-    self:InitializeSpecProfiles()
+    self.ProfileManager:InitializeSpecProfiles()
     
     -- Register profile callbacks
     self.db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
@@ -124,135 +124,7 @@ function SDT:CreateDefaultBar()
 end
 
 ----------------------------------------------------
--- Initialize Spec Profiles
-----------------------------------------------------
-function SDT:InitializeSpecProfiles()
-    for i = 1, GetNumSpecializations() do
-        local _, specName = GetSpecializationInfo(i)
-        if specName and not self.db.char.chosenProfile[specName] then
-            self.db.char.chosenProfile[specName] = self.cache.charKey .. "-" .. specName:lower()
-        end
-    end
-end
-
-----------------------------------------------------
--- Switch to the Active Spec's Profile
-----------------------------------------------------
-function SDT:SwitchToSpecProfile()
-    if not self.db.char.useSpecProfiles then return end
-
-    local specIndex = GetSpecialization()
-    if not specIndex then return end
-
-    local _, specName = GetSpecializationInfo(specIndex)
-    if not specName then return end
-
-    -- Ensure a profile name exists for this spec
-    if not self.db.char.chosenProfile[specName] then
-        self.db.char.chosenProfile[specName] = self.cache.charKey .. "-" .. specName:lower()
-    end
-
-    local targetProfile = self.db.char.chosenProfile[specName]
-    if self.db:GetCurrentProfile() ~= targetProfile then
-        self.db:SetProfile(targetProfile)
-    end
-end
-
-----------------------------------------------------
--- Migrate Old Data
-----------------------------------------------------
-function SDT:MigrateOldData()
-    -- Check if old SDTDB exists
-    if not _G.SDTDB then return end
-    
-    local charKey = self.cache.charKey
-    local oldDB = _G.SDTDB
-
-    -- Skip if already migrated
-    if oldDB._migrated then
-        return
-    end
-
-    self:Print(L["Migrating old settings to new profile system..."])
-    
-    -- Migrate ALL old profiles to AceDB profiles
-    if oldDB.profiles then
-        for profileName, oldProfile in pairs(oldDB.profiles) do
-            -- Create this profile in AceDB if it doesn't exist
-            local tempProfile = profileName
-            self.db:SetProfile(tempProfile)
-            
-            -- Migrate bars
-            if oldProfile.bars then
-                for barName, barData in pairs(oldProfile.bars) do
-                    self.db.profile.bars[barName] = CopyTable(barData)
-                end
-            end
-            
-            -- Migrate module settings
-            if oldProfile.moduleSettings then
-                for moduleName, settings in pairs(oldProfile.moduleSettings) do
-                    self.db.profile.moduleSettings[moduleName] = CopyTable(settings)
-                end
-            end
-        end
-    end
-    
-    -- Switch back to this character's profile
-    local activeProfileName = oldDB[charKey] and oldDB[charKey].chosenProfile and oldDB[charKey].chosenProfile.generic
-    if activeProfileName then
-        self.db:SetProfile(activeProfileName)
-    else
-        self.db:SetProfile(charKey)
-    end
-    
-    -- Migrate character settings to current profile
-    if oldDB[charKey] and oldDB[charKey].settings then
-        local oldSettings = oldDB[charKey].settings
-        
-        self.db.profile.locked = oldSettings.locked or false
-        self.db.profile.useClassColor = oldSettings.useClassColor or false
-        self.db.profile.useCustomColor = oldSettings.useCustomColor or false
-        self.db.profile.customColorHex = oldSettings.customColorHex or "#ffffff"
-        self.db.profile.hideModuleTitle = oldSettings.hideModuleTitle or false
-        self.db.profile.use24HourClock = oldSettings.use24HourClock or false
-        self.db.profile.showLoginMessage = oldSettings.showLoginMessage ~= false
-        self.db.profile.font = oldSettings.font or "Friz Quadrata TT"
-        self.db.profile.fontSize = oldSettings.fontSize or 12
-        self.db.profile.fontOutline = oldSettings.fontOutline or "NONE"
-    end
-    
-    -- Migrate character profile choices
-    if oldDB[charKey] then
-        if oldDB[charKey].useSpecProfiles ~= nil then
-            self.db.char.useSpecProfiles = oldDB[charKey].useSpecProfiles
-        end
-        
-        if oldDB[charKey].chosenProfile then
-            for k, v in pairs(oldDB[charKey].chosenProfile) do
-                self.db.char.chosenProfile[k] = v
-            end
-        end
-    end
-    
-    -- Migrate gold data
-    if oldDB.gold then
-        self.db.global.gold = CopyTable(oldDB.gold)
-    end
-    
-    -- Migrate Ara Broker settings
-    if oldDB.AraBroker then
-        self.db.global.AraBroker = CopyTable(oldDB.AraBroker)
-    end
-    
-    self:Print(L["Migration complete! All profiles have been migrated."])
-    
-    -- Mark as migrated
-    oldDB._migrated = true
-end
-
-----------------------------------------------------
--- Profile Management
+-- Refresh Config
 ----------------------------------------------------
 function SDT:RefreshConfig()
     -- Reload all bars
@@ -267,12 +139,12 @@ function SDT:RefreshConfig()
     for barName, barData in pairs(self.db.profile.bars) do
         local id = tonumber(barName:match("SDT_Bar(%d+)"))
         if id and id > 0 then
-            self:CreateDataBar(id, barData.numSlots)
+            self.BarManager:CreateDataBar(id, barData.numSlots)
         end
     end
     
     -- Update all modules
-    self:UpdateAllModules()
+    self.ModuleRegistry:UpdateAllModules()
     
     -- Update config GUI if open
     if self.configDialog and self.configDialog:IsShown() then
@@ -419,7 +291,7 @@ function SDT:ImportProfile(importString)
         end
 
         -- Apply the font settings
-        self:ApplyFont()
+        self.FontManager:ApplyFont()
 
         return true
     else

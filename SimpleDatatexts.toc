@@ -33,11 +33,21 @@ Locales/itIT.lua
 Locales/ptBR.lua
 Locales/ruRU.lua
 
+# Database
+Database/Migration.lua
+Database/ProfileManager.lua
+Database/Database.lua
+
 # Helpers
-Database.lua
-Config.lua
-Utilities.lua
-UpdateTicker.lua
+Helpers/BarManager.lua
+Helpers/FontManager.lua
+Helpers/FormatUtils.lua
+Helpers/ModuleRegistry.lua
+Helpers/SystemUtils.lua
+Helpers/UpdateTicker.lua
+
+# Config
+Config/Config.lua
 
 # Ara
 Ara_Broker_Guild_Friends.lua

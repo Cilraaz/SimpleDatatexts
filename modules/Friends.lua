@@ -22,7 +22,7 @@ local moduleName = "Friends"
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -50,8 +50,8 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function Update()
         local txt = ara.text or ""
-        text:SetText(SDT:ColorModuleText(moduleName, txt))
-        SDT:ApplyModuleFont(moduleName, text)
+        text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, txt))
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
     f.Update = Update
     SDT.friendFrame = f
@@ -92,6 +92,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

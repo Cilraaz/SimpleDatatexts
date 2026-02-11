@@ -22,7 +22,7 @@ local moduleName = "Mail"
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -47,8 +47,8 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function OnEvent(self, event, ...)
         local mailText = HasNewMail() and L["New Mail"] or L["No Mail"]
-        text:SetText(SDT:ColorModuleText(moduleName, mailText))
-        SDT:ApplyModuleFont(moduleName, text)
+        text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, mailText))
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
 
     f.Update = function() OnEvent(f) end
@@ -65,18 +65,18 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = SDT:FindBestAnchorPoint(self)
+        local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
 
         local senders = { GetLatestThreeSenders() }
         if next(senders) then
             local header = HasNewMail() and HAVE_MAIL_FROM or MAIL_LABEL
-            SDT:AddTooltipHeader(GameTooltip, 14, header)
-            SDT:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, header)
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
 
             for _, sender in pairs(senders) do
-                SDT:AddTooltipLine(GameTooltip, 12, sender)
+                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, sender)
             end
 
             GameTooltip:Show()
@@ -95,6 +95,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

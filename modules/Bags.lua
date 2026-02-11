@@ -54,9 +54,9 @@ end
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", "Show Label", "showLabel", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", "Show Label", "showLabel", true)
 
-    SDT:GlobalModuleSettings(moduleName)
+    SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -104,8 +104,8 @@ function mod.Create(slotFrame)
 
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local textString = (showLabel and L["Bags"] .. ": " or "") .. (totalNormal - freeNormal) .. "/" .. totalNormal
-        text:SetText(SDT:ColorModuleText(moduleName, textString))
-        SDT:ApplyModuleFont(moduleName, text)
+        text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
+        SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
     f.Update = UpdateBags
 
@@ -134,12 +134,12 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = SDT:FindBestAnchorPoint(self)
+        local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
         if not SDT.db.profile.hideModuleTitle then
-            SDT:AddTooltipHeader(GameTooltip, 14, L["Bags"])
-            SDT:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Bags"])
+            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
         end
 
         for i = 0, NUM_BAG_SLOTS do
@@ -157,9 +157,9 @@ function mod.Create(slotFrame)
                     local icon = GetInventoryItemTexture('player', id)
                     local quality = GetInventoryItemQuality('player', id) or 1
                     r1, g1, b1 = GetItemQualityColor(quality)
-                    SDT:AddTooltipLine(GameTooltip, 12, format(iconString, icon or "", bagName), format('%d / %d', usedSlots, numSlots), r1, g1, b1, r2, g2, b2)
+                    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format(iconString, icon or "", bagName), format('%d / %d', usedSlots, numSlots), r1, g1, b1, r2, g2, b2)
                 else
-                    SDT:AddTooltipLine(GameTooltip, 12, bagName, format('%d / %d', usedSlots, numSlots), r1, g1, b1, r2, g2, b2)
+                    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, bagName, format('%d / %d', usedSlots, numSlots), r1, g1, b1, r2, g2, b2)
                 end
             end
         end
@@ -179,6 +179,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod

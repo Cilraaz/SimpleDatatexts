@@ -76,10 +76,10 @@ local moduleName = "Volume"
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
-    SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
-	SDT:AddModuleConfigSetting(moduleName, "checkbox", L["Show Short Label"], "showShortLabel", false)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
+	SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Short Label"], "showShortLabel", false)
 
-	SDT:GlobalModuleSettings(moduleName)
+	SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
 
 SetupModuleConfig()
@@ -126,7 +126,7 @@ function mod.Create(slotFrame)
 	    activeIndex = arg1
 	    activeStream = AudioStreams[arg1]
 
-	    slotFrame.text:SetText(SDT:ColorModuleText(moduleName, GetStreamString(activeStream)))
+	    slotFrame.text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, GetStreamString(activeStream)))
     end
 
     local function ToggleStream(_, arg1)
@@ -134,7 +134,7 @@ function mod.Create(slotFrame)
 
         SDT:SetCVar(Stream.Enabled, GetCVarBool(Stream.Enabled) and 0 or 1)
 
-	    slotFrame.text:SetText(SDT:ColorModuleText(moduleName, GetStreamString(activeStream)))
+	    slotFrame.text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, GetStreamString(activeStream)))
     end
 
 	twipe(menu)
@@ -158,8 +158,8 @@ function mod.Create(slotFrame)
     -- Update displayed text
     ----------------------------------------------------
 	local function UpdateDisplay()
-		slotFrame.text:SetText(SDT:ColorModuleText(moduleName, GetStreamString(activeStream)))
-		SDT:ApplyModuleFont(moduleName, slotFrame.text)
+		slotFrame.text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, GetStreamString(activeStream)))
+		SDT.FontManager:ApplyModuleFont(moduleName, slotFrame.text)
 	end
 	f.Update = UpdateDisplay
 
@@ -201,33 +201,33 @@ function mod.Create(slotFrame)
 	    end
 
 	    SDT:SetCVar(activeStream.Volume, vol)
-	    slotFrame.text:SetText(SDT:ColorModuleText(moduleName, GetStreamString(activeStream)))
+	    slotFrame.text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, GetStreamString(activeStream)))
     end)
 
     ----------------------------------------------------
     -- Tooltip
     ----------------------------------------------------
     slotFrame:SetScript("OnEnter", function(self)
-        local anchor = SDT:FindBestAnchorPoint(self)
+        local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         GameTooltip:SetOwner(self, anchor)
         GameTooltip:ClearLines()
 
-		SDT:AddTooltipHeader(GameTooltip, 14, L["Active Output Audio Device"], 1, 1, 1)
-		SDT:AddTooltipLine(GameTooltip, 12, Sound_GameSystem_GetOutputDriverNameByIndex(GetCVar('Sound_OutputDriverIndex')), nil, 1, 0.82, 0)
-		SDT:AddTooltipLine(GameTooltip, 12, " ")
-		SDT:AddTooltipLine(GameTooltip, 14, L["Volume Streams"], nil, 1, 1, 1)
+		SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Active Output Audio Device"], 1, 1, 1)
+		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, Sound_GameSystem_GetOutputDriverNameByIndex(GetCVar('Sound_OutputDriverIndex')), nil, 1, 0.82, 0)
+		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+		SDT.FormatUtils:AddTooltipLine(GameTooltip, 14, L["Volume Streams"], nil, 1, 1, 1)
 
 	    for _, Stream in ipairs(AudioStreams) do
-			SDT:AddTooltipLine(GameTooltip, 12, Stream.Name, GetStreamString(Stream, true), 1, 0.82, 0)
+			SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, Stream.Name, GetStreamString(Stream, true), 1, 0.82, 0)
 	    end
 
-		SDT:AddTooltipLine(GameTooltip, 12, " ")
+		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
 
-		SDT:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Left Click: Select Volume Stream"] .. "|r")
-		SDT:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Middle Click: Toggle Mute Master Stream"] .. "|r")
-		SDT:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Shift + Middle Click: Toggle Volume Stream"] .. "|r")
-		SDT:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Shift + Left Click: Open System Audio Panel"] .. "|r")
-		SDT:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Shift + Right Click: Select Output Audio Device"] .. "|r")
+		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Left Click: Select Volume Stream"] .. "|r")
+		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Middle Click: Toggle Mute Master Stream"] .. "|r")
+		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Shift + Middle Click: Toggle Volume Stream"] .. "|r")
+		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Shift + Left Click: Open System Audio Panel"] .. "|r")
+		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Shift + Right Click: Select Output Audio Device"] .. "|r")
 
 	    GameTooltip:Show()
     end)
@@ -267,6 +267,6 @@ end
 ----------------------------------------------------
 -- Register with SDT
 ----------------------------------------------------
-SDT:RegisterDataText(moduleName, mod)
+SDT.ModuleRegistry:RegisterDatatext(moduleName, mod)
 
 return mod
