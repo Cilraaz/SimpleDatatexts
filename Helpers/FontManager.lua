@@ -66,6 +66,5 @@ function SDT.FontManager:RegisterFonts()
     SDT.LSM:Register("font", "Die Die Die!", [[Interface\AddOns\SimpleDatatexts\fonts\DieDieDie.ttf]])
     SDT.LSM:Register("font", "Expressway", [[Interface\AddOns\SimpleDatatexts\fonts\Expressway.ttf]])
     SDT.LSM:Register("font", "Homespun", [[Interface\AddOns\SimpleDatatexts\fonts\Homespun.ttf]])
-    --SDT.LSM:Register("font", "Invisible", [[Interface\AddOns\SimpleDatatexts\fonts\Invisible.ttf]])
     SDT.LSM:Register("font", "PT Sans Narrow", [[Interface\AddOns\SimpleDatatexts\fonts\PTSansNarrow.ttf]])
 end
