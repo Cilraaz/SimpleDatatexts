@@ -134,6 +134,17 @@ function SDT:BuildCache()
     self.cache.colorHex = GetClassColor(self.cache.playerClass):GenerateHexColor()
     self.cache.version = GetAddOnMetadata(addonName, "Version") or L["Not Defined"]
     self.cache.moduleNames = {}
+
+    self.cache.validStratas = {
+        BACKGROUND = true,
+        LOW = true,
+        MEDIUM = true,
+        HIGH = true,
+        DIALOG = true,
+        FULLSCREEN = true,
+        FULLSCREEN_DIALOG = true,
+        TOOLTIP = true,
+    }
 end
 
 function SDT:ScreenCache()
@@ -250,7 +261,7 @@ function SDT:HandleSlashCommand(msg)
         -- Open config GUI
         self:OpenConfig()
     elseif command == "lock" then
-        self:ToggleLock()
+        self.BarManager:ToggleLock()
     elseif command == "minimap" then
         self.db.profile.minimap.hide = not self.db.profile.minimap.hide
         if self.db.profile.minimap.hide then

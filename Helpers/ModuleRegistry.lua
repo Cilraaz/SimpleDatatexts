@@ -78,17 +78,7 @@ end
 function SDT.ModuleRegistry:GetModuleFrameStrata(moduleName)
     local strata = SDT:GetModuleSetting(moduleName, "frameStrata", "MEDIUM")
     -- Validate strata value
-    local validStratas = {
-        BACKGROUND = true,
-        LOW = true,
-        MEDIUM = true,
-        HIGH = true,
-        DIALOG = true,
-        FULLSCREEN = true,
-        FULLSCREEN_DIALOG = true,
-        TOOLTIP = true,
-    }
-    if not validStratas[strata] then
+    if not SDT.cache.validStratas[strata] then
         return "MEDIUM"
     end
     return strata
