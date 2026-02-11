@@ -93,7 +93,7 @@ function SDT.BarManager:CreateMovableFrame(name)
 
     f:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
-        self:SaveBarPosition(self)
+        SDT.BarManager:SaveBarPosition(self)
     end)
 
     return f
@@ -475,5 +475,31 @@ function SDT.BarManager:ShowSlotDropdown(slot, bar)
         
         -- Set initial scroll position
         scrollbar:SetValue(0)
+    end
+end
+
+----------------------------------------------------
+-- Lock/Unlock Panels
+----------------------------------------------------
+function SDT.BarManager:ToggleLock()
+    SDT.db.profile.locked = not SDT.db.profile.locked
+    
+    if SDT.db.profile.locked then
+        SDT:Print(L["Panels locked"])
+    else
+        SDT:Print(L["Panels unlocked"])
+    end
+    
+    -- Update all bars to reflect the lock state
+    for _, bar in pairs(SDT.bars) do
+        if bar then
+            if SDT.db.profile.locked then
+                bar:EnableMouse(false)
+                bar:SetMovable(false)
+            else
+                bar:EnableMouse(true)
+                bar:SetMovable(true)
+            end
+        end
     end
 end

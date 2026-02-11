@@ -100,32 +100,6 @@ function SDT:SetCVar(cvar, value)
 end
 
 ----------------------------------------------------
--- Lock/Unlock Panels
-----------------------------------------------------
-function SDT:ToggleLock()
-    self.db.profile.locked = not self.db.profile.locked
-    
-    if self.db.profile.locked then
-        self:Print(L["Panels locked"])
-    else
-        self:Print(L["Panels unlocked"])
-    end
-    
-    -- Update all bars to reflect the lock state
-    for _, bar in pairs(self.bars) do
-        if bar then
-            if self.db.profile.locked then
-                bar:EnableMouse(false)
-                bar:SetMovable(false)
-            else
-                bar:EnableMouse(true)
-                bar:SetMovable(true)
-            end
-        end
-    end
-end
-
-----------------------------------------------------
 -- Global Gold Tracking (runs regardless of module loading)
 ----------------------------------------------------
 function SDT:UpdateGlobalGold()
