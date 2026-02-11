@@ -85,15 +85,15 @@ function SDT.BarManager:CreateMovableFrame(name)
     f:RegisterForDrag("LeftButton")
     f:SetClampedToScreen(true)
 
-    f:SetScript("OnDragStart", function(self)
+    f:SetScript("OnDragStart", function(frame)
         if not SDT.db.profile.locked then
-            self:StartMoving()
+            frame:StartMoving()
         end
     end)
 
-    f:SetScript("OnDragStop", function(self)
-        self:StopMovingOrSizing()
-        SDT.BarManager:SaveBarPosition(self)
+    f:SetScript("OnDragStop", function(frame)
+        frame:StopMovingOrSizing()
+        SDT.BarManager:SaveBarPosition(frame)
     end)
 
     return f
