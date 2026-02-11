@@ -2,7 +2,7 @@
 -- Guild list datatext imported from Ara_Broker_Guild_Friends for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local L = SDT.L
-local LDB = LibStub("LibDataBroker-1.1")
+local LDB = SDT.LDB
 
 local mod = {}
 

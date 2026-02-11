@@ -1408,7 +1408,7 @@ local function DisplayConfigMenu( anchor )
 end
 
 
-local ldb = LibStub("LibDataBroker-1.1")
+local ldb = SDT.LDB
 
 local orgGuildRoster = GuildRoster or C_GuildInfo.GuildRoster
 f.GuildBlock = ldb:NewDataObject( "|cFFFFB366Ara|r Guild", {
