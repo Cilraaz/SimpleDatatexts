@@ -1,6 +1,13 @@
 ## Changes
-- 63193d3 build(TOC): 12.0.0.64 release
-- ba7dec5 fix(Experience): Fix render display issue at 0% XP
-- 0a115a0 fix(Experience): Better max level check
-- 2a5c3b3 feat(Gold): Update gold db, even if gold module isn't loaded
-- 492a821 build(TOC): Remove interface version 120000
+- 5641bf1 build(TOC): 12.0.0.65 release
+- 029fca2 fix(BarManager): Fix slot cleanup when module is removed
+- cefb0aa feat(Modules): Remove module exclusions, but keep the framework; add global settings to all LDB modules
+- 06554fd feat(FontManager): Remove unused Invisible font
+- 5bf8807 feat(LDBObjects): Remove now unused table.insert and table.sort locals
+- b6afa84 fix(BarManager): Renamed some confusing 'self' references to 'frame' for clarity
+- ae346a0 fix(LDB): Use SDT.LDB instead of creating new LDB instances
+- 0b3515a feat(BarManager): Move ToggleLock to BarManager; fix incorrect self scope
+- e15a094 feat(cache): Cache validStratas instead of rebuilding the table every time
+- c7cf72e fix(LDBObjects): Fix LDB Callback handler to register objects properly
+- 0b934e5 feat(Core): Refactor addon code to split Helpers into more specialized files
+- 62a5408 fix(Locale): Fix missing localization strings
