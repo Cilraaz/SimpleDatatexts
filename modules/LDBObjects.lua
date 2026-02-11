@@ -11,8 +11,6 @@ if not SDT.LDBDatatexts then SDT.LDBDatatexts = {} end
 ----------------------------------------------------
 local CreateFrame = CreateFrame
 local format      = string.format
-local tinsert     = table.insert
-local tsort       = table.sort
 
 ----------------------------------------------------
 -- Helper Functions
