@@ -202,7 +202,36 @@ function SDT.BarManager:RebuildSlots(bar)
                 end
                 slot.moduleFrame = nil
             end
-            
+
+            -- Clean up slot frame scripts set by previous modules
+            slot:SetScript("OnEnter", nil)
+            slot:SetScript("OnLeave", nil)
+            slot:SetScript("OnClick", nil)
+
+            -- Clean up secure button if it exists (used by Hearthstone and MythicPlusKey modules)
+            if slot.secureButton then
+                slot.secureButton:SetScript("OnEnter", nil)
+                slot.secureButton:SetScript("OnLeave", nil)
+                slot.secureButton:SetScript("PreClick", nil)
+                slot.secureButton:SetAttribute("type", nil)
+                slot.secureButton:SetAttribute("item", nil)
+                slot.secureButton:Hide()
+                slot.secureButton = nil
+            end
+
+            -- Clean up any icon textures
+            if slot.icon then
+                slot.icon:Hide()
+                slot.icon = nil
+            end
+
+            -- Clean up cooldown text
+            if slot.cooldownText then
+                slot.cooldownText:SetText("")
+                slot.cooldownText:Hide()
+                slot.cooldownText = nil
+            end
+
             if assignedName == "(spacer)" then
                 slot.module = "(spacer)"
                 slot.text:SetText("")
