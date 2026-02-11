@@ -262,13 +262,22 @@ function mod.Create(slotFrame)
             -- Crop to XP percentage
             local slotWidth = slotFrame:GetWidth()
             local fillPercent = currentXP / maxXP
-            barFill:SetWidth(slotWidth * fillPercent)
-            barFill:SetTexCoord(0, fillPercent, 0, 1)
+            if fillPercent > 0 then
+                -- Set width and texture coordinates
+                barFill:SetWidth(slotWidth * fillPercent)
+                barFill:SetTexCoord(0, fillPercent, 0, 1)
 
-            -- Apply selected color
-            local r, g, b, a = GetBarColor()
-            barFill:SetVertexColor(r, g, b, 0.8)
-            
+                -- Apply selected color
+                local r, g, b, a = GetBarColor()
+                barFill:SetVertexColor(r, g, b, 0.8)
+
+                -- Show the bar
+                barFill:Show()
+            else
+                -- Hide at 0% XP to avoid rendering issue
+                barFill:Hide()
+            end
+
             -- Update font size from settings
             SDT:ApplyModuleFont(moduleName, barText)
         elseif barFrame then
