@@ -85,7 +85,25 @@ function mod.Create(slotFrame)
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
+
+    local updateKey = "Speed_" .. (slotFrame:GetName() or tostring(slotFrame))
+    SDT.UpdateTicker:Register(updateKey, UpdateSpeed, 0.1)
+
     f.Update = UpdateSpeed
+
+    ----------------------------------------------------
+    -- Cleanup on frame release
+    ----------------------------------------------------
+    f:SetScript("OnHide", function()
+        -- Unregister from UpdateTicker when hidden
+        SDT.UpdateTicker:Unregister(updateKey, 0.1)
+    end)
+    
+    f:SetScript("OnShow", function()
+        -- Re-register when shown
+        SDT.UpdateTicker:Register(updateKey, UpdateText, 0.1)
+        UpdateText()
+    end)
 
     ----------------------------------------------------
     -- Event Handler
@@ -97,9 +115,6 @@ function mod.Create(slotFrame)
             UpdateSpeed()
         end
     end
-
-    local updateKey = "Speed_" .. (slotFrame:GetName() or tostring(slotFrame))
-    SDT.UpdateTicker:Register(updateKey, UpdateSpeed, 0.1)
 
     f:SetScript("OnEvent", OnEvent)
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
