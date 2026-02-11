@@ -2,7 +2,7 @@
 -- Datatexts for LDB objects not already handled by other modules
 local SDT = SimpleDatatexts
 local L = SDT.L
-local LDB = LibStub("LibDataBroker-1.1")
+local LDB = SDT.LDB
 
 if not SDT.LDBDatatexts then SDT.LDBDatatexts = {} end
 
@@ -149,13 +149,14 @@ end
 
 LDB:RegisterCallback("LibDataBroker_DataObjectCreated", function(_, name, obj)
     local cleanName = StripColorCodes(name)
-    -- Skip objects already handled by other modules or those that are known to be "blank".
     if ShouldSkipLDBObject(cleanName) then
         return
     end
     HandleLDBObject(name, obj)
-    tinsert(SDT.cache.moduleNames, cleanName)
-    tsort(SDT.cache.moduleNames)
+
+    -- Mark cache as dirty and rebuild
+    SDT.cache.moduleNamesDirty = true
+    SDT.ModuleRegistry:CreateModuleList()
     SDT.BarManager:RebuildAllSlots()
 end)
 
