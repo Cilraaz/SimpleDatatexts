@@ -165,10 +165,11 @@ L["AP"] = "AP"
 L["Bags"] = "Borse"
 
 -- ----------------------------
--- modules/CombatTime.lua
+-- modules/CombatTimer.lua
 -- ----------------------------
 L["Combat"] = "Combattimento"
 L["combat duration"] = "durata del combattimento"
+L["Combat Timer"] = "Timer di Combattimento"
 L["Current"] = "Attuale"
 L["Currently out of combat"] = "Attualmente fuori dal combattimento"
 L["Display Duration"] = "Durata visualizzazione"
@@ -352,6 +353,11 @@ L["Show Loadout"] = "Mostra configurazione"
 -- modules/Speed.lua
 -- ----------------------------
 L["Speed: "] = "Velocità: "
+
+-- ----------------------------
+-- modules/Stagger.lua
+-- ----------------------------
+L["Stagger Amount:"] = "Quantità di Scaglionamento:"
 
 -- ----------------------------
 -- modules/Strength.lua

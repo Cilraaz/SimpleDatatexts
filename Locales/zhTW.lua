@@ -165,10 +165,11 @@ L["AP"] = "攻強"
 L["Bags"] = "背包"
 
 -- ----------------------------
--- modules/CombatTime.lua
+-- modules/CombatTimer.lua
 -- ----------------------------
 L["Combat"] = "戰鬥"
 L["combat duration"] = "戰鬥持續時間"
+L["Combat Timer"] = "戰鬥計時器"
 L["Current"] = "目前"
 L["Currently out of combat"] = "目前未進入戰鬥"
 L["Display Duration"] = "顯示持續時間"
@@ -352,6 +353,11 @@ L["Show Loadout"] = "顯示配裝"
 -- modules/Speed.lua
 -- ----------------------------
 L["Speed: "] = "速度："
+
+-- ----------------------------
+-- modules/Stagger.lua
+-- ----------------------------
+L["Stagger Amount:"] = "醉拳量:"
 
 -- ----------------------------
 -- modules/Strength.lua

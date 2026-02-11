@@ -165,10 +165,11 @@ L["AP"] = "AP"
 L["Bags"] = "가방"
 
 -- ----------------------------
--- modules/CombatTime.lua
+-- modules/CombatTimer.lua
 -- ----------------------------
 L["Combat"] = "전투"
 L["combat duration"] = "전투 지속시간"
+L["Combat Timer"] = "전투 타이머"
 L["Current"] = "현재"
 L["Currently out of combat"] = "현재 전투 중 아님"
 L["Display Duration"] = "지속시간 표시"
@@ -352,6 +353,11 @@ L["Show Loadout"] = "장비 세트 표시"
 -- modules/Speed.lua
 -- ----------------------------
 L["Speed: "] = "속도: "
+
+-- ----------------------------
+-- modules/Stagger.lua
+-- ----------------------------
+L["Stagger Amount:"] = "완화량:"
 
 -- ----------------------------
 -- modules/Strength.lua

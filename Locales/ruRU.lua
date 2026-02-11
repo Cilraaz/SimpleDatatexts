@@ -165,10 +165,11 @@ L["AP"] = "AP"
 L["Bags"] = "Сумки"
 
 -- ----------------------------
--- modules/CombatTime.lua
+-- modules/CombatTimer.lua
 -- ----------------------------
 L["Combat"] = "Бой"
 L["combat duration"] = "продолжительность боя"
+L["Combat Timer"] = "Таймер боя"
 L["Current"] = "Текущий"
 L["Currently out of combat"] = "В данный момент вне боя"
 L["Display Duration"] = "Длительность отображения"
@@ -352,6 +353,11 @@ L["Show Loadout"] = "Показать набор"
 -- modules/Speed.lua
 -- ----------------------------
 L["Speed: "] = "Скорость: "
+
+-- ----------------------------
+-- modules/Stagger.lua
+-- ----------------------------
+L["Stagger Amount:"] = "Количество Отсрочки:"
 
 -- ----------------------------
 -- modules/Strength.lua
