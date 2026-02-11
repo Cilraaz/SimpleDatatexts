@@ -56,21 +56,15 @@ end
 ----------------------------------------------------
 -- Module Settings Exclusions
 ----------------------------------------------------
--- Modules that have no settings panels
+--[[ Note: Not currently excluding any modules, but keeping the framework.
 SDT.ModuleRegistry.excludedModules = {
     ["HidingBar1"] = true,
 }
 
-SDT.ModuleRegistry.allowedLDBModules = {
-    ["LDB: BugSack"] = true,
-    ["LDB: WIM"] = true,
-}
-
 function SDT.ModuleRegistry:ExcludedModule(moduleName)
     if self.excludedModules[moduleName] then return true end
-    if moduleName:match("^LDB:") and not self.allowedLDBModules[moduleName] then return true end
     return false
-end
+end]]
 
 ----------------------------------------------------
 -- Get Module Frame Strata

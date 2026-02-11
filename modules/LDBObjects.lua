@@ -41,7 +41,7 @@ local function HandleLDBObject(name, obj)
     local mod = {}
 
     local moduleName = "LDB: " .. cleanName
-    local modulesWithSettings = {
+    local modulesWithLabels = {
         ["LDB: BugSack"] = true,
         ["LDB: WIM"] = true,
         ["LDB: Core Loot Manager"] = true,
@@ -51,9 +51,11 @@ local function HandleLDBObject(name, obj)
     -- Module Config Settings
     ----------------------------------------------------
     local function SetupModuleConfig()
-        if modulesWithSettings[moduleName] then
+        if modulesWithLabels[moduleName] then
             SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
 
+            SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
+        else
             SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
         end
     end
@@ -77,7 +79,7 @@ local function HandleLDBObject(name, obj)
         local function Update()
             local cleanObjText = obj.text and StripColorCodes(obj.text)
             local showLabel = true
-            if modulesWithSettings[moduleName] then
+            if modulesWithLabels[moduleName] then
                 showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
             end
             local txt = ""

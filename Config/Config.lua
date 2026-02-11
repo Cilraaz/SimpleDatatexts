@@ -829,13 +829,14 @@ function SDT:BuildModuleArgs()
     local args = {}
     
     for _, moduleName in ipairs(self.cache.moduleNames) do
-        if not self.ModuleRegistry:ExcludedModule(moduleName) then
+        -- Note: Not currently excluding any modules, but keeping the framework.
+        --if not self.ModuleRegistry:ExcludedModule(moduleName) then
             args[moduleName] = {
                 type = "group",
                 name = moduleName,
                 args = self:GetModuleSpecificArgs(moduleName),
             }
-        end
+        --end
     end
     
     return args
