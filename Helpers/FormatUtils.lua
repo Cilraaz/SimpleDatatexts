@@ -25,7 +25,8 @@ function SDT.FormatUtils:AddTooltipHeader(tooltip, fontSize, text, r, g, b, wrap
     local textLeft = _G[tooltip:GetName() .. "TextLeft" .. tooltip:NumLines()]
     if textLeft then
         local fontPath = SDT.LSM:Fetch("font", SDT.db.profile.tooltipFont)
-        textLeft:SetFont(fontPath, fontSize, "OUTLINE")
+        local outline = SDT.db.profile.tooltipFontOutline
+        textLeft:SetFont(fontPath, fontSize, outline)
     end
 end
 
@@ -56,15 +57,16 @@ function SDT.FormatUtils:AddTooltipLine(tooltip, fontSize, textLeft, textRight, 
 
     -- Apply font size to the line
     local fontPath = SDT.LSM:Fetch("font", SDT.db.profile.tooltipFont)
+    local outline = SDT.db.profile.tooltipFontOutline
     local lineNum = tooltip:NumLines()
     local textLeftObj = _G[tooltip:GetName() .. "TextLeft" .. lineNum]
     local textRightObj = _G[tooltip:GetName() .. "TextRight" .. lineNum]
     
     if textLeftObj then
-        textLeftObj:SetFont(fontPath, fontSize, "OUTLINE")
+        textLeftObj:SetFont(fontPath, fontSize, outline)
     end
     if textRightObj then
-        textRightObj:SetFont(fontPath, fontSize, "OUTLINE")
+        textRightObj:SetFont(fontPath, fontSize, outline)
     end
 end
 

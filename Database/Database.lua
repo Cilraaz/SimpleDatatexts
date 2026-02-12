@@ -17,9 +17,10 @@ local defaults = {
         use24HourClock = false,
         showLoginMessage = true,
         font = "Friz Quadrata TT",
-        fontSize = 12,
         fontOutline = "NONE",
+        fontSize = 12,
         tooltipFont = "Friz Quadrata TT",
+        tooltipFontOutline = "NONE",
         tooltipHeaderFontSize = 14,
         tooltipLineFontSize = 12,
         

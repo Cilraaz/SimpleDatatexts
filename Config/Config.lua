@@ -324,19 +324,6 @@ function SDT:GetGeneralOptions()
                 end,
                 order = 21,
             },
-            fontSize = {
-                type = "range",
-                name = L["Font Size"],
-                min = 4,
-                max = 40,
-                step = 1,
-                get = function() return self.db.profile.fontSize end,
-                set = function(_, val)
-                    self.db.profile.fontSize = val
-                    self.FontManager:ApplyFont()
-                end,
-                order = 22,
-            },
             fontOutline = {
                 type = "select",
                 name = L["Font Outline"],
@@ -351,6 +338,19 @@ function SDT:GetGeneralOptions()
                 get = function() return self.db.profile.fontOutline end,
                 set = function(_, val)
                     self.db.profile.fontOutline = val
+                    self.FontManager:ApplyFont()
+                end,
+                order = 22,
+            },
+            fontSize = {
+                type = "range",
+                name = L["Font Size"],
+                min = 4,
+                max = 40,
+                step = 1,
+                get = function() return self.db.profile.fontSize end,
+                set = function(_, val)
+                    self.db.profile.fontSize = val
                     self.FontManager:ApplyFont()
                 end,
                 order = 23,
@@ -376,6 +376,28 @@ function SDT:GetGeneralOptions()
                 end,
                 order = 31,
             },
+            tooltipFontOutline = {
+                type = "select",
+                name = L["Tooltip Font Outline"],
+                desc = L["Font outline for all addon tooltips"],
+                values = {
+                    ["NONE"] = L["None"],
+                    ["OUTLINE"] = "Outline",
+                    ["THICKOUTLINE"] = "Thick Outline",
+                    ["MONOCHROME"] = "Monochrome",
+                    ["OUTLINE, MONOCHROME"] = "Outline + Monochrome",
+                    ["THICKOUTLINE, MONOCHROME"] = "Thick Outline + Monochrome",
+                },
+                get = function() return self.db.profile.tooltipFontOutline end,
+                set = function(_, val)
+                    self.db.profile.tooltipFontOutline = val
+                    -- Recreate tooltip with new outline
+                    if SDT.Tooltip then
+                        SDT:CreateTooltip()
+                    end
+                end,
+                order = 32,
+            },
             tooltipHeaderFontSize = {
                 type = "range",
                 name = L["Tooltip Header Font Size"],
@@ -391,7 +413,7 @@ function SDT:GetGeneralOptions()
                         SDT:CreateTooltip()
                     end
                 end,
-                order = 32,
+                order = 33,
             },
             tooltipLineFontSize = {
                 type = "range",
@@ -408,7 +430,7 @@ function SDT:GetGeneralOptions()
                         SDT:CreateTooltip()
                     end
                 end,
-                order = 33,
+                order = 34,
             },
         }
     }

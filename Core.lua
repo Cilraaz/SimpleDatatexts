@@ -162,6 +162,7 @@ function SDT:CreateTooltip()
     -- If tooltip already exists, just update the fonts
     if self.Tooltip then
         local fontPath = SDT.LSM:Fetch("font", self.db.profile.tooltipFont)
+        local outline = self.db.profile.tooltipFontOutline
         for i = 1, 30 do
             local leftName = "SimpleDatatextsTooltipTextLeft" .. i
             local rightName = "SimpleDatatextsTooltipTextRight" .. i
@@ -169,10 +170,10 @@ function SDT:CreateTooltip()
             local textRight = _G[rightName]
             
             if textLeft then
-                textLeft:SetFont(fontPath, self.db.profile.tooltipLineFontSize, "OUTLINE")
+                textLeft:SetFont(fontPath, self.db.profile.tooltipLineFontSize, outline)
             end
             if textRight then
-                textRight:SetFont(fontPath, self.db.profile.tooltipLineFontSize, "OUTLINE")
+                textRight:SetFont(fontPath, self.db.profile.tooltipLineFontSize, outline)
             end
         end
         return
@@ -183,6 +184,7 @@ function SDT:CreateTooltip()
     
     -- Set default fonts for all lines
     local fontPath = SDT.LSM:Fetch("font", self.db.profile.tooltipFont)
+    local outline = self.db.profile.tooltipFontOutline
     for i = 1, 30 do
         local leftName = "SimpleDatatextsTooltipTextLeft" .. i
         local rightName = "SimpleDatatextsTooltipTextRight" .. i
@@ -190,10 +192,10 @@ function SDT:CreateTooltip()
         local textRight = _G[rightName]
         
         if textLeft then
-            textLeft:SetFont(fontPath, self.db.profile.tooltipLineFontSize, "OUTLINE")
+            textLeft:SetFont(fontPath, self.db.profile.tooltipLineFontSize, outline)
         end
         if textRight then
-            textRight:SetFont(fontPath, self.db.profile.tooltipLineFontSize, "OUTLINE")
+            textRight:SetFont(fontPath, self.db.profile.tooltipLineFontSize, outline)
         end
     end
     
