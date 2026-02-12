@@ -84,6 +84,8 @@ L["When enabled, the addon will automatically switch to a different profile each
 L["Tooltip Settings"] = "Configurações de dica"
 L["Tooltip Font"] = "Fonte da dica"
 L["Font used for all addon tooltips"] = "Fonte usada para todas as dicas do addon"
+L["Tooltip Font Outline"] = "Contorno da fonte da dica"
+L["Font outline for all addon tooltips"] = "Contorno da fonte para todas as dicas do addon"
 L["Tooltip Header Font Size"] = "Tamanho da fonte do cabeçalho"
 L["Font size for tooltip headers"] = "Tamanho da fonte para cabeçalhos de dicas"
 L["Tooltip Line Font Size"] = "Tamanho da fonte da linha"

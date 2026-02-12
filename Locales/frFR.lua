@@ -84,6 +84,8 @@ L["When enabled, the addon will automatically switch to a different profile each
 L["Tooltip Settings"] = "Paramètres d'info-bulle"
 L["Tooltip Font"] = "Police d'info-bulle"
 L["Font used for all addon tooltips"] = "Police utilisée pour toutes les info-bulles de l'addon"
+L["Tooltip Font Outline"] = "Contour de police d'info-bulle"
+L["Font outline for all addon tooltips"] = "Contour de police pour toutes les info-bulles de l'addon"
 L["Tooltip Header Font Size"] = "Taille de police d'en-tête"
 L["Font size for tooltip headers"] = "Taille de police pour les en-têtes d'info-bulle"
 L["Tooltip Line Font Size"] = "Taille de police de ligne"

@@ -84,6 +84,8 @@ L["When enabled, the addon will automatically switch to a different profile each
 L["Tooltip Settings"] = "툴팁 설정"
 L["Tooltip Font"] = "툴팁 글꼴"
 L["Font used for all addon tooltips"] = "모든 애드온 툴팁에 사용되는 글꼴"
+L["Tooltip Font Outline"] = "툴팁 글꼴 외곽선"
+L["Font outline for all addon tooltips"] = "모든 애드온 툴팁의 글꼴 외곽선"
 L["Tooltip Header Font Size"] = "툴팁 제목 글꼴 크기"
 L["Font size for tooltip headers"] = "툴팁 제목의 글꼴 크기"
 L["Tooltip Line Font Size"] = "툴팁 줄 글꼴 크기"

@@ -84,6 +84,8 @@ L["When enabled, the addon will automatically switch to a different profile each
 L["Tooltip Settings"] = "提示框設定"
 L["Tooltip Font"] = "提示框字型"
 L["Font used for all addon tooltips"] = "用於所有插件提示框的字型"
+L["Tooltip Font Outline"] = "提示框字型外框"
+L["Font outline for all addon tooltips"] = "所有插件提示框的字型外框"
 L["Tooltip Header Font Size"] = "提示框標題字型大小"
 L["Font size for tooltip headers"] = "提示框標題的字型大小"
 L["Tooltip Line Font Size"] = "提示框行字型大小"

@@ -84,6 +84,8 @@ L["When enabled, the addon will automatically switch to a different profile each
 L["Tooltip Settings"] = "Impostazioni suggerimenti"
 L["Tooltip Font"] = "Carattere suggerimenti"
 L["Font used for all addon tooltips"] = "Carattere utilizzato per tutti i suggerimenti dell'addon"
+L["Tooltip Font Outline"] = "Contorno carattere suggerimenti"
+L["Font outline for all addon tooltips"] = "Contorno carattere per tutti i suggerimenti dell'addon"
 L["Tooltip Header Font Size"] = "Dimensione carattere intestazione"
 L["Font size for tooltip headers"] = "Dimensione carattere per intestazioni suggerimenti"
 L["Tooltip Line Font Size"] = "Dimensione carattere riga"

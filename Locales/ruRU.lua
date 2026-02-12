@@ -84,6 +84,8 @@ L["When enabled, the addon will automatically switch to a different profile each
 L["Tooltip Settings"] = "Настройки подсказок"
 L["Tooltip Font"] = "Шрифт подсказок"
 L["Font used for all addon tooltips"] = "Шрифт для всех подсказок аддона"
+L["Tooltip Font Outline"] = "Контур шрифта подсказок"
+L["Font outline for all addon tooltips"] = "Контур шрифта для всех подсказок аддона"
 L["Tooltip Header Font Size"] = "Размер шрифта заголовка"
 L["Font size for tooltip headers"] = "Размер шрифта для заголовков подсказок"
 L["Tooltip Line Font Size"] = "Размер шрифта строки"

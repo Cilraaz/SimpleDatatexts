@@ -80,6 +80,8 @@ L["When enabled, the addon will automatically switch to a different profile each
 L["Tooltip Settings"] = "Tooltip Settings"
 L["Tooltip Font"] = "Tooltip Font"
 L["Font used for all addon tooltips"] = "Font used for all addon tooltips"
+L["Tooltip Font Outline"] = "Tooltip Font Outline"
+L["Font outline for all addon tooltips"] = "Font outline for all addon tooltips"
 L["Tooltip Header Font Size"] = "Tooltip Header Font Size"
 L["Font size for tooltip headers"] = "Font size for tooltip headers"
 L["Tooltip Line Font Size"] = "Tooltip Line Font Size"
