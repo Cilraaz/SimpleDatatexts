@@ -355,6 +355,61 @@ function SDT:GetGeneralOptions()
                 end,
                 order = 23,
             },
+            tooltipHeader = {
+                type = "header",
+                name = L["Tooltip Settings"],
+                order = 30,
+            },
+            tooltipFont = {
+                type = "select",
+                dialogControl = "LSM30_Font",
+                name = L["Tooltip Font"],
+                desc = L["Font used for all addon tooltips"],
+                values = SDT.LSM:HashTable("font"),
+                get = function() return self.db.profile.tooltipFont end,
+                set = function(_, val)
+                    self.db.profile.tooltipFont = val
+                    -- Recreate tooltip with new font
+                    if SDT.Tooltip then
+                        SDT:CreateTooltip()
+                    end
+                end,
+                order = 31,
+            },
+            tooltipHeaderFontSize = {
+                type = "range",
+                name = L["Tooltip Header Font Size"],
+                desc = L["Font size for tooltip headers"],
+                min = 8,
+                max = 24,
+                step = 1,
+                get = function() return self.db.profile.tooltipHeaderFontSize end,
+                set = function(_, val)
+                    self.db.profile.tooltipHeaderFontSize = val
+                    -- Recreate tooltip with new font size
+                    if SDT.Tooltip then
+                        SDT:CreateTooltip()
+                    end
+                end,
+                order = 32,
+            },
+            tooltipLineFontSize = {
+                type = "range",
+                name = L["Tooltip Line Font Size"],
+                desc = L["Font size for tooltip content lines"],
+                min = 8,
+                max = 20,
+                step = 1,
+                get = function() return self.db.profile.tooltipLineFontSize end,
+                set = function(_, val)
+                    self.db.profile.tooltipLineFontSize = val
+                    -- Recreate tooltip with new font size
+                    if SDT.Tooltip then
+                        SDT:CreateTooltip()
+                    end
+                end,
+                order = 33,
+            },
         }
     }
 end

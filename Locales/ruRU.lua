@@ -81,6 +81,13 @@ L["Use Custom Color"] = "Использовать пользовательски
 L["X Offset"] = "Смещение по X"
 L["Y Offset"] = "Смещение по Y"
 L["When enabled, the addon will automatically switch to a different profile each time you change specialization. Pick which profile each spec should use below."] = "Когда включено, аддон будет автоматически переключаться на другой профиль каждый раз при смене специализации. Выберите ниже, какой профиль использовать для каждой специализации."
+L["Tooltip Settings"] = "Настройки подсказок"
+L["Tooltip Font"] = "Шрифт подсказок"
+L["Font used for all addon tooltips"] = "Шрифт для всех подсказок аддона"
+L["Tooltip Header Font Size"] = "Размер шрифта заголовка"
+L["Font size for tooltip headers"] = "Размер шрифта для заголовков подсказок"
+L["Tooltip Line Font Size"] = "Размер шрифта строки"
+L["Font size for tooltip content lines"] = "Размер шрифта для строк содержимого"
 
 -- ----------------------------
 -- Config.lua - Panels

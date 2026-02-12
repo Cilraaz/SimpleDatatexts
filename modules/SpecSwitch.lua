@@ -337,21 +337,21 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, SDT.FormatUtils:FindBestAnchorPoint(self))
-        GameTooltip:ClearLines()
+        SDT.Tooltip:SetOwner(self, SDT.FormatUtils:FindBestAnchorPoint(self))
+        SDT.Tooltip:ClearLines()
         if not SDT.db.profile.hideModuleTitle then
-            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, SPECIALIZATION)
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, SPECIALIZATION)
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         end
 
         for i = 1, GetNumSpecializations() or 0 do
             local id, name, _, icon = GetSpecializationInfo(i)
             if id and name then
-                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, strjoin(' ', SDT.FormatUtils:ColorModuleText(moduleName, name), AddTexture(icon), (i == activeSpecIndex and activeString or inactiveString)), nil, 1, 1, 1)
+                SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, strjoin(' ', SDT.FormatUtils:ColorModuleText(moduleName, name), AddTexture(icon), (i == activeSpecIndex and activeString or inactiveString)), nil, 1, 1, 1)
             end
         end
 
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
 
         local specLoot = GetLootSpecialization()
         local sameSpec = (specLoot == 0) and GetSpecialization()
@@ -360,51 +360,51 @@ function mod.Create(slotFrame)
             local id, name, _, icon = GetSpecializationInfo((specIndex ~= 0 and specIndex) or GetSpecialization())
             if name then
                 if specLoot == 0 then
-                    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format('|cffFFFFFF%s:|r %s', SELECT_LOOT_SPECIALIZATION, format(LOOT_SPECIALIZATION_DEFAULT, name)))
+                    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format('|cffFFFFFF%s:|r %s', SELECT_LOOT_SPECIALIZATION, format(LOOT_SPECIALIZATION_DEFAULT, name)))
                 else
-                    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format('|cffFFFFFF%s:|r %s', SELECT_LOOT_SPECIALIZATION, name))
+                    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format('|cffFFFFFF%s:|r %s', SELECT_LOOT_SPECIALIZATION, name))
                 end
             end
         end
 
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Loadouts"], nil, 0.69, 0.31, 0.31)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Loadouts"], nil, 0.69, 0.31, 0.31)
 
         BuildLoadoutList()
         for index, loadout in ipairs(loadoutList) do
             if index > 1 then
                 local textStr = (type(loadout.checked) == "function" and loadout.checked(loadout) and activeString) or inactiveString
-                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, strjoin(' - ', loadout.text, textStr), nil, 1, 1, 1)
+                SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, strjoin(' - ', loadout.text, textStr), nil, 1, 1, 1)
             end
         end
 
         if C_SpecializationInfo_GetAllSelectedPvpTalentIDs then
             local pvpTalents = C_SpecializationInfo_GetAllSelectedPvpTalentIDs()
             if pvpTalents and next(pvpTalents) then
-                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, PVP_TALENTS, nil, 0.69, 0.31, 0.31)
+                SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+                SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, PVP_TALENTS, nil, 0.69, 0.31, 0.31)
                 local i = 0
                 for _, talentID in next, pvpTalents do
                     i = i + 1
                     if i > 4 then break end
                     local name, _, icon, _, _, _, unlocked = GetPvpTalentInfoByID and GetPvpTalentInfoByID(talentID) or nil
                     if name and unlocked then
-                        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, AddTexture(icon) .. ' ' .. name)
+                        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, AddTexture(icon) .. ' ' .. name)
                     end
                 end
             end
         end
 
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Left Click: Change Talent Specialization"] .. "|r")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Control + Left Click: Change Loadout"] .. "|r")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Shift + Left Click: Show Talent Specialization UI"] .. "|r")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Shift + Right Click: Change Loot Specialization"] .. "|r")
-        GameTooltip:Show()
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, "|cffFFFFFF" .. L["Left Click: Change Talent Specialization"] .. "|r")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, "|cffFFFFFF" .. L["Control + Left Click: Change Loadout"] .. "|r")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, "|cffFFFFFF" .. L["Shift + Left Click: Show Talent Specialization UI"] .. "|r")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, "|cffFFFFFF" .. L["Shift + Right Click: Change Loot Specialization"] .. "|r")
+        SDT.Tooltip:Show()
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     ----------------------------------------------------

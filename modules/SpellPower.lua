@@ -14,7 +14,6 @@ local format = string.format
 -- WoW API Locals
 ----------------------------------------------------
 local CreateFrame = CreateFrame
-local GameTooltip = GameTooltip
 local GetSpellBonusDamage = GetSpellBonusDamage
 
 ----------------------------------------------------
@@ -113,27 +112,27 @@ function mod.Create(slotFrame)
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-        GameTooltip:SetOwner(self, anchor)
-        GameTooltip:ClearLines()
+        SDT.Tooltip:SetOwner(self, anchor)
+        SDT.Tooltip:ClearLines()
 
         local text = format('%s: |cffFFFFFF%d|r', ITEM_MOD_SPELL_POWER_SHORT, maxSpellPower)
-        SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, text)
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, STAT_SPELLPOWER_TOOLTIP, nil, nil, nil, nil, nil, nil, nil, true)
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, STAT_SPELLPOWER_TOOLTIP, nil, nil, nil, nil, nil, nil, nil, true)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         
         -- Show spell power for each school
         for i = 2, MAX_SPELL_SCHOOLS do
             local power = GetSpellBonusDamage(i)
             local schoolName = SPELL_SCHOOL_NAMES[i-1] or "Unknown"
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, schoolName, power, 1, 1, 1)
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, schoolName, power, 1, 1, 1)
         end
 
-        GameTooltip:Show()
+        SDT.Tooltip:Show()
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     UpdateSpellPower()

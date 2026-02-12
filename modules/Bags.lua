@@ -14,7 +14,6 @@ local format = string.format
 -- WoW API Locals
 ----------------------------------------------------
 local CreateFrame                = CreateFrame
-local GameTooltip                = GameTooltip
 local GetInventoryItemDurability = GetInventoryItemDurability
 local GetInventoryItemLink       = GetInventoryItemLink
 local GetInventoryItemQuality    = GetInventoryItemQuality
@@ -135,11 +134,11 @@ function mod.Create(slotFrame)
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-        GameTooltip:SetOwner(self, anchor)
-        GameTooltip:ClearLines()
+        SDT.Tooltip:SetOwner(self, anchor)
+        SDT.Tooltip:ClearLines()
         if not SDT.db.profile.hideModuleTitle then
-            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Bags"])
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, L["Bags"])
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         end
 
         for i = 0, NUM_BAG_SLOTS do
@@ -157,18 +156,18 @@ function mod.Create(slotFrame)
                     local icon = GetInventoryItemTexture('player', id)
                     local quality = GetInventoryItemQuality('player', id) or 1
                     r1, g1, b1 = GetItemQualityColor(quality)
-                    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format(iconString, icon or "", bagName), format('%d / %d', usedSlots, numSlots), r1, g1, b1, r2, g2, b2)
+                    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format(iconString, icon or "", bagName), format('%d / %d', usedSlots, numSlots), r1, g1, b1, r2, g2, b2)
                 else
-                    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, bagName, format('%d / %d', usedSlots, numSlots), r1, g1, b1, r2, g2, b2)
+                    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, bagName, format('%d / %d', usedSlots, numSlots), r1, g1, b1, r2, g2, b2)
                 end
             end
         end
 
-        GameTooltip:Show()
+        SDT.Tooltip:Show()
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     UpdateBags()

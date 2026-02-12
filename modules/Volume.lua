@@ -209,31 +209,31 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:SetScript("OnEnter", function(self)
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-        GameTooltip:SetOwner(self, anchor)
-        GameTooltip:ClearLines()
+        SDT.Tooltip:SetOwner(self, anchor)
+        SDT.Tooltip:ClearLines()
 
-		SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Active Output Audio Device"], 1, 1, 1)
-		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, Sound_GameSystem_GetOutputDriverNameByIndex(GetCVar('Sound_OutputDriverIndex')), nil, 1, 0.82, 0)
-		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-		SDT.FormatUtils:AddTooltipLine(GameTooltip, 14, L["Volume Streams"], nil, 1, 1, 1)
+		SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, L["Active Output Audio Device"], 1, 1, 1)
+		SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, Sound_GameSystem_GetOutputDriverNameByIndex(GetCVar('Sound_OutputDriverIndex')), nil, 1, 0.82, 0)
+		SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+		SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, SDT.db.profile.tooltipLineFontSize + 2, L["Volume Streams"], nil, 1, 1, 1)
 
 	    for _, Stream in ipairs(AudioStreams) do
-			SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, Stream.Name, GetStreamString(Stream, true), 1, 0.82, 0)
+			SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, Stream.Name, GetStreamString(Stream, true), 1, 0.82, 0)
 	    end
 
-		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+		SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
 
-		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Left Click: Select Volume Stream"] .. "|r")
-		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Middle Click: Toggle Mute Master Stream"] .. "|r")
-		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Shift + Middle Click: Toggle Volume Stream"] .. "|r")
-		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Shift + Left Click: Open System Audio Panel"] .. "|r")
-		SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Shift + Right Click: Select Output Audio Device"] .. "|r")
+		SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, "|cFFffffff" .. L["Left Click: Select Volume Stream"] .. "|r")
+		SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, "|cFFffffff" .. L["Middle Click: Toggle Mute Master Stream"] .. "|r")
+		SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, "|cFFffffff" .. L["Shift + Middle Click: Toggle Volume Stream"] .. "|r")
+		SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, "|cFFffffff" .. L["Shift + Left Click: Open System Audio Panel"] .. "|r")
+		SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, "|cFFffffff" .. L["Shift + Right Click: Select Output Audio Device"] .. "|r")
 
-	    GameTooltip:Show()
+	    SDT.Tooltip:Show()
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     ----------------------------------------------------

@@ -97,9 +97,9 @@ local function DisplayCurrencyInfo(tooltip)
     local info = C_CurrencyInfo_GetBackpackCurrencyInfo(index)
     local _, _, _, toc = GetBuildInfo()
     while info and info.name do
-        if index == 1 then GameTooltip:AddLine(" ") end
+        if index == 1 then SDT.Tooltip:AddLine(" ") end
         if (info.name ~= "Valorstones" or toc < 120001) and info.quantity then
-            GameTooltip:AddDoubleLine(format(iconStringName, info.iconFileID, info.name), SDT.FormatUtils:FormatLargeNumbers(info.quantity), 1,1,1, 1,1,1)
+            SDT.Tooltip:AddDoubleLine(format(iconStringName, info.iconFileID, info.name), SDT.FormatUtils:FormatLargeNumbers(info.quantity), 1,1,1, 1,1,1)
         end
         index = index + 1
         info, name = C_CurrencyInfo_GetBackpackCurrencyInfo(index)
@@ -554,29 +554,29 @@ end
 -- Tooltip
 ----------------------------------------------------
 local function ShowTooltip(self)
-    local tooltip = GameTooltip
+    local tooltip = SDT.Tooltip
     local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
     tooltip:SetOwner(self, anchor)
     tooltip:ClearLines()
     if not SDT.db.profile.hideModuleTitle then
-        SDT.FormatUtils:AddTooltipHeader(tooltip, 14, L["GOLD"])
-        SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipHeader(tooltip, nil, L["GOLD"])
+        SDT.FormatUtils:AddTooltipLine(tooltip, nil, " ")
     end
 
     -- Session info
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Session:"])
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Earned:"], FormatMoney(Profit), 1,1,1,1,1,1)
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Spent:"], FormatMoney(Spent), 1,1,1,1,1,1)
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, L["Session:"])
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, L["Earned:"], FormatMoney(Profit), 1,1,1,1,1,1)
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, L["Spent:"], FormatMoney(Spent), 1,1,1,1,1,1)
     if Spent ~= 0 then
         local gained = Profit > Spent
-        SDT.FormatUtils:AddTooltipLine(tooltip, 12, 
+        SDT.FormatUtils:AddTooltipLine(tooltip, nil, 
             gained and L["Profit:"] or L["Deficit:"],
             FormatMoney(Profit-Spent),
             gained and 0 or 1, gained and 1 or 0, 0, 1,1,1)
     end
 
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Character:"])
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, " ")
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, L["Character:"])
     sort(myGold, SortFunction)
     local total = #myGold
     local maxChars = SDT:GetModuleSetting(moduleName, "characterQty", 20)
@@ -586,12 +586,12 @@ local function ShowTooltip(self)
         if g.faction and g.faction ~= 'Neutral' and g.faction ~= '' then
             toonName = format('|TInterface\\FriendsFrame\\PlusManz-%s:14|t ', g.faction) .. toonName
         end
-        SDT.FormatUtils:AddTooltipLine(tooltip, 12, (g.name == _G.UnitName("player") and toonName..' |TInterface\\COMMON\\Indicator-Green:14|t' or toonName),
+        SDT.FormatUtils:AddTooltipLine(tooltip, nil, (g.name == _G.UnitName("player") and toonName..' |TInterface\\COMMON\\Indicator-Green:14|t' or toonName),
             g.amountText, g.r, g.g, g.b, 1,1,1)
     end
 
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Server:"])
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, " ")
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, L["Server:"])
     local serverGold = {}
     for _, charData in pairs(myGold) do
         if not serverGold[charData.realm] then
@@ -608,29 +608,29 @@ local function ShowTooltip(self)
     local maxServers = SDT:GetModuleSetting(moduleName, "serverQty", 20)
     for i = 1, math.min(maxServers, #sortedServerGold) do
         local data = sortedServerGold[i]
-        SDT.FormatUtils:AddTooltipLine(tooltip, 12, data.realm, FormatMoney(data.amount), 1,1,1,1,1,1)
+        SDT.FormatUtils:AddTooltipLine(tooltip, nil, data.realm, FormatMoney(data.amount), 1,1,1,1,1,1)
     end
 
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Faction:"])
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, " ")
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, L["Faction:"])
     if totalAlliance > 0 then
-        SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Alliance:"], FormatMoney(totalAlliance), 0, .376,1,1,1,1)
+        SDT.FormatUtils:AddTooltipLine(tooltip, nil, L["Alliance:"], FormatMoney(totalAlliance), 0, .376,1,1,1,1)
     end
     if totalHorde > 0 then
-        SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Horde:"], FormatMoney(totalHorde), 1, .2, .2, 1,1,1)
+        SDT.FormatUtils:AddTooltipLine(tooltip, nil, L["Horde:"], FormatMoney(totalHorde), 1, .2, .2, 1,1,1)
     end
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Total:"], FormatMoney(totalGold), 1,1,1,1,1,1)
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["Warband:"], FormatMoney(warbandGold), 1,1,1,1,1,1)
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, " ")
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, L["Total:"], FormatMoney(totalGold), 1,1,1,1,1,1)
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, L["Warband:"], FormatMoney(warbandGold), 1,1,1,1,1,1)
     if C_WowTokenPublic_GetCurrentMarketPrice then
-        SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
-        SDT.FormatUtils:AddTooltipLine(tooltip, 12, L["WoW Token:"], FormatMoney(C_WowTokenPublic_GetCurrentMarketPrice() or 0), 0,.8,1,1,1,1)
+        SDT.FormatUtils:AddTooltipLine(tooltip, nil, " ")
+        SDT.FormatUtils:AddTooltipLine(tooltip, nil, L["WoW Token:"], FormatMoney(C_WowTokenPublic_GetCurrentMarketPrice() or 0), 0,.8,1,1,1,1)
     end
     DisplayCurrencyInfo()
 
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, "|cffaaaaaa" .. L["Reset Session Data:"], L["Hold Shift + Right Click"] .. "|r")
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, "|cffaaaaaa" .. L["Reset Character Gold Data:"], L["Hold Alt + Right Click"] .. "|r")
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, " ")
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, "|cffaaaaaa" .. L["Reset Session Data:"], L["Hold Shift + Right Click"] .. "|r")
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, "|cffaaaaaa" .. L["Reset Character Gold Data:"], L["Hold Alt + Right Click"] .. "|r")
     tooltip:Show()
 end
 
@@ -679,7 +679,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", ShowTooltip)
-    slotFrame:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    slotFrame:SetScript("OnLeave", function() SDT.Tooltip:Hide() end)
 
     ----------------------------------------------------
     -- Click Handler

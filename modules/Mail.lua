@@ -66,25 +66,25 @@ function mod.Create(slotFrame)
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-        GameTooltip:SetOwner(self, anchor)
-        GameTooltip:ClearLines()
+        SDT.Tooltip:SetOwner(self, anchor)
+        SDT.Tooltip:ClearLines()
 
         local senders = { GetLatestThreeSenders() }
         if next(senders) then
             local header = HasNewMail() and HAVE_MAIL_FROM or MAIL_LABEL
-            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, header)
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, header)
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
 
             for _, sender in pairs(senders) do
-                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, sender)
+                SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, sender)
             end
 
-            GameTooltip:Show()
+            SDT.Tooltip:Show()
         end
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     OnEvent(f)

@@ -106,31 +106,31 @@ function mod.Create(slotFrame)
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-        GameTooltip:SetOwner(self, anchor)
-        GameTooltip:ClearLines()
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 14, isHunter and RANGED_ATTACK_POWER or MELEE_ATTACK_POWER, totalAP, 1, 0.82, 0, 1, 1, 1)
+        SDT.Tooltip:SetOwner(self, anchor)
+        SDT.Tooltip:ClearLines()
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, isHunter and RANGED_ATTACK_POWER or MELEE_ATTACK_POWER, totalAP, 1, 0.82, 0, 1, 1, 1)
 
         local APBonus = format("%.2f", totalAP / ATTACK_POWER_MAGIC_NUMBER)
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format(isHunter and RANGED_ATTACK_POWER_TOOLTIP or MELEE_ATTACK_POWER_TOOLTIP, APBonus), nil, nil, nil, nil, nil, nil, true)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format(isHunter and RANGED_ATTACK_POWER_TOOLTIP or MELEE_ATTACK_POWER_TOOLTIP, APBonus), nil, nil, nil, nil, nil, nil, true)
 
 	    if isHunter and ComputePetBonus then
 		    local petAPBonus = ComputePetBonus('PET_BONUS_RAP_TO_AP', totalAP)
 		    local petSpellDmgBonus = ComputePetBonus('PET_BONUS_RAP_TO_SPELLDMG', totalAP)
 
     		if petAPBonus > 0 then
-                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format(PET_BONUS_TOOLTIP_RANGED_ATTACK_POWER, format("%.2f", petAPBonus)))
+                SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format(PET_BONUS_TOOLTIP_RANGED_ATTACK_POWER, format("%.2f", petAPBonus)))
 		    end
 
     		if petSpellDmgBonus > 0 then
-                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format(PET_BONUS_TOOLTIP_SPELLDAMAGE, format("%.2f", petSpellDmgBonus)))
+                SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format(PET_BONUS_TOOLTIP_SPELLDAMAGE, format("%.2f", petSpellDmgBonus)))
 		    end
 	    end
 
-        GameTooltip:Show()
+        SDT.Tooltip:Show()
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     UpdateAP()

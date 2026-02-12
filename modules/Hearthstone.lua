@@ -189,47 +189,47 @@ end
 ----------------------------------------------------
 local function ShowTooltip(slotFrame)
     local anchor = SDT.FormatUtils:FindBestAnchorPoint(slotFrame)
-    GameTooltip:SetOwner(slotFrame, anchor)
-    GameTooltip:ClearLines()
+    SDT.Tooltip:SetOwner(slotFrame, anchor)
+    SDT.Tooltip:ClearLines()
     
     if not SDT.db.profile.hideModuleTitle then
-        SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Hearthstone"])
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, L["Hearthstone"])
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
     end
     
     local selectedHS = GetSelectedHearthstone()
     local hsID = selectedHS == "random" and "random" or tonumber(selectedHS)
     
     if hsID == "random" then
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Selected:"], L["Random"], 1, 1, 1, 0.5, 1, 0.5)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Selected:"], L["Random"], 1, 1, 1, 0.5, 1, 0.5)
     else
         local itemName = GetItemInfo(hsID)
         if itemName then
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Selected:"], itemName, 1, 1, 1, 0.5, 1, 0.5)
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Selected:"], itemName, 1, 1, 1, 0.5, 1, 0.5)
         end
     end
     
     -- Show available hearthstones
     local available = GetAvailableHearthstones()
     if #available > 0 then
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Available Hearthstones:"], nil, 0.69, 0.31, 0.31)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Available Hearthstones:"], nil, 0.69, 0.31, 0.31)
         
         for _, hs in ipairs(available) do
             local itemName = GetItemInfo(hs.id)
             if itemName then
                 local _, _, _, _, icon = GetItemInfoInstant(hs.id)
                 local iconStr = string.format("|T%s:14:14:0:0:64:64:4:60:4:60|t", icon or "")
-                SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, iconStr .. " " .. itemName, nil, 1, 1, 1)
+                SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, iconStr .. " " .. itemName, nil, 1, 1, 1)
             end
         end
     end
     
-    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Left Click: Use Hearthstone"] .. "|r")
-    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cffFFFFFF" .. L["Right Click: Select Hearthstone"] .. "|r")
+    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, "|cffFFFFFF" .. L["Left Click: Use Hearthstone"] .. "|r")
+    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, "|cffFFFFFF" .. L["Right Click: Select Hearthstone"] .. "|r")
     
-    GameTooltip:Show()
+    SDT.Tooltip:Show()
 end
 
 ----------------------------------------------------
@@ -357,7 +357,7 @@ function mod.Create(slotFrame)
     end)
     
     secureButton:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     ----------------------------------------------------

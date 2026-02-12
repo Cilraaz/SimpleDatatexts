@@ -19,6 +19,9 @@ local defaults = {
         font = "Friz Quadrata TT",
         fontSize = 12,
         fontOutline = "NONE",
+        tooltipFont = "Friz Quadrata TT",
+        tooltipHeaderFontSize = 14,
+        tooltipLineFontSize = 12,
         
         -- Panel/bar data
         bars = {

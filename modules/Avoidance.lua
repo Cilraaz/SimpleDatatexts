@@ -14,7 +14,6 @@ local format = string.format
 -- WoW API Locals
 ----------------------------------------------------
 local CreateFrame = CreateFrame
-local GameTooltip = GameTooltip
 local GetCombatRating = GetCombatRating
 local GetCombatRatingBonus = GetCombatRatingBonus
 
@@ -99,21 +98,21 @@ function mod.Create(slotFrame)
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-        GameTooltip:SetOwner(self, anchor)
-        GameTooltip:ClearLines()
+        SDT.Tooltip:SetOwner(self, anchor)
+        SDT.Tooltip:ClearLines()
 
         local text = format('%s: |cffFFFFFF%.2f%%|r', STAT_AVOIDANCE, avoidancePercent)
         local tooltip = format(CR_AVOIDANCE_TOOLTIP, avoidanceRating, avoidancePercent)
 
-        SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, text)
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
+        SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
 
-        GameTooltip:Show()
+        SDT.Tooltip:Show()
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     UpdateAvoidance()

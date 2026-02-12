@@ -151,50 +151,51 @@ end
 ----------------------------------------------------
 function mod.OnEnter(self)
     local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-    GameTooltip:SetOwner(self, anchor)
-    GameTooltip:ClearLines()
+    SDT.Tooltip:SetOwner(self, anchor)
+    SDT.Tooltip:ClearLines()
 
     if not SDT.db.profile.hideModuleTitle then
-        SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["SYSTEM"])
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, L["SYSTEM"])
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
     end
 
     local fps = floor(GetFramerate())
     local _, _, homePing, worldPing = GetNetStats()
 
-    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["FPS:"], fps, .69, .31, .31, .84, .75, .65)
-    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Home Latency:"], homePing .. " ms", .69, .31, .31, .84, .75, .65)
-    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["World Latency:"], worldPing .. " ms", .69, .31, .31, .84, .75, .65)
+    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["FPS:"], fps, .69, .31, .31, .84, .75, .65)
+    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Home Latency:"], homePing .. " ms", .69, .31, .31, .84, .75, .65)
+    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["World Latency:"], worldPing .. " ms", .69, .31, .31, .84, .75, .65)
 
     -- Use cached data if not stale
     local cachedData = GetCachedAddonData()
 
     -- Display addons
-    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Total Memory:"], FormatMem(cachedData.totalMEM), .69, .31, .31, .84, .75, .65)
-    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Total Memory:"], FormatMem(cachedData.totalMEM), .69, .31, .31, .84, .75, .65)
+    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
 
     if cachedData.cpuProfiling then
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Total CPU:"], FormatCpu(cachedData.totalCPU), .69, .31, .31, .84, .75, .65)
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Top Addons by CPU:"])
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Total CPU:"], FormatCpu(cachedData.totalCPU), .69, .31, .31, .84, .75, .65)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Top Addons by CPU:"])
     else
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Top Addons by Memory:"])
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Top Addons by Memory:"])
     end
 
     -- Display top addons from cached data
     local addonQty = SDT:GetModuleSetting(moduleName, "addonQty", 10)
+    local addonFontSize = SDT.db.profile.tooltipLineFontSize - 1
     for i = 1, min(addonQty, #cachedData.addons) do
         local addon = cachedData.addons[i]
         if cachedData.cpuProfiling then
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 11, 
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, addonFontSize, 
                 addon.title, 
                 FormatCpu(addon.cpu) .. " / " .. FormatMem(addon.mem), 
                 .84, .75, .65, .84, .75, .65
             )
         else
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 11, 
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, addonFontSize, 
                 addon.title, 
                 FormatMem(addon.mem), 
                 .84, .75, .65, .84, .75, .65
@@ -202,9 +203,9 @@ function mod.OnEnter(self)
         end
     end
 
-    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["(Shift Click) Collect Garbage"])
-    GameTooltip:Show()
+    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["(Shift Click) Collect Garbage"])
+    SDT.Tooltip:Show()
 end
 
 ----------------------------------------------------
@@ -232,7 +233,7 @@ function mod.Create(slotFrame)
     end)
     slotFrame:SetScript("OnLeave", function()
         enteredFrame = false
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     ----------------------------------------------------

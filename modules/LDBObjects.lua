@@ -109,17 +109,17 @@ local function HandleLDBObject(name, obj)
         slotFrame:SetScript("OnEnter", function(self)
             if obj.OnTooltipShow then
                 local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-                GameTooltip:SetOwner(self, anchor)
-                GameTooltip:ClearLines()
-                obj.OnTooltipShow(GameTooltip)
-                GameTooltip:Show()
+                SDT.Tooltip:SetOwner(self, anchor)
+                SDT.Tooltip:ClearLines()
+                obj.OnTooltipShow(SDT.Tooltip)
+                SDT.Tooltip:Show()
             elseif obj.OnEnter then
                 obj.OnEnter(self)
             end
         end)
         slotFrame:SetScript("OnLeave", function(self)
             if obj.OnLeave then obj.OnLeave(self) end
-            GameTooltip:Hide()
+            SDT.Tooltip:Hide()
         end)
 
         ----------------------------------------------------

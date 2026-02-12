@@ -11,18 +11,21 @@ local BreakUpLargeNumbers = BreakUpLargeNumbers
 -- Add Tooltip Header
 ----------------------------------------------------
 function SDT.FormatUtils:AddTooltipHeader(tooltip, fontSize, text, r, g, b, wrap)
-    tooltip = tooltip or GameTooltip
+    tooltip = tooltip or SDT.Tooltip
     r = r or 1
     g = g or 0.82
     b = b or 0
+
+    -- Use global setting if fontSize not specified
+    fontSize = fontSize or SDT.db.profile.tooltipHeaderFontSize
     
     tooltip:AddLine(text, r, g, b, wrap or false)
     
     -- Force the header to use a specific font size
     local textLeft = _G[tooltip:GetName() .. "TextLeft" .. tooltip:NumLines()]
     if textLeft then
-        local font, _, flags = textLeft:GetFont()
-        textLeft:SetFont(font, fontSize or 14, flags)
+        local fontPath = SDT.LSM:Fetch("font", SDT.db.profile.tooltipFont)
+        textLeft:SetFont(fontPath, fontSize, "OUTLINE")
     end
 end
 
@@ -30,7 +33,10 @@ end
 -- Add Tooltip Line
 ----------------------------------------------------
 function SDT.FormatUtils:AddTooltipLine(tooltip, fontSize, textLeft, textRight, r1, g1, b1, r2, g2, b2, wrap)
-    tooltip = tooltip or GameTooltip
+    tooltip = tooltip or SDT.Tooltip
+
+    -- Use global setting if fontSize not specified
+    fontSize = fontSize or SDT.db.profile.tooltipLineFontSize
 
     -- Handle single or double lines
     if textRight then
@@ -49,17 +55,16 @@ function SDT.FormatUtils:AddTooltipLine(tooltip, fontSize, textLeft, textRight, 
     end
 
     -- Apply font size to the line
+    local fontPath = SDT.LSM:Fetch("font", SDT.db.profile.tooltipFont)
     local lineNum = tooltip:NumLines()
     local textLeftObj = _G[tooltip:GetName() .. "TextLeft" .. lineNum]
     local textRightObj = _G[tooltip:GetName() .. "TextRight" .. lineNum]
     
     if textLeftObj then
-        local font, _, flags = textLeftObj:GetFont()
-        textLeftObj:SetFont(font, fontSize or 12, flags)
+        textLeftObj:SetFont(fontPath, fontSize, "OUTLINE")
     end
     if textRightObj then
-        local font, _, flags = textRightObj:GetFont()
-        textRightObj:SetFont(font, fontSize or 12, flags)
+        textRightObj:SetFont(fontPath, fontSize, "OUTLINE")
     end
 end
 

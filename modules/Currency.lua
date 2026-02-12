@@ -228,7 +228,7 @@ end
 -- Tooltip
 ----------------------------------------------------
 local function ShowTooltip(self)
-    local tooltip = GameTooltip
+    local tooltip = SDT.Tooltip
     local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
     tooltip:SetOwner(self, anchor)
     tooltip:ClearLines()
@@ -237,8 +237,8 @@ local function ShowTooltip(self)
     -- HEADER: CURRENCIES
     ------------------------------------------------
     if not SDT.db.profile.hideModuleTitle then
-        SDT.FormatUtils:AddTooltipHeader(tooltip, 14, L["CURRENCIES"])
-        SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipHeader(tooltip, nil, L["CURRENCIES"])
+        SDT.FormatUtils:AddTooltipLine(tooltip, nil, " ")
     end
 
     -- Get ordered currency indices
@@ -247,7 +247,7 @@ local function ShowTooltip(self)
     for i = 1, #orderedIndices do
         local info = C_CurrencyInfo_GetBackpackCurrencyInfo(orderedIndices[i])
         if info and info.quantity and info.iconFileID then
-            SDT.FormatUtils:AddTooltipLine(tooltip, 12, 
+            SDT.FormatUtils:AddTooltipLine(tooltip, nil, 
                 format("%s %s", format(ICON_FMT, info.iconFileID), info.name or "?"),
                 SDT.FormatUtils:FormatLargeNumbers(info.quantity),
                 1,1,1, 1,1,1
@@ -258,11 +258,11 @@ local function ShowTooltip(self)
     ------------------------------------------------
     -- HEADER: GOLD
     ------------------------------------------------
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, " ")
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, " ")
     if not SDT.db.profile.hideModuleTitle then
-        SDT.FormatUtils:AddTooltipHeader(tooltip, 14, L["GOLD"])
+        SDT.FormatUtils:AddTooltipHeader(tooltip, nil, L["GOLD"])
     end
-    SDT.FormatUtils:AddTooltipLine(tooltip, 12, UnitName("player"), FormatMoney(GetMoney()), 1,1,1, 1,1,1)
+    SDT.FormatUtils:AddTooltipLine(tooltip, nil, UnitName("player"), FormatMoney(GetMoney()), 1,1,1, 1,1,1)
 
     tooltip:Show()
 end
@@ -312,7 +312,7 @@ function mod.Create(slotFrame)
     ------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", ShowTooltip)
-    slotFrame:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    slotFrame:SetScript("OnLeave", function() SDT.Tooltip:Hide() end)
     slotFrame:SetScript("OnClick", function(self, button)
         if button == "LeftButton" then
             _G.ToggleCharacter('TokenFrame')

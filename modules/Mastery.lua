@@ -76,8 +76,8 @@ function mod.Create(slotFrame)
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-        GameTooltip:SetOwner(self, anchor)
-        GameTooltip:ClearLines()
+        SDT.Tooltip:SetOwner(self, anchor)
+        SDT.Tooltip:ClearLines()
 
         local masteryRating, bonusCoeff = GetMasteryEffect()
 	    local masteryBonus = (GetCombatRatingBonus(CR_MASTERY) or 0) * (bonusCoeff or 0)
@@ -86,8 +86,8 @@ function mod.Create(slotFrame)
 	    if masteryBonus > 0 then
 		    title = format('%s |cffFFFFFF(%.2f%%|r |cff33ff33+%.2f%%|r|cffFFFFFF)|r', title, masteryRating - masteryBonus, masteryBonus)
 	    end
-        SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, title)
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, title)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
 
         local spec = GetSpecialization()
 	    if spec then
@@ -95,7 +95,7 @@ function mod.Create(slotFrame)
 		    local hasSpell = false
 		    for _, spell in next, spells do
 			    if hasSpell then
-				    GameTooltip:AddLine(" ")
+				    SDT.Tooltip:AddLine(" ")
 			    else
 				    hasSpell = true
 			    end
@@ -104,21 +104,21 @@ function mod.Create(slotFrame)
                 local spellName = spellObj:GetSpellName()
                 local spellDescription = spellObj:GetSpellDescription()
                 if spellName then
-                    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, spellName, nil, 1, 1, 1)
+                    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, spellName, nil, 1, 1, 1)
                     if spellDescription and spellDescription ~= "" then
-                        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, spellDescription)
+                        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, spellDescription)
                     end
                 end
 		    end
 	    end
 
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format("%s: %s [+%.2f%%]", STAT_MASTERY, GetCombatRating(CR_MASTERY), masteryBonus))
-        GameTooltip:Show()
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format("%s: %s [+%.2f%%]", STAT_MASTERY, GetCombatRating(CR_MASTERY), masteryBonus))
+        SDT.Tooltip:Show()
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     UpdateMastery()

@@ -101,8 +101,8 @@ function mod.Create(slotFrame)
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-        GameTooltip:SetOwner(self, anchor)
-        GameTooltip:ClearLines()
+        SDT.Tooltip:SetOwner(self, anchor)
+        SDT.Tooltip:ClearLines()
 
         -- Haste
         local haste = GetHaste()
@@ -110,32 +110,32 @@ function mod.Create(slotFrame)
         local text = format('%s: %s%.2f%%|r', STAT_HASTE, '|cffFFFFFF', haste)
         local tooltip = format('%s'..STAT_HASTE_BASE_TOOLTIP, _G['STAT_HASTE_'..SDTC.playerClass..'_TOOLTIP'] or STAT_HASTE_TOOLTIP, GetCombatRating(hasteStat), GetCombatRatingBonus(hasteStat))
 
-        SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, text)
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
+        SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
 
         -- Attack speed
         local mh, oh = UnitAttackSpeed("player")
-        GameTooltip:AddLine(" ")
+        SDT.Tooltip:AddLine(" ")
         if oh then
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12,
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil,
                 ATTACK_SPEED,
                 string.format("%.2f / %.2f", mh, oh),
                 1, 0.82, 0, 1, 0.82, 0
             )
         else
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12,
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil,
                 ATTACK_SPEED,
                 string.format("%.2f", mh),
                 1, 0.82, 0, 1, 0.82, 0
             )
         end
 
-        GameTooltip:Show()
+        SDT.Tooltip:Show()
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     UpdateHaste()

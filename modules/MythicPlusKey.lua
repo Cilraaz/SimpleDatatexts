@@ -19,7 +19,6 @@ local C_ChallengeMode = C_ChallengeMode
 local C_Container = C_Container
 local C_Spell_GetSpellCooldown = C_Spell.GetSpellCooldown
 local C_SpellBook_IsSpellKnown = C_SpellBook.IsSpellKnown
-local GameTooltip = GameTooltip
 local PVEFrame_ShowFrame = PVEFrame_ShowFrame
 
 ----------------------------------------------------
@@ -277,24 +276,24 @@ SetupModuleConfig()
 ----------------------------------------------------
 local function ShowTooltip(slotFrame, keystoneLevel, dungeonName)
     local anchor = SDT.FormatUtils:FindBestAnchorPoint(slotFrame)
-    GameTooltip:SetOwner(slotFrame, anchor)
-    GameTooltip:ClearLines()
+    SDT.Tooltip:SetOwner(slotFrame, anchor)
+    SDT.Tooltip:ClearLines()
 
     if not SDT.db.profile.hideModuleTitle then
-        SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Mythic+ Keystone"])
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, L["Mythic+ Keystone"])
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
     end
 
     if keystoneLevel and dungeonName then
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 14, L["Current Key:"], format("+%d %s", keystoneLevel, dungeonName), 1, 0.82, 0, 1, 1, 1)
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Left Click: Teleport to Dungeon"] .. "|r")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, "|cFFffffff" .. L["Right Click: List Group in Finder"] .. "|r")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, SDT.db.profile.tooltipLineFontSize + 2, L["Current Key:"], format("+%d %s", keystoneLevel, dungeonName), 1, 0.82, 0, 1, 1, 1)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, "|cFFffffff" .. L["Left Click: Teleport to Dungeon"] .. "|r")
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, "|cFFffffff" .. L["Right Click: List Group in Finder"] .. "|r")
     else
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 14, L["No Mythic+ Keystone"], nil, 1, 0.82, 0)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, SDT.db.profile.tooltipLineFontSize + 2, L["No Mythic+ Keystone"], nil, 1, 0.82, 0)
     end
 
-    GameTooltip:Show()
+    SDT.Tooltip:Show()
 end
 
 ----------------------------------------------------
@@ -448,7 +447,7 @@ function mod.Create(slotFrame)
     end)
 
     secureButton:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     ----------------------------------------------------

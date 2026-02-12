@@ -81,6 +81,13 @@ L["Use Custom Color"] = "Benutzerdefinierte Farbe verwenden"
 L["X Offset"] = "X-Versatz"
 L["Y Offset"] = "Y-Versatz"
 L["When enabled, the addon will automatically switch to a different profile each time you change specialization. Pick which profile each spec should use below."] = "Wenn aktiviert, wechselt das Addon automatisch zu einem anderen Profil, jedes Mal, wenn du die Spezialisierung änderst. Wähle unten, welches Profil jede Spezialisierung verwenden soll."
+L["Tooltip Settings"] = "Tooltip-Einstellungen"
+L["Tooltip Font"] = "Tooltip-Schriftart"
+L["Font used for all addon tooltips"] = "Schriftart für alle Addon-Tooltips"
+L["Tooltip Header Font Size"] = "Tooltip-Überschrift Schriftgröße"
+L["Font size for tooltip headers"] = "Schriftgröße für Tooltip-Überschriften"
+L["Tooltip Line Font Size"] = "Tooltip-Zeile Schriftgröße"
+L["Font size for tooltip content lines"] = "Schriftgröße für Tooltip-Inhaltszeilen"
 
 -- ----------------------------
 -- Config.lua - Panels

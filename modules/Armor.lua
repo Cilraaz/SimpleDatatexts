@@ -91,32 +91,32 @@ function mod.Create(slotFrame)
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-        GameTooltip:SetOwner(self, anchor)
-        GameTooltip:ClearLines()
-        SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Mitigation By Level:"])
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+        SDT.Tooltip:SetOwner(self, anchor)
+        SDT.Tooltip:ClearLines()
+        SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, L["Mitigation By Level:"])
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
 
         -- Armor
         local _, currentArmor = UnitArmor("player")
         local upperLevel = UnitLevel("player") + 3
         for _ = 1, 4 do
             local armorReduction = C_PDI_GetArmorEffectiveness(currentArmor, upperLevel) * 100
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format(L["Level %d"], upperLevel), format("%.2f%%", armorReduction), 1, 1, 1, 0.1, 1, 0.1)
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format(L["Level %d"], upperLevel), format("%.2f%%", armorReduction), 1, 1, 1, 0.1, 1, 0.1)
             upperLevel = upperLevel - 1
         end
         
         local targetLevel = UnitLevel("target")
 	    if targetLevel and targetLevel > 0 and (targetLevel > upperLevel + 3 or targetLevel < upperLevel) then
 		    local armorReduction = C_PDI_GetArmorEffectiveness(currentArmor, targetLevel) * 100
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-		    SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Target Mitigation"], format("%.2f%%", armorReduction), 1, 1, 1)
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+		    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Target Mitigation"], format("%.2f%%", armorReduction), 1, 1, 1)
 	    end
 
-        GameTooltip:Show()
+        SDT.Tooltip:Show()
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     UpdateArmor()

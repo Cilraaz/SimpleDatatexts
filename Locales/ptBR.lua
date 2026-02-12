@@ -81,6 +81,13 @@ L["Use Custom Color"] = "Usar cor personalizada"
 L["X Offset"] = "Deslocamento X"
 L["Y Offset"] = "Deslocamento Y"
 L["When enabled, the addon will automatically switch to a different profile each time you change specialization. Pick which profile each spec should use below."] = "Quando ativado, o addon mudará automaticamente para um perfil diferente toda vez que você alterar a especialização. Escolha abaixo qual perfil cada especialização deve usar."
+L["Tooltip Settings"] = "Configurações de dica"
+L["Tooltip Font"] = "Fonte da dica"
+L["Font used for all addon tooltips"] = "Fonte usada para todas as dicas do addon"
+L["Tooltip Header Font Size"] = "Tamanho da fonte do cabeçalho"
+L["Font size for tooltip headers"] = "Tamanho da fonte para cabeçalhos de dicas"
+L["Tooltip Line Font Size"] = "Tamanho da fonte da linha"
+L["Font size for tooltip content lines"] = "Tamanho da fonte para linhas de conteúdo"
 
 -- ----------------------------
 -- Config.lua - Panels

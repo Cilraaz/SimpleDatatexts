@@ -164,31 +164,31 @@ function mod.Create(slotFrame)
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-        GameTooltip:SetOwner(self, anchor)
-        GameTooltip:ClearLines()
+        SDT.Tooltip:SetOwner(self, anchor)
+        SDT.Tooltip:ClearLines()
         if not SDT.db.profile.hideModuleTitle then
-            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Combat Timer"])
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, L["Combat Timer"])
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         end
 
         if InCombatLockdown() and combatStartTime then
             local elapsed = GetTime() - combatStartTime
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format("%s %s: %s", L["Current"], L["combat duration"], FormatTime(elapsed)))
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format("%s %s: %s", L["Current"], L["combat duration"], FormatTime(elapsed)))
         elseif lastCombatDuration then
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format("%s %s: %s", L["Last"], L["combat duration"], FormatTime(lastCombatDuration)))
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format("|cff00FF00%s|r %s", L["Left-click"], L["to reset"]))
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format("%s %s: %s", L["Last"], L["combat duration"], FormatTime(lastCombatDuration)))
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format("|cff00FF00%s|r %s", L["Left-click"], L["to reset"]))
         else
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Currently out of combat"])
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Enter combat to start tracking"])
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Currently out of combat"])
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Enter combat to start tracking"])
         end
 
-        GameTooltip:Show()
+        SDT.Tooltip:Show()
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     UpdateDisplay()

@@ -118,19 +118,19 @@ function mod.Create(slotFrame)
         if not showZoneTooltip then return end
 
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-        GameTooltip:SetOwner(self, anchor)
-        GameTooltip:ClearLines()
+        SDT.Tooltip:SetOwner(self, anchor)
+        SDT.Tooltip:ClearLines()
 
         if not SDT.db.profile.hideModuleTitle then
-            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Map Name"])
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, L["Map Name"])
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         end
 
         -- Zone info
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Zone:"], currentZone, 1, 0.82, 0, 1, 1, 1)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Zone:"], currentZone, 1, 0.82, 0, 1, 1, 1)
         
         if currentSubzone ~= "" and currentSubzone ~= currentZone then
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Subzone:"], currentSubzone, 1, 0.82, 0, 1, 1, 1)
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Subzone:"], currentSubzone, 1, 0.82, 0, 1, 1, 1)
         end
 
         -- Coordinates
@@ -142,17 +142,17 @@ function mod.Create(slotFrame)
                     local x, y = position:GetXY()
                     if x and y then
                         local coordString = string.format("%.1f, %.1f", x * 100, y * 100)
-                        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, L["Coordinates:"], coordString, 1, 0.82, 0, 1, 1, 1)
+                        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Coordinates:"], coordString, 1, 0.82, 0, 1, 1, 1)
                     end
                 end
             end
         end
 
-        GameTooltip:Show()
+        SDT.Tooltip:Show()
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     ----------------------------------------------------

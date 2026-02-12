@@ -81,6 +81,13 @@ L["Use Custom Color"] = "사용자 지정 색상 사용"
 L["X Offset"] = "X 오프셋"
 L["Y Offset"] = "Y 오프셋"
 L["When enabled, the addon will automatically switch to a different profile each time you change specialization. Pick which profile each spec should use below."] = "활성화하면 전문화를 변경할 때마다 애드온이 자동으로 다른 프로필로 전환됩니다. 아래에서 각 전문화가 사용할 프로필을 선택하세요."
+L["Tooltip Settings"] = "툴팁 설정"
+L["Tooltip Font"] = "툴팁 글꼴"
+L["Font used for all addon tooltips"] = "모든 애드온 툴팁에 사용되는 글꼴"
+L["Tooltip Header Font Size"] = "툴팁 제목 글꼴 크기"
+L["Font size for tooltip headers"] = "툴팁 제목의 글꼴 크기"
+L["Tooltip Line Font Size"] = "툴팁 줄 글꼴 크기"
+L["Font size for tooltip content lines"] = "툴팁 내용 줄의 글꼴 크기"
 
 -- ----------------------------
 -- Config.lua - Panels

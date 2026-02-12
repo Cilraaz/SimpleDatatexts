@@ -156,6 +156,51 @@ function SDT:ScreenCache()
 end
 
 ----------------------------------------------------
+-- Create Local Tooltip
+----------------------------------------------------
+function SDT:CreateTooltip()
+    -- If tooltip already exists, just update the fonts
+    if self.Tooltip then
+        local fontPath = SDT.LSM:Fetch("font", self.db.profile.tooltipFont)
+        for i = 1, 30 do
+            local leftName = "SimpleDatatextsTooltipTextLeft" .. i
+            local rightName = "SimpleDatatextsTooltipTextRight" .. i
+            local textLeft = _G[leftName]
+            local textRight = _G[rightName]
+            
+            if textLeft then
+                textLeft:SetFont(fontPath, self.db.profile.tooltipLineFontSize, "OUTLINE")
+            end
+            if textRight then
+                textRight:SetFont(fontPath, self.db.profile.tooltipLineFontSize, "OUTLINE")
+            end
+        end
+        return
+    end
+
+    -- Create new tooltip
+    local tooltip = CreateFrame("GameTooltip", "SimpleDatatextsTooltip", UIParent, "GameTooltipTemplate")
+    
+    -- Set default fonts for all lines
+    local fontPath = SDT.LSM:Fetch("font", self.db.profile.tooltipFont)
+    for i = 1, 30 do
+        local leftName = "SimpleDatatextsTooltipTextLeft" .. i
+        local rightName = "SimpleDatatextsTooltipTextRight" .. i
+        local textLeft = _G[leftName]
+        local textRight = _G[rightName]
+        
+        if textLeft then
+            textLeft:SetFont(fontPath, self.db.profile.tooltipLineFontSize, "OUTLINE")
+        end
+        if textRight then
+            textRight:SetFont(fontPath, self.db.profile.tooltipLineFontSize, "OUTLINE")
+        end
+    end
+    
+    SDT.Tooltip = tooltip
+end
+
+----------------------------------------------------
 -- Addon Initialization
 ----------------------------------------------------
 function SDT:OnInitialize()
@@ -167,6 +212,7 @@ function SDT:OnInitialize()
         SDT:ProfileFunction("Minimap Icon", function() 
             SDT.Icon:Register("SimpleDatatexts", obj, self.db.profile.minimap)
         end)
+        SDT:ProfileFunction("CreateTooltip", function() self:CreateTooltip() end)
     else
         -- Build cache first
         self:BuildCache()
@@ -179,6 +225,9 @@ function SDT:OnInitialize()
 
         -- Create minimap button
         SDT.Icon:Register("SimpleDatatexts", obj, self.db.profile.minimap)
+
+        -- Create local tooltip
+        self:CreateTooltip()
     end
 end
 

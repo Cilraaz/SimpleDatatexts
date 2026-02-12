@@ -16,7 +16,6 @@ local wipe   = table.wipe
 ----------------------------------------------------
 -- WoW API Locals
 ----------------------------------------------------
-local GameTooltip                = GameTooltip
 local GetCoinTextureString       = GetCoinTextureString
 local GetInventoryItemDurability = GetInventoryItemDurability
 local GetInventoryItem           = C_TooltipInfo.GetInventoryItem
@@ -198,11 +197,11 @@ function mod.Create(slotFrame)
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-        GameTooltip:SetOwner(self, anchor)
-        GameTooltip:ClearLines()
+        SDT.Tooltip:SetOwner(self, anchor)
+        SDT.Tooltip:ClearLines()
         if not SDT.db.profile.hideModuleTitle then
-            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, DURABILITY or moduleName)
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, DURABILITY or moduleName)
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         end
 
         for slotIndex, perc in pairs(invDurability) do
@@ -211,19 +210,19 @@ function mod.Create(slotFrame)
             local colorR, colorG, colorB = ColorGradient((perc or 0) / 100)
             local left = format("|T%s:14:14:0:0:64:64:4:60:4:60|t %s", texture or "", link)
             local right = SDT.FormatUtils:FormatPercent(perc or 0, hideDecimals, true)
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, left, right, 1, 1, 1, colorR, colorG, colorB)
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, left, right, 1, 1, 1, colorR, colorG, colorB)
         end
 
         if totalRepairCost and totalRepairCost > 0 then
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, REPAIR_COST or "Repair Cost", GetCoinTextureString(totalRepairCost) or tostring(totalRepairCost), 0.6, 0.8, 1, 1, 1, 1)
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, REPAIR_COST or "Repair Cost", GetCoinTextureString(totalRepairCost) or tostring(totalRepairCost), 0.6, 0.8, 1, 1, 1, 1)
         end
 
-        GameTooltip:Show()
+        SDT.Tooltip:Show()
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     ----------------------------------------------------

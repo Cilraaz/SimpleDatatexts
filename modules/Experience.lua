@@ -338,38 +338,38 @@ function mod.Create(slotFrame)
         if isMaxLevel then return end
 
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
-        GameTooltip:SetOwner(self, anchor)
-        GameTooltip:ClearLines()
+        SDT.Tooltip:SetOwner(self, anchor)
+        SDT.Tooltip:ClearLines()
         if not SDT.db.profile.hideModuleTitle then
-            SDT.FormatUtils:AddTooltipHeader(GameTooltip, 14, L["Experience"])
-            SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, " ")
+            SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, L["Experience"])
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         end
 
         local level = UnitLevel("player")
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12, format(L["Level %d"], SDTC.playerLevel), 1, 1, 1)
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12,
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format(L["Level %d"], SDTC.playerLevel), 1, 1, 1)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil,
             "Progress:",
             format("%s / %s", 
                 FormatValue(currentXP), 
                 FormatValue(maxXP)),
             1, 0.82, 0, 1, 1, 1
         )
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12,
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil,
             "Remaining:",
             FormatValue(maxXP - currentXP),
             1, 0.82, 0, 1, 1, 1
         )
-        SDT.FormatUtils:AddTooltipLine(GameTooltip, 12,
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil,
             "Percentage:",
             format("%.2f%%", xpPercent),
             1, 0.82, 0, 1, 1, 1
         )
 
-        GameTooltip:Show()
+        SDT.Tooltip:Show()
     end)
 
     slotFrame:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+        SDT.Tooltip:Hide()
     end)
 
     UpdateExperience()

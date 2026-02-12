@@ -81,6 +81,13 @@ L["Use Custom Color"] = "使用自訂顏色"
 L["X Offset"] = "X偏移"
 L["Y Offset"] = "Y偏移"
 L["When enabled, the addon will automatically switch to a different profile each time you change specialization. Pick which profile each spec should use below."] = "啟用後，每次更改專精時，插件將自動切換至不同的設定檔。在下面選擇每個專精應使用的設定檔。"
+L["Tooltip Settings"] = "提示框設定"
+L["Tooltip Font"] = "提示框字型"
+L["Font used for all addon tooltips"] = "用於所有插件提示框的字型"
+L["Tooltip Header Font Size"] = "提示框標題字型大小"
+L["Font size for tooltip headers"] = "提示框標題的字型大小"
+L["Tooltip Line Font Size"] = "提示框行字型大小"
+L["Font size for tooltip content lines"] = "提示框內容行的字型大小"
 
 -- ----------------------------
 -- Config.lua - Panels
