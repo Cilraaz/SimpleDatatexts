@@ -1,4 +1,3 @@
 ## Changes
-- 025dac9 build(TOC): 12.0.0.66 release
-- 531c3f1 fix(tooltip): Create a local tooltip instead of using GameTooltip; Add tooltip settings
-- 964105a feat(Speed): Clean up ticker when module is hidden
+- 8a8f0f2 build(TOC): 12.0.1.01 release
+- 8f81d0c feat(tooltip): Add tooltip font outline settings
