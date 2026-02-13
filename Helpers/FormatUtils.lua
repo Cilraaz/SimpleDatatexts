@@ -27,6 +27,14 @@ function SDT.FormatUtils:AddTooltipHeader(tooltip, fontSize, text, r, g, b, wrap
         local fontPath = SDT.LSM:Fetch("font", SDT.db.profile.tooltipFont)
         local outline = SDT.db.profile.tooltipFontOutline
         textLeft:SetFont(fontPath, fontSize, outline)
+
+        -- Apply shadow setting
+        if SDT.db.profile.tooltipShadowEnabled then
+            textLeft:SetShadowOffset(1, -1)
+            textLeft:SetShadowColor(0, 0, 0, 1)
+        else
+            textLeft:SetShadowOffset(0, 0)
+        end
     end
 end
 
@@ -64,9 +72,23 @@ function SDT.FormatUtils:AddTooltipLine(tooltip, fontSize, textLeft, textRight, 
     
     if textLeftObj then
         textLeftObj:SetFont(fontPath, fontSize, outline)
+        -- Apply shadow setting
+        if SDT.db.profile.tooltipShadowEnabled then
+            textLeftObj:SetShadowOffset(1, -1)
+            textLeftObj:SetShadowColor(0, 0, 0, 1)
+        else
+            textLeftObj:SetShadowOffset(0, 0)
+        end
     end
     if textRightObj then
         textRightObj:SetFont(fontPath, fontSize, outline)
+        -- Apply shadow setting
+        if SDT.db.profile.tooltipShadowEnabled then
+            textRightObj:SetShadowOffset(1, -1)
+            textRightObj:SetShadowColor(0, 0, 0, 1)
+        else
+            textRightObj:SetShadowOffset(0, 0)
+        end
     end
 end
 

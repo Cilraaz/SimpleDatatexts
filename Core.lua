@@ -163,6 +163,8 @@ function SDT:CreateTooltip()
     if self.Tooltip then
         local fontPath = SDT.LSM:Fetch("font", self.db.profile.tooltipFont)
         local outline = self.db.profile.tooltipFontOutline
+        local shadowEnabled = self.db.profile.tooltipShadowEnabled
+
         for i = 1, 30 do
             local leftName = "SimpleDatatextsTooltipTextLeft" .. i
             local rightName = "SimpleDatatextsTooltipTextRight" .. i
@@ -171,9 +173,21 @@ function SDT:CreateTooltip()
             
             if textLeft then
                 textLeft:SetFont(fontPath, self.db.profile.tooltipLineFontSize, outline)
+                if shadowEnabled then
+                    textLeft:SetShadowOffset(1, -1)
+                    textLeft:SetShadowColor(0, 0, 0, 1)
+                else
+                    textLeft:SetShadowOffset(0, 0)
+                end
             end
             if textRight then
                 textRight:SetFont(fontPath, self.db.profile.tooltipLineFontSize, outline)
+                if shadowEnabled then
+                    textRight:SetShadowOffset(1, -1)
+                    textRight:SetShadowColor(0, 0, 0, 1)
+                else
+                    textRight:SetShadowOffset(0, 0)
+                end
             end
         end
         return
@@ -185,6 +199,8 @@ function SDT:CreateTooltip()
     -- Set default fonts for all lines
     local fontPath = SDT.LSM:Fetch("font", self.db.profile.tooltipFont)
     local outline = self.db.profile.tooltipFontOutline
+    local shadowEnabled = self.db.profile.tooltipShadowEnabled
+
     for i = 1, 30 do
         local leftName = "SimpleDatatextsTooltipTextLeft" .. i
         local rightName = "SimpleDatatextsTooltipTextRight" .. i
@@ -193,9 +209,21 @@ function SDT:CreateTooltip()
         
         if textLeft then
             textLeft:SetFont(fontPath, self.db.profile.tooltipLineFontSize, outline)
+            if shadowEnabled then
+                textLeft:SetShadowOffset(1, -1)
+                textLeft:SetShadowColor(0, 0, 0, 1)
+            else
+                textLeft:SetShadowOffset(0, 0)
+            end
         end
         if textRight then
             textRight:SetFont(fontPath, self.db.profile.tooltipLineFontSize, outline)
+            if shadowEnabled then
+                textRight:SetShadowOffset(1, -1)
+                textRight:SetShadowColor(0, 0, 0, 1)
+            else
+                textRight:SetShadowOffset(0, 0)
+            end
         end
     end
     

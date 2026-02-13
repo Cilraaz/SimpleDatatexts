@@ -355,6 +355,17 @@ function SDT:GetGeneralOptions()
                 end,
                 order = 23,
             },
+            fontShadowEnabled = {
+                type = "toggle",
+                name = L["Enable Font Text Shadow"],
+                desc = L["Add a subtle shadow to datatexts for better readability"],
+                get = function() return self.db.profile.fontShadowEnabled end,
+                set = function(_, val)
+                    self.db.profile.fontShadowEnabled = val
+                    self.FontManager:ApplyFont()
+                end,
+                order = 24,
+            },
             tooltipHeader = {
                 type = "header",
                 name = L["Tooltip Settings"],
@@ -431,6 +442,20 @@ function SDT:GetGeneralOptions()
                     end
                 end,
                 order = 34,
+            },
+            tooltipShadowEnabled = {
+                type = "toggle",
+                name = L["Enable Tooltip Text Shadow"],
+                desc = L["Add a subtle shadow to tooltip text for better readability"],
+                get = function() return self.db.profile.tooltipShadowEnabled end,
+                set = function(_, val)
+                    self.db.profile.tooltipShadowEnabled = val
+                    -- Recreate tooltip with new shadow setting
+                    if SDT.Tooltip then
+                        SDT:CreateTooltip()
+                    end
+                end,
+                order = 35,
             },
         }
     }

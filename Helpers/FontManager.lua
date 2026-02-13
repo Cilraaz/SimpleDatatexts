@@ -17,9 +17,21 @@ function SDT.FontManager:ApplyFont()
         for _, slot in ipairs(bar.slots) do
             if slot.text then
                 slot.text:SetFont(fontPath, fontSize, outline)
+                if SDT.db.profile.fontShadowEnabled then
+                    slot.text:SetShadowOffset(1, -1)
+                    slot.text:SetShadowColor(0, 0, 0, 1)
+                else
+                    slot.text:SetShadowOffset(0, 0)
+                end
             end
             if slot.moduleFrame and slot.moduleFrame.text and slot.moduleFrame.text.SetFont then
                 slot.moduleFrame.text:SetFont(fontPath, fontSize, outline)
+                if SDT.db.profile.fontShadowEnabled then
+                    slot.moduleFrame.text:SetShadowOffset(1, -1)
+                    slot.moduleFrame.text:SetShadowColor(0, 0, 0, 1)
+                else
+                    slot.moduleFrame.text:SetShadowOffset(0, 0)
+                end
             end
         end
     end
