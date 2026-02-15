@@ -34,6 +34,7 @@ local WARBANDBANK_TYPE                       = (Enum.BankType and Enum.BankType.
 ----------------------------------------------------
 local Profit, Spent = 0, 0
 local Ticker = nil
+local oldMoney = 0
 local myGold = {}
 local totalGold, totalHorde, totalAlliance, warbandGold = 0, 0, 0, 0
 local iconStringName = '|T%s:16:16:0:0:64:64:4:60:4:60|t %s'
@@ -509,17 +510,8 @@ local function UpdateGold(self)
     local realmName = SDT.cache.playerRealmProper
     local faction = SDT.cache.playerFaction
 
-    -- Get previous gold amount
-    local oldMoney = 0
-    if SDT.db.global.gold[realmName] and SDT.db.global.gold[realmName][playerName] then
-        oldMoney = SDT.db.global.gold[realmName][playerName].amount or 0
-    end
-
-    -- Update gold amount
-    SDT:UpdateGlobalGold()
-
     -- Get new gold amount
-    local newMoney = SDT.db.global.gold[realmName][playerName].amount or 0
+    local newMoney = GetMoney()
 
     -- Calculate change
     local change = newMoney - oldMoney
@@ -542,6 +534,9 @@ local function UpdateGold(self)
             end
         end
     end
+
+    -- Update local tracking for next change
+    oldMoney = newMoney
 
     -- Update displayed text
     if self.text then
@@ -651,6 +646,8 @@ function mod.Create(slotFrame)
         RebuildGoldCache()
     end
 
+    oldMoney = GetMoney()
+
     InitTicker()
 
     ----------------------------------------------------
@@ -658,10 +655,11 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function OnEvent(_, event)
         UpdateWarbandGold()
-        UpdateGold(slotFrame)
-        if not SDT.db.global.gold[SDT.cache.playerRealmProper][SDT.cache.playerName] then
+        if not SDT.db.global.gold[SDT.cache.playerRealmProper] or
+           not SDT.db.global.gold[SDT.cache.playerRealmProper][SDT.cache.playerName] then
             RebuildGoldCache()
         end
+        UpdateGold(slotFrame)
     end
     f.Update = function() OnEvent(f) end
 
