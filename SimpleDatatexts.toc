@@ -80,6 +80,7 @@ modules/MapName.lua
 modules/Mastery.lua
 modules/MythicPlusKey.lua
 modules/Parry.lua
+modules/Quests.lua
 modules/SpecSwitch.lua
 modules/Speed.lua
 modules/SpellPower.lua
