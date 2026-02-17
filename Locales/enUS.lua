@@ -293,6 +293,15 @@ L["Cannot use hearthstone while in combat"] = "Cannot use hearthstone while in c
 L["Int"] = "Int"
 
 -- ----------------------------
+-- modules/ItemLevel.lua
+-- ----------------------------
+L["Item Level"] = "Item Level"
+L["ilvl"] = "ilvl"
+L["Equipped Item Level"] = "Equipped Item Level"
+L["Maximum Item Level"] = "Maximum Item Level"
+L["Show Max Item Level"] = "Show Max Item Level"
+
+-- ----------------------------
 -- modules/LDBObjects.lua
 -- ----------------------------
 L["NO TEXT"] = "NO TEXT"
@@ -337,6 +346,11 @@ L["None"] = "None"
 L["No Key"] = "No Key"
 L["Left Click: Teleport to Dungeon"] = "Left Click: Teleport to Dungeon"
 L["Right Click: List Group in Finder"] = "Right Click: List Group in Finder"
+
+-- ----------------------------
+-- modules/Quests.lua
+-- ----------------------------
+L["Quests"] = "Quests"
 
 -- ----------------------------
 -- modules/SpecSwitch.lua

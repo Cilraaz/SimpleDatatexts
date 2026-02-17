@@ -298,6 +298,15 @@ L["Cannot use hearthstone while in combat"] = "戰鬥中無法使用爐石"
 L["Int"] = "智力"
 
 -- ----------------------------
+-- modules/ItemLevel.lua
+-- ----------------------------
+L["Item Level"] = "物品等級"
+L["ilvl"] = "裝等"
+L["Equipped Item Level"] = "已裝備物品等級"
+L["Maximum Item Level"] = "最高物品等級"
+L["Show Max Item Level"] = "顯示最高物品等級"
+
+-- ----------------------------
 -- modules/LDBObjects.lua
 -- ----------------------------
 L["NO TEXT"] = "無文字"
@@ -342,6 +351,11 @@ L["None"] = "無"
 L["No Key"] = "無鑰石"
 L["Left Click: Teleport to Dungeon"] = "左鍵點擊：傳送到地城"
 L["Right Click: List Group in Finder"] = "右鍵點擊：在尋求中列出隊伍"
+
+-- ----------------------------
+-- modules/Quests.lua
+-- ----------------------------
+L["Quests"] = "任務"
 
 -- ----------------------------
 -- modules/SpecSwitch.lua

@@ -298,6 +298,15 @@ L["Cannot use hearthstone while in combat"] = "Não é possível usar a pedra de
 L["Int"] = "Int"
 
 -- ----------------------------
+-- modules/ItemLevel.lua
+-- ----------------------------
+L["Item Level"] = "Nível de item"
+L["ilvl"] = "nItem"
+L["Equipped Item Level"] = "Nível de item equipado"
+L["Maximum Item Level"] = "Nível de item máximo"
+L["Show Max Item Level"] = "Mostrar nível de item máximo"
+
+-- ----------------------------
 -- modules/LDBObjects.lua
 -- ----------------------------
 L["NO TEXT"] = "SEM TEXTO"
@@ -342,6 +351,11 @@ L["None"] = "Nenhum"
 L["No Key"] = "Sem chave"
 L["Left Click: Teleport to Dungeon"] = "Clique esquerdo: Teletransportar para a masmorra"
 L["Right Click: List Group in Finder"] = "Clique direito: Listar grupo no localizador"
+
+-- ----------------------------
+-- modules/Quests.lua
+-- ----------------------------
+L["Quests"] = "Missões"
 
 -- ----------------------------
 -- modules/SpecSwitch.lua

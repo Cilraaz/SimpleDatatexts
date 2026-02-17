@@ -298,6 +298,15 @@ L["Cannot use hearthstone while in combat"] = "전투 중에는 귀환석을 사
 L["Int"] = "지능"
 
 -- ----------------------------
+-- modules/ItemLevel.lua
+-- ----------------------------
+L["Item Level"] = "아이템 레벨"
+L["ilvl"] = "아레"
+L["Equipped Item Level"] = "착용한 아이템 레벨"
+L["Maximum Item Level"] = "최대 아이템 레벨"
+L["Show Max Item Level"] = "최대 아이템 레벨 표시"
+
+-- ----------------------------
 -- modules/LDBObjects.lua
 -- ----------------------------
 L["NO TEXT"] = "텍스트 없음"
@@ -342,6 +351,11 @@ L["None"] = "없음"
 L["No Key"] = "쐐기돌 없음"
 L["Left Click: Teleport to Dungeon"] = "좌클릭: 던전으로 순간이동"
 L["Right Click: List Group in Finder"] = "우클릭: 찾기에 그룹 등록"
+
+-- ----------------------------
+-- modules/Quests.lua
+-- ----------------------------
+L["Quests"] = "퀘스트"
 
 -- ----------------------------
 -- modules/SpecSwitch.lua

@@ -298,6 +298,15 @@ L["Cannot use hearthstone while in combat"] = "Невозможно исполь
 L["Int"] = "Int"
 
 -- ----------------------------
+-- modules/ItemLevel.lua
+-- ----------------------------
+L["Item Level"] = "Уровень предмета"
+L["ilvl"] = "уПред"
+L["Equipped Item Level"] = "Уровень экипированного предмета"
+L["Maximum Item Level"] = "Максимальный уровень предмета"
+L["Show Max Item Level"] = "Показать максимальный уровень предмета"
+
+-- ----------------------------
 -- modules/LDBObjects.lua
 -- ----------------------------
 L["NO TEXT"] = "НЕТ ТЕКСТА"
@@ -342,6 +351,11 @@ L["None"] = "Нет"
 L["No Key"] = "Нет ключа"
 L["Left Click: Teleport to Dungeon"] = "Левый клик: Телепорт в подземелье"
 L["Right Click: List Group in Finder"] = "Правый клик: Создать группу в поиске"
+
+-- ----------------------------
+-- modules/Quests.lua
+-- ----------------------------
+L["Quests"] = "Задания"
 
 -- ----------------------------
 -- modules/SpecSwitch.lua

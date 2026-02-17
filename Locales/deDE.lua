@@ -298,6 +298,15 @@ L["Cannot use hearthstone while in combat"] = "Ruhestein kann nicht im Kampf ben
 L["Int"] = "Int"
 
 -- ----------------------------
+-- modules/ItemLevel.lua
+-- ----------------------------
+L["Item Level"] = "Gegenstandsstufe"
+L["ilvl"] = "iLvl"
+L["Equipped Item Level"] = "Ausgerüstete Gegenstandsstufe"
+L["Maximum Item Level"] = "Maximale Gegenstandsstufe"
+L["Show Max Item Level"] = "Max. Gegenstandsstufe anzeigen"
+
+-- ----------------------------
 -- modules/LDBObjects.lua
 -- ----------------------------
 L["NO TEXT"] = "KEIN TEXT"
@@ -342,6 +351,11 @@ L["None"] = "Keiner"
 L["No Key"] = "Kein Schlüssel"
 L["Left Click: Teleport to Dungeon"] = "Linksklick: Zum Dungeon teleportieren"
 L["Right Click: List Group in Finder"] = "Rechtsklick: Gruppe im Finder einstellen"
+
+-- ----------------------------
+-- modules/Quests.lua
+-- ----------------------------
+L["Quests"] = "Quests"
 
 -- ----------------------------
 -- modules/SpecSwitch.lua
