@@ -61,9 +61,11 @@ function mod.Create(slotFrame)
     local function UpdateSpeed()
         local currentSpeed
         
-        -- Check if player is flying and use appropriate speed calculation
-        if IsFlying() then
-            _, _, currentSpeed = GetGlidingInfo()
+        -- Check if player is dragonriding
+        local isGliding, _, glidingSpeed = GetGlidingInfo()
+
+        if isGliding and glidingSpeed then
+            currentSpeed = glidingSpeed
         else
             currentSpeed = GetUnitSpeed("player")
         end
