@@ -49,6 +49,7 @@ local statusColors = {
 -- Module Config Settings
 ----------------------------------------------------
 local function SetupModuleConfig()
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Label"], "showLabel", true)
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "range", L["Top Addons in Tooltip"], "addonQty", 10, 1, 30, 1)
 
     SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
@@ -253,7 +254,14 @@ function mod.Create(slotFrame)
         local fps = floor(GetFramerate())
         local _, _, homePing, worldPing = GetNetStats()
         local latency = worldPing
-        local textString = SDT.FormatUtils:ColorModuleText(moduleName, L["FPS"] .. ": ") .. StatusColor(fps) .. SDT.FormatUtils:ColorModuleText(moduleName, " " .. L["MS"] .. ": ") .. StatusColor(nil, latency)
+        local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
+        local textString
+        if showLabel then
+            textString = SDT.FormatUtils:ColorModuleText(moduleName, L["FPS"] .. ": ") .. StatusColor(fps) .. SDT.FormatUtils:ColorModuleText(moduleName, " " .. L["MS"] .. ": ") .. StatusColor(nil, latency)
+        else
+            local separator = SDT.FormatUtils:ColorModuleText(moduleName, " | ")
+            textString = StatusColor(fps) .. separator .. StatusColor(nil, latency)
+        end
         text:SetText(textString)
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
