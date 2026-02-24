@@ -341,6 +341,8 @@ function SDT:HandleSlashCommand(msg)
         self:OpenConfig()
     elseif command == "lock" then
         self.BarManager:ToggleLock()
+    elseif command == "toggle" then
+        self.BarManager:ToggleAllPanels()
     elseif command == "minimap" then
         self.db.profile.minimap.hide = not self.db.profile.minimap.hide
         if self.db.profile.minimap.hide then
@@ -363,6 +365,7 @@ function SDT:HandleSlashCommand(msg)
         self:Print(L["Usage"] .. ":")
         self:Print("/sdt config - " .. L["Settings"])
         self:Print("/sdt lock - " .. L["Lock/Unlock"])
+        self:Print("/sdt toggle - " .. L["Toggle All Panels"])
         self:Print("/sdt minimap - " .. L["Toggle Minimap Icon"])
         self:Print("/sdt version - " .. L["Version"])
     end

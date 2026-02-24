@@ -9,6 +9,7 @@ local defaults = {
     profile = {
         -- Global settings
         locked = false,
+        showPanels = true,
         debugMode = false,
         useClassColor = false,
         useCustomColor = false,
@@ -42,6 +43,7 @@ local defaults = {
                 name = nil,
                 point = nil,
                 frameStrata = "MEDIUM",
+                hidden = false,
             }
         },
         

@@ -94,6 +94,11 @@ L["Tooltip Header Font Size"] = "提示框標題字型大小"
 L["Font size for tooltip headers"] = "提示框標題的字型大小"
 L["Tooltip Line Font Size"] = "提示框行字型大小"
 L["Font size for tooltip content lines"] = "提示框內容行的字型大小"
+L["Show All Panels"] = "顯示所有面板"
+L["Toggle visibility of all panels. Individual panels can also be hidden in their own settings."] = "切換所有面板的顯示狀態。也可在各面板的獨立設定中將其隱藏。"
+L["Panels shown"] = "面板已顯示"
+L["Panels hidden"] = "面板已隱藏"
+L["Toggle All Panels"] = "切換所有面板"
 
 -- ----------------------------
 -- Config.lua - Panels
@@ -120,6 +125,8 @@ L["Slot %d:"] = "插槽 %d："
 L["Slots"] = "插槽"
 L["Update slot assignment dropdowns after changing number of slots"] = "變更插槽數量後更新插槽分配下拉選單"
 L["Width"] = "寬度"
+L["Hide Panel"] = "隱藏面板"
+L["Hide this panel. Panels are always visible while unlocked."] = "隱藏此面板。面板在解鎖狀態下始終可見。"
 
 -- ----------------------------
 -- Config.lua - Module Settings

@@ -94,6 +94,11 @@ L["Tooltip Header Font Size"] = "Размер шрифта заголовка"
 L["Font size for tooltip headers"] = "Размер шрифта для заголовков подсказок"
 L["Tooltip Line Font Size"] = "Размер шрифта строки"
 L["Font size for tooltip content lines"] = "Размер шрифта для строк содержимого"
+L["Show All Panels"] = "Показать все панели"
+L["Toggle visibility of all panels. Individual panels can also be hidden in their own settings."] = "Переключить видимость всех панелей. Отдельные панели также можно скрыть в их собственных настройках."
+L["Panels shown"] = "Панели показаны"
+L["Panels hidden"] = "Панели скрыты"
+L["Toggle All Panels"] = "Переключить все панели"
 
 -- ----------------------------
 -- Config.lua - Panels
@@ -120,6 +125,8 @@ L["Slot %d:"] = "Слот %d:"
 L["Slots"] = "Слоты"
 L["Update slot assignment dropdowns after changing number of slots"] = "Обновить выпадающие списки после изменения числа слотов"
 L["Width"] = "Ширина"
+L["Hide Panel"] = "Скрыть панель"
+L["Hide this panel. Panels are always visible while unlocked."] = "Скрыть эту панель. Панели всегда видны, пока они разблокированы."
 
 -- ----------------------------
 -- Config.lua - Module Settings

@@ -94,6 +94,11 @@ L["Tooltip Header Font Size"] = "Tamaño de fuente del encabezado"
 L["Font size for tooltip headers"] = "Tamaño de fuente para encabezados de información"
 L["Tooltip Line Font Size"] = "Tamaño de fuente de línea"
 L["Font size for tooltip content lines"] = "Tamaño de fuente para líneas de contenido"
+L["Show All Panels"] = "Mostrar todos los paneles"
+L["Toggle visibility of all panels. Individual panels can also be hidden in their own settings."] = "Alternar la visibilidad de todos los paneles. Los paneles individuales también se pueden ocultar en su propia configuración."
+L["Panels shown"] = "Paneles mostrados"
+L["Panels hidden"] = "Paneles ocultos"
+L["Toggle All Panels"] = "Alternar todos los paneles"
 
 -- ----------------------------
 -- Config.lua - Panels
@@ -120,6 +125,8 @@ L["Slot %d:"] = "Ranura %d:"
 L["Slots"] = "Ranuras"
 L["Update slot assignment dropdowns after changing number of slots"] = "Actualizar los menús desplegables de asignación de ranuras después de cambiar el número de ranuras"
 L["Width"] = "Ancho"
+L["Hide Panel"] = "Ocultar panel"
+L["Hide this panel. Panels are always visible while unlocked."] = "Ocultar este panel. Los paneles siempre son visibles mientras estén desbloqueados."
 
 -- ----------------------------
 -- Config.lua - Module Settings

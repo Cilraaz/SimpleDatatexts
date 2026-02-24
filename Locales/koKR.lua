@@ -94,6 +94,11 @@ L["Tooltip Header Font Size"] = "툴팁 제목 글꼴 크기"
 L["Font size for tooltip headers"] = "툴팁 제목의 글꼴 크기"
 L["Tooltip Line Font Size"] = "툴팁 줄 글꼴 크기"
 L["Font size for tooltip content lines"] = "툴팁 내용 줄의 글꼴 크기"
+L["Show All Panels"] = "모든 패널 표시"
+L["Toggle visibility of all panels. Individual panels can also be hidden in their own settings."] = "모든 패널의 표시 여부를 전환합니다. 개별 패널은 각자의 설정에서도 숨길 수 있습니다."
+L["Panels shown"] = "패널 표시됨"
+L["Panels hidden"] = "패널 숨겨짐"
+L["Toggle All Panels"] = "모든 패널 전환"
 
 -- ----------------------------
 -- Config.lua - Panels
@@ -120,6 +125,8 @@ L["Slot %d:"] = "슬롯 %d:"
 L["Slots"] = "슬롯"
 L["Update slot assignment dropdowns after changing number of slots"] = "슬롯 수 변경 후 슬롯 할당 드롭다운 업데이트"
 L["Width"] = "너비"
+L["Hide Panel"] = "패널 숨기기"
+L["Hide this panel. Panels are always visible while unlocked."] = "이 패널을 숨깁니다. 패널은 잠금 해제 상태일 때 항상 표시됩니다."
 
 -- ----------------------------
 -- Config.lua - Module Settings

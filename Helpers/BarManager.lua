@@ -3,6 +3,44 @@ local L = SDT.L
 SDT.BarManager = {}
 
 ----------------------------------------------------
+-- Apply Visibility
+----------------------------------------------------
+function SDT.BarManager:ApplyVisibility(bar)
+    if not bar then return end
+    local barName = bar:GetName()
+    local saved = SDT.db.profile.bars[barName]
+    if not saved then return end
+
+    -- Always show bars when unlocked (edit mode) so users can manage hidden bars
+    if not SDT.db.profile.locked then
+        bar:Show()
+        return
+    end
+
+    -- Global toggle takes priority: if all panels are hidden, hide regardless of per-bar setting
+    if not SDT.db.profile.showPanels then
+        bar:Hide()
+        return
+    end
+
+    -- Per-bar hidden flag
+    if saved.hidden then
+        bar:Hide()
+    else
+        bar:Show()
+    end
+end
+
+----------------------------------------------------
+-- Apply Visibility to All Bars
+----------------------------------------------------
+function SDT.BarManager:ApplyVisibilityAll()
+    for _, bar in pairs(SDT.bars) do
+        self:ApplyVisibility(bar)
+    end
+end
+
+----------------------------------------------------
 -- Create Data Bar
 ----------------------------------------------------
 function SDT.BarManager:CreateDataBar(id, numSlots)
@@ -60,6 +98,7 @@ function SDT.BarManager:CreateDataBar(id, numSlots)
 
     bar:ApplyBackground()
     self:RebuildSlots(bar)
+    self:ApplyVisibility(bar)
     return bar
 end
 
@@ -508,6 +547,21 @@ function SDT.BarManager:ShowSlotDropdown(slot, bar)
 end
 
 ----------------------------------------------------
+-- Toggle All Panels
+----------------------------------------------------
+function SDT.BarManager:ToggleAllPanels()
+    SDT.db.profile.showPanels = not SDT.db.profile.showPanels
+
+    if SDT.db.profile.showPanels then
+        SDT:Print(L["Panels shown"])
+    else
+        SDT:Print(L["Panels hidden"])
+    end
+
+    self:ApplyVisibilityAll()
+end
+
+----------------------------------------------------
 -- Lock/Unlock Panels
 ----------------------------------------------------
 function SDT.BarManager:ToggleLock()
@@ -529,6 +583,8 @@ function SDT.BarManager:ToggleLock()
                 bar:EnableMouse(true)
                 bar:SetMovable(true)
             end
+            -- Re-evaluate visibility: unlocking shows all bars for editing
+            SDT.BarManager:ApplyVisibility(bar)
         end
     end
 end

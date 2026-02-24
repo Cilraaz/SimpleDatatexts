@@ -217,12 +217,23 @@ function SDT:GetGeneralOptions()
                 end,
                 order = 2,
             },
+            showPanels = {
+                type = "toggle",
+                name = L["Show All Panels"],
+                desc = L["Toggle visibility of all panels. Individual panels can also be hidden in their own settings."],
+                get = function() return self.db.profile.showPanels end,
+                set = function(_, val)
+                    self.db.profile.showPanels = val
+                    self.BarManager:ApplyVisibilityAll()
+                end,
+                order = 3,
+            },
             showLoginMessage = {
                 type = "toggle",
                 name = L["Show Login Message"],
                 get = function() return self.db.profile.showLoginMessage end,
                 set = function(_, val) self.db.profile.showLoginMessage = val end,
-                order = 3,
+                order = 4,
             },
             minimapIcon = {
                 type = "toggle",
@@ -237,7 +248,7 @@ function SDT:GetGeneralOptions()
                         SDT.Icon:Hide("SimpleDatatexts")
                     end
                 end,
-                order = 4,
+                order = 5,
             },
             hideModuleTitle = {
                 type = "toggle",
@@ -247,7 +258,7 @@ function SDT:GetGeneralOptions()
                     self.db.profile.hideModuleTitle = val
                     self.ModuleRegistry:UpdateAllModules()
                 end,
-                order = 5,
+                order = 6,
             },
             use24HourClock = {
                 type = "toggle",
@@ -257,7 +268,7 @@ function SDT:GetGeneralOptions()
                     self.db.profile.use24HourClock = val
                     self.ModuleRegistry:UpdateAllModules()
                 end,
-                order = 6,
+                order = 7,
             },
             spacer1 = {
                 type = "header",
@@ -516,6 +527,24 @@ function SDT:GetPanelOptions()
                         end,
                         order = 1,
                     },
+                    hidden = {
+                        type = "toggle",
+                        name = L["Hide Panel"],
+                        desc = L["Hide this panel. Panels are always visible while unlocked."],
+                        get = function()
+                            if not self.selectedBar then return false end
+                            return self.db.profile.bars[self.selectedBar].hidden or false
+                        end,
+                        set = function(_, val)
+                            if self.selectedBar then
+                                self.db.profile.bars[self.selectedBar].hidden = val
+                                if self.bars[self.selectedBar] then
+                                    self.BarManager:ApplyVisibility(self.bars[self.selectedBar])
+                                end
+                            end
+                        end,
+                        order = 2,
+                    },
                     delete = {
                         type = "execute",
                         name = L["Remove Selected Panel"],
@@ -529,7 +558,7 @@ function SDT:GetPanelOptions()
                             self.selectedBar = nil
                             LibStub("AceConfigRegistry-3.0"):NotifyChange("SimpleDatatexts")
                         end,
-                        order = 2,
+                        order = 3,
                     },
                     spacer1 = {
                         type = "header",
