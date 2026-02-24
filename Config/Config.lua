@@ -216,6 +216,7 @@ function SDT:GetGeneralOptions()
                 get = function() return self.db.profile.locked end,
                 set = function(_, val)
                     self.db.profile.locked = val
+                    self.BarManager:ApplyLockState()
                 end,
                 order = 2,
             },

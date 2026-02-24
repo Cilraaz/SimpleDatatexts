@@ -3,6 +3,24 @@ local L = SDT.L
 SDT.BarManager = {}
 
 ----------------------------------------------------
+-- Apply Lock State
+----------------------------------------------------
+function SDT.BarManager:ApplyLockState()
+    for _, bar in pairs(SDT.bars) do
+        if bar then
+            if SDT.db.profile.locked then
+                bar:EnableMouse(false)
+                bar:SetMovable(false)
+            else
+                bar:EnableMouse(true)
+                bar:SetMovable(true)
+            end
+            self:ApplyVisibility(bar)
+        end
+    end
+end
+
+----------------------------------------------------
 -- Apply Visibility
 ----------------------------------------------------
 function SDT.BarManager:ApplyVisibility(bar)
@@ -573,18 +591,5 @@ function SDT.BarManager:ToggleLock()
         SDT:Print(L["Panels unlocked"])
     end
     
-    -- Update all bars to reflect the lock state
-    for _, bar in pairs(SDT.bars) do
-        if bar then
-            if SDT.db.profile.locked then
-                bar:EnableMouse(false)
-                bar:SetMovable(false)
-            else
-                bar:EnableMouse(true)
-                bar:SetMovable(true)
-            end
-            -- Re-evaluate visibility: unlocking shows all bars for editing
-            SDT.BarManager:ApplyVisibility(bar)
-        end
-    end
+    self:ApplyLockState()
 end
