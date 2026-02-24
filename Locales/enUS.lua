@@ -376,6 +376,7 @@ L["Show Specialization Icon"] = "Show Specialization Icon"
 L["Show Specialization Text"] = "Show Specialization Text"
 L["Show Loot Specialization Icon"] = "Show Loot Specialization Icon"
 L["Show Loot Specialization Text"] = "Show Loot Specialization Text"
+L["Show Loot Spec When Current"] = "Show Loot Spec When Current"
 L["Show Loadout"] = "Show Loadout"
 
 -- ----------------------------

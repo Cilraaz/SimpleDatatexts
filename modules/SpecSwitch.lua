@@ -89,6 +89,7 @@ local function SetupModuleConfig()
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Specialization Text"], "showSpecText", true)
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Loot Specialization Icon"], "showLootSpecIcon", true)
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Loot Specialization Text"], "showLootSpecText", true)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Loot Spec When Current"], "showLootSpecCurrent", true)
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Loadout"], "showLoadout", true)
 
     SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
@@ -250,6 +251,7 @@ function mod.Create(slotFrame)
             showSpecText = SDT:GetModuleSetting(moduleName, "showSpecText", true),
             showLootSpecIcon = SDT:GetModuleSetting(moduleName, "showLootSpecIcon", true),
             showLootSpecText = SDT:GetModuleSetting(moduleName, "showLootSpecText", true),
+            showLootSpecCurrent = SDT:GetModuleSetting(moduleName, "showLootSpecCurrent", true),
             showLoadout = SDT:GetModuleSetting(moduleName, "showLoadout", true)
         }
 
@@ -307,9 +309,26 @@ function mod.Create(slotFrame)
             displayParts[#displayParts + 1] = specDisplay
         end
 
-        -- Loot spec (if different)
+        -- Loot spec
         local specLoot = GetLootSpecialization()
-        if specLoot and specLoot ~= 0 and specLoot ~= infoID then
+        if specLoot == 0 then
+            if settings.showLootSpecCurrent and (settings.showLootSpecIcon or settings.showLootSpecText) then
+                local lootTag = settings.showLabel and LOOT..": " or ""
+                local _, _, _, currentIcon = GetSpecializationInfo(specIndex)
+                local parts = {}
+                if lootTag ~= "" then parts[#parts + 1] = lootTag end
+                if settings.showLootSpecIcon and currentIcon then
+                    parts[#parts + 1] = format('|T%s:16:16:0:0:64:64:4:60:4:60|t', currentIcon)
+                end
+                if settings.showLootSpecText then
+                    parts[#parts + 1] = L["Current"]
+                end
+                local lootDisplay = table.concat(parts, settings.showLootSpecIcon and settings.showLootSpecText and " " or "")
+                if lootDisplay ~= "" then
+                    displayParts[#displayParts + 1] = lootDisplay
+                end
+            end
+        elseif specLoot ~= infoID or settings.showLootSpecCurrent then
             local lootID, lootName, _, lootIcon = GetSpecializationInfoByID(specLoot)
             if lootID then
                 local lootTag = settings.showLabel and LOOT..": " or ""

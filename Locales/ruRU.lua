@@ -381,6 +381,7 @@ L["Show Specialization Icon"] = "Показать значок специали�
 L["Show Specialization Text"] = "Показать текст специализации"
 L["Show Loot Specialization Icon"] = "Показать значок специализации добычи"
 L["Show Loot Specialization Text"] = "Показать текст специализации добычи"
+L["Show Loot Spec When Current"] = "Показывать спек добычи при значении 'Текущий'"
 L["Show Loadout"] = "Показать набор"
 
 -- ----------------------------

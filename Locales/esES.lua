@@ -381,6 +381,7 @@ L["Show Specialization Icon"] = "Mostrar icono de especialización"
 L["Show Specialization Text"] = "Mostrar texto de especialización"
 L["Show Loot Specialization Icon"] = "Mostrar icono de especialización de botín"
 L["Show Loot Specialization Text"] = "Mostrar texto de especialización de botín"
+L["Show Loot Spec When Current"] = "Mostrar spec de botín cuando es 'actual'"
 L["Show Loadout"] = "Mostrar configuración"
 
 -- ----------------------------

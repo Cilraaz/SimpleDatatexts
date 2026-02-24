@@ -381,6 +381,7 @@ L["Show Specialization Icon"] = "顯示專精圖示"
 L["Show Specialization Text"] = "顯示專精文字"
 L["Show Loot Specialization Icon"] = "顯示拾取專精圖示"
 L["Show Loot Specialization Text"] = "顯示拾取專精文字"
+L["Show Loot Spec When Current"] = "當前專精時顯示戰利品專精"
 L["Show Loadout"] = "顯示配裝"
 
 -- ----------------------------
