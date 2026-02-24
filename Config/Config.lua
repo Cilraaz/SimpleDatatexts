@@ -27,7 +27,9 @@ end
 local function GetBarList()
     local bars = {}
     for barName, barData in pairs(SDT.db.profile.bars) do
-        bars[barName] = barData.name or barName
+        if barName ~= "*" then
+            bars[barName] = barData.name or barName
+        end
     end
     return bars
 end
