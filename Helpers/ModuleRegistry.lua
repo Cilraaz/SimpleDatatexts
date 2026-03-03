@@ -116,32 +116,41 @@ function SDT.ModuleRegistry:RegisterDatatext(name, module)
 end
 
 ----------------------------------------------------
--- Update Frame Strata for Active Modules
+-- Update Frame Strata for All Bars
 ----------------------------------------------------
 function SDT.ModuleRegistry:UpdateAllModuleStrata()
-    -- Iterate through all bars and their slots
     for _, bar in pairs(SDT.bars) do
-        if bar.slots then
-            for _, slot in ipairs(bar.slots) do
-                -- Only update slots that have an active module
-                if slot.module and slot.module ~= "(spacer)" and SDT.modules[slot.module] then
-                    local strata = SDT.ModuleRegistry:GetModuleFrameStrata(slot.module)
-                    
-                    -- Set strata on the slot itself (parent frame)
-                    slot:SetFrameStrata(strata)
-                    
-                    -- Set strata on module frame if it exists
-                    if slot.moduleFrame then
-                        slot.moduleFrame:SetFrameStrata(strata)
-                    end
-                    
-                    -- Set strata on secure button if it exists
-                    if slot.secureButton then
-                        slot.secureButton:SetFrameStrata(strata)
-                    end
-                end
-            end
-        end
+        self:UpdateBarStrata(bar)
+    end
+end
+
+----------------------------------------------------
+-- Update Frame Strata for a Single Bar
+----------------------------------------------------
+function SDT.ModuleRegistry:UpdateBarStrata(bar)
+    if not (bar and bar.slots) then return end
+
+    for _, slot in ipairs(bar.slots) do
+        SDT.ModuleRegistry:UpdateModuleStrata(slot)
+    end
+end
+
+----------------------------------------------------
+-- Apply Strata to a Single Slot
+----------------------------------------------------
+function SDT.ModuleRegistry:UpdateModuleStrata(slot)
+    if not (slot.module and slot.module ~= "(spacer)" and SDT.modules[slot.module]) then return end
+
+    local strata = SDT.ModuleRegistry:GetModuleFrameStrata(slot.module)
+
+    slot:SetFrameStrata(strata)
+
+    if slot.moduleFrame then
+        slot.moduleFrame:SetFrameStrata(strata)
+    end
+
+    if slot.secureButton then
+        slot.secureButton:SetFrameStrata(strata)
     end
 end
 

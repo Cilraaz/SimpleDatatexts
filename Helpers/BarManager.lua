@@ -90,6 +90,10 @@ function SDT.BarManager:CreateDataBar(id, numSlots)
     local scale = saved.scale or 100
     bar:SetScale(scale / 100)
 
+    if saved.frameStrata then
+        bar:SetFrameStrata(saved.frameStrata)
+    end
+
     function bar:ApplyBackground()
         local hasBackground = saved.bgOpacity and saved.bgOpacity > 0
         local hasBorder = saved.borderName and saved.borderName ~= "None"
@@ -116,6 +120,7 @@ function SDT.BarManager:CreateDataBar(id, numSlots)
 
     bar:ApplyBackground()
     self:RebuildSlots(bar)
+    SDT.ModuleRegistry:UpdateBarStrata(bar)
     self:ApplyVisibility(bar)
     return bar
 end

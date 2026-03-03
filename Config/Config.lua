@@ -647,10 +647,8 @@ function SDT:GetPanelOptions()
                             if self.selectedBar then
                                 self.db.profile.bars[self.selectedBar].frameStrata = val
                                 if self.bars[self.selectedBar] then
-                                    -- Set strata on the panel frame
                                     self.bars[self.selectedBar]:SetFrameStrata(val)
-                                    -- Also update all slot/module strata to be relative
-                                    self.ModuleRegistry:UpdateAllModuleStrata()
+                                    self.ModuleRegistry:UpdateBarStrata(self.bars[self.selectedBar])
                                 end
                             end
                         end,
