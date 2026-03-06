@@ -1,6 +1,5 @@
--- modules/LootSpec.lua
--- LootSpec datatext for Simple DataTexts (SDT)
--- Displays and allows changing the player's Loot Specialization.
+-- modules/SpecLoot.lua
+-- SpecLoot datatext for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local L = SDT.L
 

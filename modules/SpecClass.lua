@@ -1,5 +1,5 @@
--- modules/SpecSwitch.lua
--- SpecSwitch datatext adapted from ElvUI for Simple DataTexts (SDT)
+-- modules/SpecClass.lua
+-- SpecClass datatext for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
 local L = SDT.L
 
