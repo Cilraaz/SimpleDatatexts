@@ -365,6 +365,12 @@ L["Right Click: List Group in Finder"] = "Clic droit : Créer un groupe dans le 
 L["Quests"] = "Quêtes"
 
 -- ----------------------------
+-- modules/SpecLoot.lua
+-- ----------------------------
+L["Left Click: Change Loot Specialization"] = "Clic gauche : Changer la spécialisation de butin"
+L["Current"] = "Actuelle"
+
+-- ----------------------------
 -- modules/SpecSwitch.lua
 -- ----------------------------
 L["Active"] = "Actif"

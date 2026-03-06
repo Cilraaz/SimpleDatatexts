@@ -365,6 +365,12 @@ L["Right Click: List Group in Finder"] = "右鍵點擊：在尋求中列出隊�
 L["Quests"] = "任務"
 
 -- ----------------------------
+-- modules/SpecLoot.lua
+-- ----------------------------
+L["Left Click: Change Loot Specialization"] = "左鍵點擊：更改戰利品專精"
+L["Current"] = "目前"
+
+-- ----------------------------
 -- modules/SpecSwitch.lua
 -- ----------------------------
 L["Active"] = "啟用"

@@ -365,6 +365,12 @@ L["Right Click: List Group in Finder"] = "Правый клик: Создать 
 L["Quests"] = "Задания"
 
 -- ----------------------------
+-- modules/SpecLoot.lua
+-- ----------------------------
+L["Left Click: Change Loot Specialization"] = "Левый клик: изменить специализацию добычи"
+L["Current"] = "Текущая"
+
+-- ----------------------------
 -- modules/SpecSwitch.lua
 -- ----------------------------
 L["Active"] = "Активен"

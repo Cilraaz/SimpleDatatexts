@@ -365,6 +365,12 @@ L["Right Click: List Group in Finder"] = "우클릭: 찾기에 그룹 등록"
 L["Quests"] = "퀘스트"
 
 -- ----------------------------
+-- modules/SpecLoot.lua
+-- ----------------------------
+L["Left Click: Change Loot Specialization"] = "왼쪽 클릭: 전리품 전문화 변경"
+L["Current"] = "현재"
+
+-- ----------------------------
 -- modules/SpecSwitch.lua
 -- ----------------------------
 L["Active"] = "활성"

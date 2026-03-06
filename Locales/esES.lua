@@ -365,6 +365,12 @@ L["Right Click: List Group in Finder"] = "Clic derecho: Listar grupo en el busca
 L["Quests"] = "Misiones"
 
 -- ----------------------------
+-- modules/SpecLoot.lua
+-- ----------------------------
+L["Left Click: Change Loot Specialization"] = "Clic izquierdo: Cambiar especialización de botín"
+L["Current"] = "Actual"
+
+-- ----------------------------
 -- modules/SpecSwitch.lua
 -- ----------------------------
 L["Active"] = "Activo"

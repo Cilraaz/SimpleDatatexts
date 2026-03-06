@@ -360,6 +360,12 @@ L["Right Click: List Group in Finder"] = "Right Click: List Group in Finder"
 L["Quests"] = "Quests"
 
 -- ----------------------------
+-- modules/SpecLoot.lua
+-- ----------------------------
+L["Left Click: Change Loot Specialization"] = "Left Click: Change Loot Specialization"
+L["Current"] = "Current"
+
+-- ----------------------------
 -- modules/SpecSwitch.lua
 -- ----------------------------
 L["Active"] = "Active"
