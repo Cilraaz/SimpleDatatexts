@@ -237,6 +237,10 @@ L["Bar Texture"] = "Leistenstruktur"
 L["Text Color"] = "Textfarbe"
 L["Text Use Class Color"] = "Klassenfarbe für Text verwenden"
 L["Text Custom Color"] = "Benutzerdefinierte Textfarbe"
+L["Show Rested XP Bar"] = "EP-Erholungsleiste anzeigen"
+L["Override Default Rested Color"] = "Standardfarbe für Erholung überschreiben"
+L["Rested Custom Color"] = "Benutzerdefinierte Erholungsfarbe"
+L["Rested:"] = "Erholung:"
 
 -- ----------------------------
 -- modules/Friends.lua

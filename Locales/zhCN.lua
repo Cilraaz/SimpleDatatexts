@@ -237,6 +237,10 @@ L["Bar Texture"] = "条栏材质"
 L["Text Color"] = "文本颜色"
 L["Text Use Class Color"] = "文本使用职业颜色"
 L["Text Custom Color"] = "文本自定义颜色"
+L["Show Rested XP Bar"] = "显示休息经验条"
+L["Override Default Rested Color"] = "覆盖默认休息颜色"
+L["Rested Custom Color"] = "自定义休息颜色"
+L["Rested:"] = "休息："
 
 -- ----------------------------
 -- modules/Friends.lua

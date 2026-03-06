@@ -233,6 +233,10 @@ L["Bar Texture"] = "Bar Texture"
 L["Text Color"] = "Text Color"
 L["Text Use Class Color"] = "Text Use Class Color"
 L["Text Custom Color"] = "Text Custom Color"
+L["Show Rested XP Bar"] = "Show Rested XP Bar"
+L["Override Default Rested Color"] = "Override Default Rested Color"
+L["Rested Custom Color"] = "Rested Custom Color"
+L["Rested:"] = "Rested:"
 
 -- ----------------------------
 -- modules/Friends.lua

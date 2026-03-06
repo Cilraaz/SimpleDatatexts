@@ -237,6 +237,10 @@ L["Bar Texture"] = "바 텍스처"
 L["Text Color"] = "텍스트 색상"
 L["Text Use Class Color"] = "텍스트 직업 색상 사용"
 L["Text Custom Color"] = "텍스트 사용자 지정 색상"
+L["Show Rested XP Bar"] = "휴식 경험치 바 표시"
+L["Override Default Rested Color"] = "기본 휴식 색상 재정의"
+L["Rested Custom Color"] = "휴식 사용자 지정 색상"
+L["Rested:"] = "휴식:"
 
 -- ----------------------------
 -- modules/Friends.lua

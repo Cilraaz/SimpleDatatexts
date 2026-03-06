@@ -25,6 +25,7 @@ local UnitXPMax       = UnitXPMax
 local UnitLevel       = UnitLevel
 local GetBuildInfo    = GetBuildInfo
 local GetMaxLevelForPlayerExpansion = GetMaxLevelForPlayerExpansion
+local GetXPExhaustion = GetXPExhaustion
 
 ----------------------------------------------------
 -- Constants
@@ -49,6 +50,7 @@ local function SetupModuleConfig()
 
     -- Bar Toggles
     SDT.ModuleRegistry:AddModuleConfigSeparator(moduleName, L["Bar Toggles"])
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Rested XP"], "expShowRested", false)
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Show Graphical Bar"], "expShowGraphicalBar", true)
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Hide Blizzard XP Bar"], "expHideBlizzardBar", false)
 
@@ -58,6 +60,8 @@ local function SetupModuleConfig()
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "color", L["Bar Custom Color"], "expBarColor", "#4080FF")
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "range", L["Bar Height (%)"], "expBarHeightPercent", 100, 10, 100, 5)
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "statusbar", L["Bar Texture"], "expBarTexture", "Blizzard")
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Override Default Rested Color"], "expOverrideRestedColor", false)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "color", L["Rested Custom Color"], "expBarRestedColor", "#0070FF")
 
     SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
 end
@@ -96,6 +100,7 @@ function mod.Create(slotFrame)
     local barFrame
     local barBg
     local barFill
+    local barRested
     local barDividers
     local barText
 
@@ -119,6 +124,10 @@ function mod.Create(slotFrame)
         -- Fill
         barFill = barFrame:CreateTexture(nil, "ARTWORK")
         barFill:SetColorTexture(1, 1, 1, 0.8)
+
+        barRested = barFrame:CreateTexture(nil, "ARTWORK")
+        barRested:SetColorTexture(1, 1, 1, 0.8)
+        barRested:Hide()
     
         -- Text overlay
         barText = barFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -155,6 +164,10 @@ function mod.Create(slotFrame)
         -- Position fill - anchor to left center
         barFill:SetHeight(barHeight)
         barFill:SetPoint("LEFT", barFrame, "LEFT", 0, 0)
+
+        if barRested then
+            barRested:SetHeight(barHeight)
+        end
     end
 
     local function UpdateBarDividers()
@@ -182,6 +195,19 @@ function mod.Create(slotFrame)
             local g = tonumber(color:sub(3, 4), 16) / 255
             local b = tonumber(color:sub(5, 6), 16) / 255
             return r, g, b, 1
+        end
+    end
+
+    local function GetRestedColor()
+        if SDT:GetModuleSetting(moduleName, "expOverrideRestedColor", false) then
+            local colorSetting = SDT:GetModuleSetting(moduleName, "expBarRestedColor", "#0070FF")
+            local color = colorSetting:gsub("#", "")
+            local r = tonumber(color:sub(1, 2), 16) / 255
+            local g = tonumber(color:sub(3, 4), 16) / 255
+            local b = tonumber(color:sub(5, 6), 16) / 255
+            return r, g, b, 1
+        else
+            return 0, 0.44, 1, 1
         end
     end
 
@@ -241,6 +267,14 @@ function mod.Create(slotFrame)
                 FormatValue(xpRemaining))
         end
 
+        local showRested = SDT:GetModuleSetting(moduleName, "expShowRested", true)
+        if showRested then
+            local restedXP = GetXPExhaustion() or 0
+            if restedXP > 0 then
+                textString = format("%s (R: %s)", textString, FormatValue(restedXP))
+            end
+        end
+
         if showingBar and barFrame then
             barFrame:Show()
         elseif barFrame then
@@ -276,6 +310,29 @@ function mod.Create(slotFrame)
             else
                 -- Hide at 0% XP to avoid rendering issue
                 barFill:Hide()
+            end
+
+            local showRested = SDT:GetModuleSetting(moduleName, "expShowRested", true)
+            local restedXP = GetXPExhaustion() or 0
+
+            if showRested and restedXP > 0 and barRested then
+                local restedCapped = math.min(restedXP, maxXP - currentXP)
+                local restedPercent = restedCapped / maxXP
+
+                if restedPercent > 0 then
+                    barRested:SetWidth(slotWidth * restedPercent)
+                    barRested:SetPoint("LEFT", barFrame, "LEFT", slotWidth * fillPercent, 0)
+                    barRested:SetHeight(barFill:GetHeight())
+                    barRested:SetTexCoord(fillPercent, fillPercent + restedPercent, 0, 1)
+                    barRested:SetTexture(barFill:GetTexture())
+                    local r, g, b, a = GetRestedColor()
+                    barRested:SetVertexColor(r, g, b, 0.8)
+                    barRested:Show()
+                else
+                    barRested:Hide()
+                end
+            elseif barRested then
+                barRested:Hide()
             end
 
             -- Update font size from settings
@@ -333,7 +390,7 @@ function mod.Create(slotFrame)
     -- Tooltip
     slotFrame:SetScript("OnEnter", function(self)
         local _, _, _, TOC = GetBuildInfo()
-        local isMaxLevel = TOC < 120000 and SDTC.playerLevel >= 80 or SDTC.playerLevel >= 90
+        local isMaxLevel = SDTC.playerLevel >= GetMaxLevelForPlayerExpansion()
         
         if isMaxLevel then return end
 
@@ -364,6 +421,14 @@ function mod.Create(slotFrame)
             format("%.2f%%", xpPercent),
             1, 0.82, 0, 1, 1, 1
         )
+        local restedXP = GetXPExhaustion() or 0
+        if restedXP > 0 then
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil,
+                "Rested:",
+                FormatValue(restedXP),
+                1, 0.82, 0, 1, 1, 1
+            )
+        end
 
         SDT.Tooltip:Show()
     end)

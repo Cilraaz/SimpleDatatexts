@@ -237,6 +237,10 @@ L["Bar Texture"] = "Текстура полосы"
 L["Text Color"] = "Цвет текста"
 L["Text Use Class Color"] = "Использовать цвет класса для текста"
 L["Text Custom Color"] = "Пользовательский цвет текста"
+L["Show Rested XP Bar"] = "Показать полосу отдыха опыта"
+L["Override Default Rested Color"] = "Переопределить цвет отдыха по умолчанию"
+L["Rested Custom Color"] = "Пользовательский цвет отдыха"
+L["Rested:"] = "Отдых:"
 
 -- ----------------------------
 -- modules/Friends.lua

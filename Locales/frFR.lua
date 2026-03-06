@@ -237,6 +237,10 @@ L["Bar Texture"] = "Texture de la barre"
 L["Text Color"] = "Couleur du texte"
 L["Text Use Class Color"] = "Utiliser la couleur de classe pour le texte"
 L["Text Custom Color"] = "Couleur personnalisée du texte"
+L["Show Rested XP Bar"] = "Afficher la barre XP de repos"
+L["Override Default Rested Color"] = "Remplacer la couleur de repos par défaut"
+L["Rested Custom Color"] = "Couleur personnalisée de repos"
+L["Rested:"] = "Reposé :"
 
 -- ----------------------------
 -- modules/Friends.lua
