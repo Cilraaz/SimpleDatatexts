@@ -283,6 +283,7 @@ function mod.Create(slotFrame)
     -- Events
     ------------------------------------------------
     local function OnEvent()
+        RefreshConfigUI()
         UpdateDisplay(slotFrame)
     end
     f.Update = function() OnEvent(f) end
@@ -299,12 +300,12 @@ function mod.Create(slotFrame)
     f:RegisterEvent("PERKS_PROGRAM_CURRENCY_REFRESH")
 
     hooksecurefunc(C_CurrencyInfo, "SetCurrencyBackpack", function()
-        UpdateDisplay(slotFrame)
         RefreshConfigUI()
+        UpdateDisplay(slotFrame)
     end)
     hooksecurefunc(C_CurrencyInfo, "SetCurrencyBackpackByID", function()
-        UpdateDisplay(slotFrame)
         RefreshConfigUI()
+        UpdateDisplay(slotFrame)
     end)
 
     ------------------------------------------------
