@@ -43,7 +43,7 @@ SetupModuleConfig()
 ----------------------------------------------------
 function mod.Create(slotFrame)
     if not ara then
-        SDT.Print(L["Ara Guild LDB object not found! SDT Guild datatext disabled."])
+        SDT:Print(L["Ara Guild LDB object not found! SDT Guild datatext disabled."])
         return
     end
     local f = CreateFrame("Frame", nil, slotFrame)

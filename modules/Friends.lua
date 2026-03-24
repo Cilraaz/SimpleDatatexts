@@ -32,7 +32,7 @@ SetupModuleConfig()
 ----------------------------------------------------
 function mod.Create(slotFrame)
     if not ara then
-        SDT.Print(L["Ara Friends LDB object not found! SDT Friends datatext disabled."])
+        SDT:Print(L["Ara Friends LDB object not found! SDT Friends datatext disabled."])
         return
     end
     local f = CreateFrame("Frame", nil, slotFrame)
