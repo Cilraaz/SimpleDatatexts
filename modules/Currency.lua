@@ -283,21 +283,14 @@ function mod.Create(slotFrame)
     -- Events
     ------------------------------------------------
     local function OnEvent()
-        RefreshConfigUI()
         UpdateDisplay(slotFrame)
     end
     f.Update = function() OnEvent(f) end
 
     f:SetScript("OnEvent", OnEvent)
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
-    f:RegisterEvent("PLAYER_MONEY")
-    f:RegisterEvent("SEND_MAIL_MONEY_CHANGED")
-    f:RegisterEvent("SEND_MAIL_COD_CHANGED")
-    f:RegisterEvent("PLAYER_TRADE_MONEY")
-    f:RegisterEvent("TRADE_MONEY_CHANGED")
     f:RegisterEvent("CHAT_MSG_CURRENCY")
     f:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
-    f:RegisterEvent("PERKS_PROGRAM_CURRENCY_REFRESH")
 
     hooksecurefunc(C_CurrencyInfo, "SetCurrencyBackpack", function()
         RefreshConfigUI()
