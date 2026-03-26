@@ -270,6 +270,15 @@ function SDT.BarManager:RebuildSlots(bar)
             slot:SetScript("OnLeave", nil)
             slot:SetScript("OnClick", nil)
 
+            -- Clean up hit frame if it exists
+            if slot.hitFrame then
+                slot.hitFrame:SetScript("OnEnter", nil)
+                slot.hitFrame:SetScript("OnLeave", nil)
+                slot.hitFrame:SetScript("OnClick", nil)
+                slot.hitFrame:Hide()
+                slot.hitFrame = nil
+            end
+
             -- Clean up secure button if it exists (used by Hearthstone and MythicPlusKey modules)
             if slot.secureButton then
                 slot.secureButton:SetScript("OnEnter", nil)
@@ -306,6 +315,30 @@ function SDT.BarManager:RebuildSlots(bar)
             end
         end
 
+        -- Create a hit frame and transfer the slot scripts onto it.
+        if assignedName and assignedName ~= "(spacer)" and SDT.modules[assignedName]
+                and not slot.secureButton then
+            slot.hitFrame = CreateFrame("Button", nil, slot)
+            slot.hitFrame:RegisterForClicks("AnyUp")
+            slot.hitFrame:RegisterForDrag("LeftButton")
+            slot.hitFrame:EnableMouse(true)
+
+            slot.hitFrame:SetScript("OnEnter", slot:GetScript("OnEnter"))
+            slot.hitFrame:SetScript("OnLeave", slot:GetScript("OnLeave"))
+            slot.hitFrame:SetScript("OnClick", slot:GetScript("OnClick"))
+            slot:SetScript("OnEnter", nil)
+            slot:SetScript("OnLeave", nil)
+            slot:SetScript("OnClick", nil)
+
+            slot.hitFrame:SetScript("OnDragStart", function()
+                if not SDT.db.profile.locked then bar:StartMoving() end
+            end)
+            slot.hitFrame:SetScript("OnDragStop", function()
+                bar:StopMovingOrSizing()
+                SDT.BarManager:SaveBarPosition(bar)
+            end)
+        end
+
         -- Apply frame strata
         if assignedName and assignedName ~= "(spacer)" and SDT.modules[assignedName] then
             local strata = SDT.ModuleRegistry:GetModuleFrameStrata(assignedName)
@@ -324,11 +357,26 @@ function SDT.BarManager:RebuildSlots(bar)
             end
         end
         
-        -- Apply offset
+        -- Apply offset to the displayed text and reposition hit frame to match
+        local anchorPoint = SDT:GetModuleSetting(assignedName, "anchorPoint", "CENTER")
         if slot.text then
-            local anchorPoint = SDT:GetModuleSetting(assignedName, "anchorPoint", "CENTER")
             slot.text:ClearAllPoints()
             slot.text:SetPoint(anchorPoint, slot, anchorPoint, offsetX, offsetY)
+        end
+
+        if slot.hitFrame then
+            slot.hitFrame:SetFrameLevel(slot:GetFrameLevel() + 5)
+            slot.hitFrame:ClearAllPoints()
+            slot.hitFrame:SetPoint(anchorPoint, slot, anchorPoint, offsetX, offsetY)
+            local textW = slot.text and slot.text:GetStringWidth() or 0
+            slot.hitFrame:SetSize(math.max(slotW, textW), slotH)
+            slot.hitFrame:Show()
+        elseif slot.secureButton then
+            -- Secure buttons can't have scripts moved; reposition them to match text
+            slot.secureButton:ClearAllPoints()
+            slot.secureButton:SetPoint(anchorPoint, slot, anchorPoint, offsetX, offsetY)
+            local textW = slot.text and slot.text:GetStringWidth() or 0
+            slot.secureButton:SetSize(math.max(slotW, textW), slotH)
         end
         
         -- Set up event handlers (these need to capture current values)
