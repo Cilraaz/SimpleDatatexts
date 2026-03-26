@@ -322,6 +322,7 @@ function SDT.BarManager:RebuildSlots(bar)
             slot.hitFrame:RegisterForClicks("AnyUp")
             slot.hitFrame:RegisterForDrag("LeftButton")
             slot.hitFrame:EnableMouse(true)
+            slot.hitFrame:SetPoint("CENTER", slot.text, "CENTER", 0, 0)
 
             slot.hitFrame:SetScript("OnEnter", slot:GetScript("OnEnter"))
             slot.hitFrame:SetScript("OnLeave", slot:GetScript("OnLeave"))
@@ -366,16 +367,14 @@ function SDT.BarManager:RebuildSlots(bar)
 
         if slot.hitFrame then
             slot.hitFrame:SetFrameLevel(slot:GetFrameLevel() + 5)
-            slot.hitFrame:ClearAllPoints()
-            slot.hitFrame:SetPoint(anchorPoint, slot, anchorPoint, offsetX, offsetY)
-            local textW = slot.text and slot.text:GetStringWidth() or 0
+            local textW = slot.text and slot.text:GetWidth() or 0
             slot.hitFrame:SetSize(math.max(slotW, textW), slotH)
             slot.hitFrame:Show()
         elseif slot.secureButton then
             -- Secure buttons can't have scripts moved; reposition them to match text
             slot.secureButton:ClearAllPoints()
             slot.secureButton:SetPoint(anchorPoint, slot, anchorPoint, offsetX, offsetY)
-            local textW = slot.text and slot.text:GetStringWidth() or 0
+            local textW = slot.text and slot.text:GetWidth() or 0
             slot.secureButton:SetSize(math.max(slotW, textW), slotH)
         end
         
