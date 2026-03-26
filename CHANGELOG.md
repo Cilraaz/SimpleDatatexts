@@ -1,4 +1,3 @@
 ## Changes
-- 0def8b1 build(TOC): 12.0.1.10 release
-- e8499df fix(Currency): Remove unnecessary event registrations and RefreshConfigUI call
-- d062d1a fix(Friends/Guild): Fix incorrect print function call
+- e2592e2 build(TOC): 12.0.1.11 release
+- 85c4e89 fix(Ara): Fix guild MOTD generating lua error during combat
