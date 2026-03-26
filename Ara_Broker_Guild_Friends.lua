@@ -985,7 +985,7 @@ UpdateTablet = function()
 	local canEditMOTD = CanEditMOTD()
 	motd:SetPoint("TOPLEFT", GAP, -GAP)
 	motd:SetScript("OnClick",nil)
-	local guildMOTD = isGuild and GetGuildRosterMOTD()
+	local guildMOTD = isGuild and (not InCombatLockdown() and GetGuildRosterMOTD() or L["MOTD Unavailable due to combat lockdown."])
 	if isGuild and (nbTotalEntries>0 and guildMOTD or nbTotalEntries==0) or not isGuild and (BNFeaturesEnabled() and totalRF>0 and config.showOwnBroadcast or nbTotalEntries==0) then
 		motd.name:SetJustifyH"LEFT"
 		motd.name:SetTextColor( unpack(colors.title) )

@@ -498,6 +498,7 @@ L["Mobile App"] = "Мобильное приложение"
 L["Desktop App"] = "Десктоп приложение"
 L["OFFLINE FAVORITE"] = "ИЗБРАННОЕ ОФФЛАЙН"
 L["MOTD"] = "СД" -- Short for "Сообщение дня".
+L["MOTD Unavailable due to combat lockdown."] = "Сообщение дня недоступно из-за блокировки боя."
 L["No friends online."] = "Друзей онлайн нет."
 L["Broadcast"] = "Трансляция"
 L["Invalid scale.\nShould be a number between 70 and 200%"] = "Недопустимый масштаб.\nДолжно быть число от 70 до 200%"
