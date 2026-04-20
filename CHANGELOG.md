@@ -1,4 +1,4 @@
 ## Changes
-- d5d78c8 build(TOC): 12.0.1.12 release
-- 4efc66c fix(BarManager): Fix "secureButton" modules; Make mouseover area move when changing datatext offset
-- 6a55a58 feat(BarManager): Offset mouseover area when datatext is offset
+- a5b5af4 build(TOC): 12.0.1.13 release
+- 41a039b fix(BarManager): Fix module select dropdown (ctrl+right-click)
+- 6b84272 feat(Date): Add Date module
