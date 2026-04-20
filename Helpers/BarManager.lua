@@ -331,6 +331,12 @@ function SDT.BarManager:RebuildSlots(bar)
             slot:SetScript("OnLeave", nil)
             slot:SetScript("OnClick", nil)
 
+            slot.hitFrame:SetScript("OnMouseUp", function(self, btn)
+                if btn == "RightButton" and IsControlKeyDown() then
+                    SDT.BarManager:ShowSlotDropdown(slot, bar)
+                end
+            end)
+
             slot.hitFrame:SetScript("OnDragStart", function()
                 if not SDT.db.profile.locked then bar:StartMoving() end
             end)
