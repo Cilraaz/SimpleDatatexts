@@ -63,6 +63,7 @@ modules/CombatTimer.lua
 modules/Coordinates.lua
 modules/Crit.lua
 modules/Currency.lua
+modules/Date.lua
 modules/Dodge.lua
 modules/Durability.lua
 modules/Experience.lua

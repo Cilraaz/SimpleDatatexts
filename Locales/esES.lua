@@ -214,6 +214,23 @@ L["Position %d"] = "Posición %d"
 L["Empty Slot"] = "Ranura Vacía"
 
 -- ----------------------------
+-- modules/Date.lua
+-- ----------------------------
+L["Date"] = "Fecha"
+L["Date Format"] = "Formato de fecha"
+L["MM/DD/YYYY"] = "MM/DD/AAAA"
+L["DD/MM/YYYY"] = "DD/MM/AAAA"
+L["YYYY-MM-DD"] = "AAAA-MM-DD"
+L["Month DD, YYYY"] = "Mes DD, AAAA"
+L["DD Month YYYY"] = "DD Mes AAAA"
+L["Weekday, Month DD"] = "Día de semana, Mes DD"
+L["Abbrev. (Mon, Jan 1)"] = "Abrev. (Lun, Ene 1)"
+L["Show Day of Week on Tooltip"] = "Mostrar día de la semana en el tooltip"
+L["Show Day of Year on Tooltip"] = "Mostrar día del año en el tooltip"
+L["Day of Week:"] = "Día de la semana:"
+L["Day of Year:"] = "Día del año:"
+
+-- ----------------------------
 -- modules/Durability.lua
 -- ----------------------------
 L["Dur:"] = "Dur:"

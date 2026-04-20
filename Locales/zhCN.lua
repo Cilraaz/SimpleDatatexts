@@ -214,6 +214,23 @@ L["Position %d"] = "位置 %d"
 L["Empty Slot"] = "空位"
 
 -- ----------------------------
+-- modules/Date.lua
+-- ----------------------------
+L["Date"] = "日期"
+L["Date Format"] = "日期格式"
+L["MM/DD/YYYY"] = "MM/DD/YYYY"
+L["DD/MM/YYYY"] = "DD/MM/YYYY"
+L["YYYY-MM-DD"] = "YYYY-MM-DD"
+L["Month DD, YYYY"] = "月 DD日, YYYY年"
+L["DD Month YYYY"] = "YYYY年MM月DD日"
+L["Weekday, Month DD"] = "星期, MM月DD日"
+L["Abbrev. (Mon, Jan 1)"] = "缩写 (周一, 1月1日)"
+L["Show Day of Week on Tooltip"] = "在提示框中显示星期"
+L["Show Day of Year on Tooltip"] = "在提示框中显示年中第几天"
+L["Day of Week:"] = "星期:"
+L["Day of Year:"] = "年中第几天:"
+
+-- ----------------------------
 -- modules/Durability.lua
 -- ----------------------------
 L["Dur:"] = "耐久："

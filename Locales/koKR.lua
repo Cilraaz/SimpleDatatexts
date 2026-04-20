@@ -214,6 +214,23 @@ L["Position %d"] = "위치 %d"
 L["Empty Slot"] = "빈 슬롯"
 
 -- ----------------------------
+-- modules/Date.lua
+-- ----------------------------
+L["Date"] = "날짜"
+L["Date Format"] = "날짜 형식"
+L["MM/DD/YYYY"] = "MM/DD/YYYY"
+L["DD/MM/YYYY"] = "DD/MM/YYYY"
+L["YYYY-MM-DD"] = "YYYY-MM-DD"
+L["Month DD, YYYY"] = "월 DD일, YYYY년"
+L["DD Month YYYY"] = "YYYY년 MM월 DD일"
+L["Weekday, Month DD"] = "요일, MM월 DD일"
+L["Abbrev. (Mon, Jan 1)"] = "약어 (월, 1월 1일)"
+L["Show Day of Week on Tooltip"] = "툴팁에 요일 표시"
+L["Show Day of Year on Tooltip"] = "툴팁에 연중 일수 표시"
+L["Day of Week:"] = "요일:"
+L["Day of Year:"] = "연중 일수:"
+
+-- ----------------------------
 -- modules/Durability.lua
 -- ----------------------------
 L["Dur:"] = "내구도:"

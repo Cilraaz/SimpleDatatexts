@@ -214,6 +214,23 @@ L["Position %d"] = "Позиция %d"
 L["Empty Slot"] = "Пустой Слот"
 
 -- ----------------------------
+-- modules/Date.lua
+-- ----------------------------
+L["Date"] = "Дата"
+L["Date Format"] = "Формат даты"
+L["MM/DD/YYYY"] = "ММ/ДД/ГГГГ"
+L["DD/MM/YYYY"] = "ДД/ММ/ГГГГ"
+L["YYYY-MM-DD"] = "ГГГГ-ММ-ДД"
+L["Month DD, YYYY"] = "Месяц ДД, ГГГГ"
+L["DD Month YYYY"] = "ДД Месяц ГГГГ"
+L["Weekday, Month DD"] = "День недели, Месяц ДД"
+L["Abbrev. (Mon, Jan 1)"] = "Сокр. (Пн, Янв 1)"
+L["Show Day of Week on Tooltip"] = "Показывать день недели в подсказке"
+L["Show Day of Year on Tooltip"] = "Показывать день года в подсказке"
+L["Day of Week:"] = "День недели:"
+L["Day of Year:"] = "День года:"
+
+-- ----------------------------
 -- modules/Durability.lua
 -- ----------------------------
 L["Dur:"] = "Длит:"
