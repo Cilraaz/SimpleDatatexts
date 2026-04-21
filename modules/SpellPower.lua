@@ -73,6 +73,7 @@ function mod.Create(slotFrame)
         maxSpellPower = 0
         for i = 2, MAX_SPELL_SCHOOLS do
             local power = GetSpellBonusDamage(i)
+            if issecretvalue(power) then return end
             if power > maxSpellPower then
                 maxSpellPower = power
             end

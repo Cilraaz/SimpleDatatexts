@@ -44,6 +44,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateMastery()
         currentMastery = GetMasteryEffect() or 0
+        if issecretvalue(currentMastery) then return end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
         local textString = (showLabel and L["Mastery:"].." " or "") .. SDT.FormatUtils:FormatPercent(currentMastery, hideDecimals)

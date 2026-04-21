@@ -69,6 +69,8 @@ function mod.Create(slotFrame)
         else
             currentSpeed = GetUnitSpeed("player")
         end
+
+        if issecretvalue(currentSpeed) then return end
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showAsPercentage = SDT:GetModuleSetting(moduleName, "showAsPercentage", true)

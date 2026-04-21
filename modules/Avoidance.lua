@@ -63,6 +63,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateAvoidance()
         avoidanceRating = GetCombatRating(CR_AVOIDANCE)
+        if issecretvalue(avoidanceRating) then return end
         avoidancePercent = GetCombatRatingBonus(CR_AVOIDANCE)
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)

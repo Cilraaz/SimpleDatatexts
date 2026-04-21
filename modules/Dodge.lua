@@ -66,6 +66,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateDodge()
         dodgeChance = GetDodgeChance()
+        if issecretvalue(dodgeChance) then return end
         dodgeRating = GetCombatRating(CR_DODGE)
         dodgeBonus = GetCombatRatingBonus(CR_DODGE)
         

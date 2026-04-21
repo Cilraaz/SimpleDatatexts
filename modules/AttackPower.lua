@@ -71,6 +71,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateAP()
         local base, posBuff, negBuff = (isHunter and UnitRangedAttackPower or UnitAttackPower)("player")
+        if issecretvalue(base) then return end
         totalAP = base + posBuff + negBuff
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showShortLabel = SDT:GetModuleSetting(moduleName, "showShortLabel", false)

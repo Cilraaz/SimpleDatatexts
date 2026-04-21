@@ -60,6 +60,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateArmor()
         local _, currentArmor = UnitArmor("player")
+        if issecretvalue(currentArmor) then return end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local textString = (showLabel and ARMOR..": " or "")..currentArmor
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))

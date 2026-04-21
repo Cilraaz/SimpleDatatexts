@@ -72,6 +72,7 @@ function mod.Create(slotFrame)
 
 	    local holySchool = 2 -- start at 2 to skip physical damage
 	    local minCrit = GetSpellCritChance(holySchool)
+        if issecretvalue(minCrit) then return end
 	    for i = (holySchool + 1), MAX_SPELL_SCHOOLS do
 		    spellCrit = GetSpellCritChance(i)
 		    minCrit = min(minCrit, spellCrit)

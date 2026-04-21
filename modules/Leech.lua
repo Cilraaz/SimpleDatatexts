@@ -63,6 +63,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateLeech()
         leechRating = GetCombatRating(CR_LIFESTEAL)
+        if issecretvalue(leechRating) then return end
         leechPercent = GetCombatRatingBonus(CR_LIFESTEAL)
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)

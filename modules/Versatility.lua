@@ -67,6 +67,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateVersatility()
         currentVers = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE)
+        if issecretvalue(currentVers) then return end
         versReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN)
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)

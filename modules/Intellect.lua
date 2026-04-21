@@ -60,6 +60,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateIntellect()
         currentInt = UnitStat("player", LE_UNIT_STAT_INTELLECT)
+        if issecretvalue(currentInt) then return end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showShortLabel = SDT:GetModuleSetting(moduleName, "showShortLabel", false)
         local textString = (showLabel and (showShortLabel and L["Int"] or ITEM_MOD_INTELLECT_SHORT) .. ": " or "") .. currentInt

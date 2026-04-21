@@ -69,6 +69,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateHaste()
         currentHaste = GetHaste() or 0
+        if issecretvalue(currentHaste) then return end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
         local textString = (showLabel and L["Haste:"].." " or "") .. SDT.FormatUtils:FormatPercent(currentHaste, hideDecimals)

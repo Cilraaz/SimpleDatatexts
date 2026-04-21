@@ -65,6 +65,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateBlock()
         blockChance = GetBlockChance()
+        if issecretvalue(blockChance) then return end
         blockValue = GetShieldBlock()
         blockRating = GetCombatRating(CR_BLOCK)
         blockBonus = GetCombatRatingBonus(CR_BLOCK)

@@ -64,6 +64,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateParry()
         parryChance = GetParryChance()
+        if issecretvalue(parryChance) then return end
         parryRating = GetCombatRating(CR_PARRY)
         parryBonus = GetCombatRatingBonus(CR_PARRY)
         
