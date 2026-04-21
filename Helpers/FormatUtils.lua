@@ -24,8 +24,9 @@ function SDT.FormatUtils:AddTooltipHeader(tooltip, fontSize, text, r, g, b, wrap
     -- Force the header to use a specific font size
     local textLeft = _G[tooltip:GetName() .. "TextLeft" .. tooltip:NumLines()]
     if textLeft then
-        local fontPath = SDT.LSM:Fetch("font", SDT.db.profile.tooltipFont)
+        local fontPath = SDT.LSM:Fetch("font", SDT.db.profile.tooltipFont) or STANDARD_TEXT_FONT
         local outline = SDT.db.profile.tooltipFontOutline
+        outline = (outline == "NONE") and "" or outline
         textLeft:SetFont(fontPath, fontSize, outline)
 
         -- Apply shadow setting
@@ -64,8 +65,9 @@ function SDT.FormatUtils:AddTooltipLine(tooltip, fontSize, textLeft, textRight, 
     end
 
     -- Apply font size to the line
-    local fontPath = SDT.LSM:Fetch("font", SDT.db.profile.tooltipFont)
+    local fontPath = SDT.LSM:Fetch("font", SDT.db.profile.tooltipFont) or STANDARD_TEXT_FONT
     local outline = SDT.db.profile.tooltipFontOutline
+    outline = (outline == "NONE") and "" or outline
     local lineNum = tooltip:NumLines()
     local textLeftObj = _G[tooltip:GetName() .. "TextLeft" .. lineNum]
     local textRightObj = _G[tooltip:GetName() .. "TextRight" .. lineNum]

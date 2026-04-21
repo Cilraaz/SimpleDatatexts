@@ -197,8 +197,9 @@ function SDT:CreateTooltip()
     local tooltip = CreateFrame("GameTooltip", "SimpleDatatextsTooltip", UIParent, "GameTooltipTemplate")
     
     -- Set default fonts for all lines
-    local fontPath = SDT.LSM:Fetch("font", self.db.profile.tooltipFont)
+    local fontPath = SDT.LSM:Fetch("font", self.db.profile.tooltipFont) or STANDARD_TEXT_FONT
     local outline = self.db.profile.tooltipFontOutline
+    outline = (outline == "NONE") and "" or outline
     local shadowEnabled = self.db.profile.tooltipShadowEnabled
 
     for i = 1, 30 do
