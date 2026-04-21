@@ -63,6 +63,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateStagger()
         staggerAmount = UnitStagger("player") or 0
+        if issecretvalue(staggerAmount) then return end
         local maxHealth = UnitHealthMax("player")
         
         if maxHealth and maxHealth > 0 then
@@ -101,6 +102,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
+        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()

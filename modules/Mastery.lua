@@ -76,11 +76,13 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
+        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
 
         local masteryRating, bonusCoeff = GetMasteryEffect()
+        if issecretvalue(masteryRating) then return end
 	    local masteryBonus = (GetCombatRatingBonus(CR_MASTERY) or 0) * (bonusCoeff or 0)
 
 	    local title = format('%s: |cffFFFFFF%.2f%%|r', STAT_MASTERY, masteryRating)

@@ -98,6 +98,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
+        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
