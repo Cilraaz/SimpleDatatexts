@@ -435,8 +435,7 @@ function mod.Create(slotFrame)
 
     f:SetScript("OnEvent", OnEvent)
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
-    f:RegisterEvent("CHALLENGE_MODE_KEYSTONE_SLOTTED")
-    f:RegisterEvent("BAG_UPDATE")
+    f:RegisterEvent("BAG_UPDATE_DELAYED")
     f:RegisterEvent("ITEM_CHANGED")
 
     ----------------------------------------------------
