@@ -70,6 +70,14 @@ function SDT.FontManager:ApplyModuleFont(moduleName, textObject)
 end
 
 ----------------------------------------------------
+-- Get Tooltip Font Outline
+----------------------------------------------------
+function SDT.FontManager:GetTooltipOutline()
+    local outline = SDT.db.profile.tooltipFontOutline or "NONE"
+    return (outline == "NONE") and "" or outline
+end
+
+----------------------------------------------------
 -- Register Fonts
 ----------------------------------------------------
 function SDT.FontManager:RegisterFonts()
