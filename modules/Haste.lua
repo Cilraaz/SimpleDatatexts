@@ -33,6 +33,8 @@ local ATTACK_SPEED = ATTACK_SPEED
 ----------------------------------------------------
 -- File Locals
 ----------------------------------------------------
+local isHunter = SDTC.playerClass == 'HUNTER'
+local hasteStat = isHunter and CR_HASTE_RANGED or CR_HASTE_MELEE
 local moduleName = "Haste"
 
 ----------------------------------------------------
@@ -62,6 +64,8 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
+    if not SDTC.stats.haste then SDTC.stats.haste = {} end
+    local Stats = SDTC.stats.haste
     local currentHaste = 0
 
     ----------------------------------------------------
@@ -69,10 +73,14 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateHaste()
         currentHaste = GetHaste() or 0
-        if issecretvalue(currentHaste) then return end
+        if not issecretvalue(currentHaste) then
+            Stats.haste = currentHaste
+            Stats.hasteRating = GetCombatRating(hasteStat)
+            Stats.hasteBonus = GetCombatRatingBonus(hasteStat)
+        end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
-        local textString = (showLabel and L["Haste:"].." " or "") .. SDT.FormatUtils:FormatPercent(currentHaste, hideDecimals)
+        local textString = (showLabel and L["Haste:"].." " or "") .. SDT.FormatUtils:FormatPercent(Stats.haste, hideDecimals)
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
@@ -101,16 +109,13 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
 
         -- Haste
-        local haste = GetHaste()
-        local hasteStat = SDTC.playerClass == "HUNTER" and CR_HASTE_RANGED or CR_HASTE_MELEE
-        local text = format('%s: %s%.2f%%|r', STAT_HASTE, '|cffFFFFFF', haste)
-        local tooltip = format('%s'..STAT_HASTE_BASE_TOOLTIP, _G['STAT_HASTE_'..SDTC.playerClass..'_TOOLTIP'] or STAT_HASTE_TOOLTIP, GetCombatRating(hasteStat), GetCombatRatingBonus(hasteStat))
+        local text = format('%s: %s%.2f%%|r', STAT_HASTE, '|cffFFFFFF', Stats.haste)
+        local tooltip = format('%s'..STAT_HASTE_BASE_TOOLTIP, _G['STAT_HASTE_'..SDTC.playerClass..'_TOOLTIP'] or STAT_HASTE_TOOLTIP, Stats.hasteRating, Stats.hasteBonus)
 
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
@@ -131,6 +136,11 @@ function mod.Create(slotFrame)
                 string.format("%.2f", mh),
                 1, 0.82, 0, 1, 0.82, 0
             )
+        end
+
+        if InCombatLockdown() then
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
         end
 
         SDT.Tooltip:Show()

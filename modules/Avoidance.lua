@@ -1,6 +1,7 @@
 -- modules/Avoidance.lua
 -- Avoidance datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -56,19 +57,22 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
-    local avoidancePercent, avoidanceRating = 0, 0
+    if not SDTC.stats.avoidance then SDTC.stats.avoidance = {} end
+    local Stats = SDTC.stats.avoidance
+    local avoidanceRating = 0
 
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateAvoidance()
         avoidanceRating = GetCombatRating(CR_AVOIDANCE)
-        if issecretvalue(avoidanceRating) then return end
-        avoidancePercent = GetCombatRatingBonus(CR_AVOIDANCE)
-        
+        if not issecretvalue(avoidanceRating) then
+            Stats.avoidancePercent = GetCombatRatingBonus(CR_AVOIDANCE)
+            Stats.avoidanceRating = avoidanceRating
+        end        
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
-        local textString = (showLabel and STAT_AVOIDANCE..": " or "") .. SDT.FormatUtils:FormatPercent(avoidancePercent, hideDecimals)
+        local textString = (showLabel and STAT_AVOIDANCE..": " or "") .. SDT.FormatUtils:FormatPercent(Stats.avoidancePercent, hideDecimals)
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
@@ -98,19 +102,23 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
 
-        local text = format('%s: |cffFFFFFF%.2f%%|r', STAT_AVOIDANCE, avoidancePercent)
-        local tooltip = format(CR_AVOIDANCE_TOOLTIP, avoidanceRating, avoidancePercent)
+        local text = format('%s: |cffFFFFFF%.2f%%|r', STAT_AVOIDANCE, Stats.avoidancePercent)
+        local tooltip = format(CR_AVOIDANCE_TOOLTIP, Stats.avoidanceRating, Stats.avoidancePercent)
 
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
 
         SDT.Tooltip:Show()
+
+        if InCombatLockdown() then
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
+        end
     end)
 
     slotFrame:SetScript("OnLeave", function()

@@ -126,6 +126,9 @@ function SDT:BuildCache()
     self.cache.playerFaction = UnitFactionGroup("player")
     self.cache.playerLevel = UnitLevel("player")
     self.cache.charKey = self.cache.playerNameLower.."-"..self.cache.playerRealm
+
+    -- Empty table for character stats storage
+    self.cache.stats = {}
     
     local colors = { GetClassColor(self.cache.playerClass):GetRGB() }
     self.cache.colorR = colors[1]

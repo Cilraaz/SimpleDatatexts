@@ -23,6 +23,7 @@ L["Anchor Point"] = "Anchor Point"
 L["Set the anchor point for this module."] = "Set the anchor point for this module."
 L["Yes"] = "Yes"
 L["No"] = "No"
+L["Note: Value can't be updated while in combat. Using cached values."] = "Note: Value can't be updated while in combat. Using cached values."
 
 -- ----------------------------
 -- Core.lua

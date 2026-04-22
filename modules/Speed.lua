@@ -1,6 +1,7 @@
 -- modules/Speed.lua
 -- Speed datatext for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -69,19 +70,22 @@ function mod.Create(slotFrame)
         else
             currentSpeed = GetUnitSpeed("player")
         end
-
-        if issecretvalue(currentSpeed) then return end
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showAsPercentage = SDT:GetModuleSetting(moduleName, "showAsPercentage", true)
         
         local displayValue
-        if showAsPercentage then
-            -- Convert to percentage (100% = base run speed)
-            displayValue = floor((currentSpeed / BASE_MOVEMENT_SPEED) * 100).."%"
+
+        if issecretvalue(currentSpeed) then 
+            displayValue = "???"
         else
-            -- Show raw speed in yards per second
-            displayValue = floor(currentSpeed * 10) / 10
+            if showAsPercentage then
+                -- Convert to percentage (100% = base run speed)
+                displayValue = floor((currentSpeed / BASE_MOVEMENT_SPEED) * 100).."%"
+            else
+                -- Show raw speed in yards per second
+                displayValue = floor(currentSpeed * 10) / 10
+            end
         end
         
         local label = showLabel and L["Speed: "] or ""

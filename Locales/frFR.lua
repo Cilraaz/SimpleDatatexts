@@ -27,6 +27,7 @@ L["Anchor Point"] = "Point d'Ancrage"
 L["Set the anchor point for this module."] = "Définit le point d'ancrage pour ce module."
 L["Yes"] = "Oui"
 L["No"] = "Non"
+L["Note: Value can't be updated while in combat. Using cached values."] = "Note : La valeur ne peut pas être mise à jour en combat. Utilisation des valeurs en cache."
 
 -- ----------------------------
 -- Core.lua

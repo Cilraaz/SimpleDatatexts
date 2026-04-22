@@ -1,6 +1,7 @@
 -- modules/Versatility.lua
 -- Versatility datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -60,18 +61,23 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
-    local currentVers, versReduction = 0, 0
+    if not SDTC.stats.versatility then SDTC.stats.versatility = {} end
+    local Stats = SDTC.stats.versatility
+    local currentVers = 0
 
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateVersatility()
         currentVers = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE)
-        if issecretvalue(currentVers) then return end
-        versReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN)
+        if not issecretvalue(currentVers) then
+            Stats.versDmg = currentVers
+            Stats.versReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN)
+            Stats.versRating = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)
+        end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
-        local textString = (showLabel and L["Vers:"].." " or "") .. SDT.FormatUtils:FormatPercent(currentVers, hideDecimals)
+        local textString = (showLabel and L["Vers:"].." " or "") .. SDT.FormatUtils:FormatPercent(Stats.versDmg, hideDecimals)
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
@@ -101,18 +107,21 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
 
-        local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)
-        local text = HIGHLIGHT_FONT_COLOR_CODE..format(VERSATILITY_TOOLTIP_FORMAT, '|cffFFD000'..STAT_VERSATILITY..'|r', currentVers, versReduction)..FONT_COLOR_CODE_CLOSE
-        local tooltip = format(CR_VERSATILITY_TOOLTIP, currentVers, versReduction, SDT.FormatUtils:FormatLargeNumbers(versatility), currentVers, versReduction)
+        local text = HIGHLIGHT_FONT_COLOR_CODE..format(VERSATILITY_TOOLTIP_FORMAT, '|cffFFD000'..STAT_VERSATILITY..'|r', Stats.versDmg, Stats.versReduction)..FONT_COLOR_CODE_CLOSE
+        local tooltip = format(CR_VERSATILITY_TOOLTIP, Stats.versDmg, Stats.versReduction, SDT.FormatUtils:FormatLargeNumbers(Stats.versRating), Stats.versDmg, Stats.versReduction)
         
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
+
+        if InCombatLockdown() then
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
+        end
 
         SDT.Tooltip:Show()
     end)

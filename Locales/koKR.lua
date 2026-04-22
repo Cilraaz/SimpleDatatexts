@@ -27,6 +27,7 @@ L["Anchor Point"] = "기준점"
 L["Set the anchor point for this module."] = "이 모듈의 기준점을 설정합니다."
 L["Yes"] = "예"
 L["No"] = "아니오"
+L["Note: Value can't be updated while in combat. Using cached values."] = "참고: 전투 중에는 값을 업데이트할 수 없습니다. 캐시된 값을 사용 중입니다."
 
 -- ----------------------------
 -- Core.lua

@@ -1,6 +1,7 @@
 -- modules/Agility.lua
 -- Agility datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -53,6 +54,8 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
+    if not SDTC.stats.agility then SDTC.stats.agility = {} end
+    local Stats = SDTC.stats.agility
     local currentAgi = 0
 
     ----------------------------------------------------
@@ -60,10 +63,12 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateAgility()
         currentAgi = UnitStat("player", LE_UNIT_STAT_AGILITY)
-        if issecretvalue(currentAgi) then return end
+        if not issecretvalue(currentAgi) then
+            Stats.agi = currentAgi
+        end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showShortLabel = SDT:GetModuleSetting(moduleName, "showShortLabel", false)
-        local textString = (showLabel and (showShortLabel and L["Agi"] or ITEM_MOD_AGILITY_SHORT)..": " or "")..currentAgi
+        local textString = (showLabel and (showShortLabel and L["Agi"] or ITEM_MOD_AGILITY_SHORT)..": " or "")..Stats.agi
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end

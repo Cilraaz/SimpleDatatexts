@@ -1,6 +1,7 @@
 -- modules/Parry.lua
 -- Parry datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -55,6 +56,8 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
+    if not SDTC.stats.parry then SDTC.stats.parry = {} end
+    local Stats = SDTC.stats.parry
     local parryChance = 0
     local parryRating = 0
     local parryBonus = 0
@@ -64,13 +67,15 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateParry()
         parryChance = GetParryChance()
-        if issecretvalue(parryChance) then return end
-        parryRating = GetCombatRating(CR_PARRY)
-        parryBonus = GetCombatRatingBonus(CR_PARRY)
+        if not issecretvalue(parryChance) then
+            Stats.parryChance = parryChance
+            Stats.parryRating = GetCombatRating(CR_PARRY)
+            Stats.parryBonus = GetCombatRatingBonus(CR_PARRY)
+        end
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
-        local textString = (showLabel and STAT_PARRY..": " or "") .. SDT.FormatUtils:FormatPercent(parryChance, hideDecimals)
+        local textString = (showLabel and STAT_PARRY..": " or "") .. SDT.FormatUtils:FormatPercent(Stats.parryChance, hideDecimals)
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
@@ -100,17 +105,21 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
 
-        local text = format('%s: |cffFFFFFF%.2f%%|r', STAT_PARRY, parryChance)
-        local tooltip = format(CR_PARRY_TOOLTIP, parryRating, parryBonus)
+        local text = format('%s: |cffFFFFFF%.2f%%|r', STAT_PARRY, Stats.parryChance)
+        local tooltip = format(CR_PARRY_TOOLTIP, Stats.parryRating, Stats.parryBonus)
 
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
+
+        if InCombatLockdown() then
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
+        end
 
         SDT.Tooltip:Show()
     end)

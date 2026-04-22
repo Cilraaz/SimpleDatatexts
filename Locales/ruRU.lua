@@ -27,6 +27,7 @@ L["Anchor Point"] = "Точка привязки"
 L["Set the anchor point for this module."] = "Устанавливает точку привязки для этого модуля."
 L["Yes"] = "Да"
 L["No"] = "Нет"
+L["Note: Value can't be updated while in combat. Using cached values."] = "Примечание: значение не может быть обновлено в бою. Используются кэшированные значения."
 
 -- ----------------------------
 -- Core.lua

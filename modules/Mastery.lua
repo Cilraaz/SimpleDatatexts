@@ -1,6 +1,7 @@
 -- modules/Mastery.lua
 -- Mastery datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -37,17 +38,23 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
-    local currentMastery = 0
+    if not SDTC.stats.mastery then SDTC.stats.mastery = {} end
+    local Stats = SDTC.stats.mastery
+    local currentMastery, bonusCoeff = 0, 0
 
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateMastery()
-        currentMastery = GetMasteryEffect() or 0
-        if issecretvalue(currentMastery) then return end
+        currentMastery, bonusCoeff = GetMasteryEffect()
+        if not issecretvalue(currentMastery) then
+            Stats.mastery = currentMastery
+            Stats.masteryRating = GetCombatRating(CR_MASTERY)
+	        Stats.masteryBonus = (GetCombatRatingBonus(CR_MASTERY) or 0) * (bonusCoeff or 0)
+        end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
-        local textString = (showLabel and L["Mastery:"].." " or "") .. SDT.FormatUtils:FormatPercent(currentMastery, hideDecimals)
+        local textString = (showLabel and L["Mastery:"].." " or "") .. SDT.FormatUtils:FormatPercent(Stats.mastery, hideDecimals)
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
@@ -76,18 +83,13 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
 
-        local masteryRating, bonusCoeff = GetMasteryEffect()
-        if issecretvalue(masteryRating) then return end
-	    local masteryBonus = (GetCombatRatingBonus(CR_MASTERY) or 0) * (bonusCoeff or 0)
-
-	    local title = format('%s: |cffFFFFFF%.2f%%|r', STAT_MASTERY, masteryRating)
-	    if masteryBonus > 0 then
-		    title = format('%s |cffFFFFFF(%.2f%%|r |cff33ff33+%.2f%%|r|cffFFFFFF)|r', title, masteryRating - masteryBonus, masteryBonus)
+	    local title = format('%s: |cffFFFFFF%.2f%%|r', STAT_MASTERY, Stats.masteryRating)
+	    if Stats.masteryBonus > 0 then
+		    title = format('%s |cffFFFFFF(%.2f%%|r |cff33ff33+%.2f%%|r|cffFFFFFF)|r', title, Stats.masteryRating - Stats.masteryBonus, Stats.masteryBonus)
 	    end
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, title)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
@@ -116,7 +118,13 @@ function mod.Create(slotFrame)
 	    end
 
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format("%s: %s [+%.2f%%]", STAT_MASTERY, GetCombatRating(CR_MASTERY), masteryBonus))
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format("%s: %s [+%.2f%%]", STAT_MASTERY, Stats.masteryRating, Stats.masteryBonus))
+
+        if InCombatLockdown() then
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
+        end
+
         SDT.Tooltip:Show()
     end)
 

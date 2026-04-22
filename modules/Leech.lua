@@ -1,6 +1,7 @@
 -- modules/Leech.lua
 -- Leech datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -56,6 +57,8 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
+    if not SDTC.stats.leech then SDTC.stats.leech = {} end
+    local Stats = SDTC.stats.leech
     local leechPercent, leechRating = 0, 0
 
     ----------------------------------------------------
@@ -63,12 +66,14 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateLeech()
         leechRating = GetCombatRating(CR_LIFESTEAL)
-        if issecretvalue(leechRating) then return end
-        leechPercent = GetCombatRatingBonus(CR_LIFESTEAL)
+        if not issecretvalue(leechRating) then
+            Stats.leechPercent = GetCombatRatingBonus(CR_LIFESTEAL)
+            Stats.leechRating = leechRating
+        end
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
-        local textString = (showLabel and STAT_LIFESTEAL..": " or "") .. SDT.FormatUtils:FormatPercent(leechPercent, hideDecimals)
+        local textString = (showLabel and STAT_LIFESTEAL..": " or "") .. SDT.FormatUtils:FormatPercent(Stats.leechPercent, hideDecimals)
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
@@ -98,17 +103,21 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
 
-        local text = format('%s: |cffFFFFFF%.2f%%|r', STAT_LIFESTEAL, leechPercent)
-        local tooltip = format(CR_LIFESTEAL_TOOLTIP, leechRating, leechPercent)
+        local text = format('%s: |cffFFFFFF%.2f%%|r', STAT_LIFESTEAL, Stats.leechPercent)
+        local tooltip = format(CR_LIFESTEAL_TOOLTIP, Stats.leechRating, Stats.leechPercent)
 
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
+
+        if InCombatLockdown() then
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
+        end
 
         SDT.Tooltip:Show()
     end)

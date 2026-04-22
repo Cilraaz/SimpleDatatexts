@@ -66,16 +66,20 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
+    if not SDTC.stats.attackPower then SDTC.stats.attackPower = {} end
+    local Stats = SDTC.stats.attackPower
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateAP()
         local base, posBuff, negBuff = (isHunter and UnitRangedAttackPower or UnitAttackPower)("player")
-        if issecretvalue(base) then return end
-        totalAP = base + posBuff + negBuff
+        if not issecretvalue(base) then
+            Stats.totalAP = base + posBuff + negBuff
+        end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showShortLabel = SDT:GetModuleSetting(moduleName, "showShortLabel", false)
-        local textString = (showLabel and (showShortLabel and L["AP"] or ATTACK_POWER)..": " or "")..totalAP
+        local textString = (showLabel and (showShortLabel and L["AP"] or ATTACK_POWER)..": " or "") .. Stats.totalAP
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
@@ -106,18 +110,17 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
-        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, isHunter and RANGED_ATTACK_POWER or MELEE_ATTACK_POWER, totalAP, 1, 0.82, 0, 1, 1, 1)
+        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, isHunter and RANGED_ATTACK_POWER or MELEE_ATTACK_POWER, Stats.totalAP, 1, 0.82, 0, 1, 1, 1)
 
         local APBonus = format("%.2f", totalAP / ATTACK_POWER_MAGIC_NUMBER)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format(isHunter and RANGED_ATTACK_POWER_TOOLTIP or MELEE_ATTACK_POWER_TOOLTIP, APBonus), nil, nil, nil, nil, nil, nil, true)
 
 	    if isHunter and ComputePetBonus then
-		    local petAPBonus = ComputePetBonus('PET_BONUS_RAP_TO_AP', totalAP)
-		    local petSpellDmgBonus = ComputePetBonus('PET_BONUS_RAP_TO_SPELLDMG', totalAP)
+		    local petAPBonus = ComputePetBonus('PET_BONUS_RAP_TO_AP', Stats.totalAP)
+		    local petSpellDmgBonus = ComputePetBonus('PET_BONUS_RAP_TO_SPELLDMG', Stats.totalAP)
 
     		if petAPBonus > 0 then
                 SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format(PET_BONUS_TOOLTIP_RANGED_ATTACK_POWER, format("%.2f", petAPBonus)))
@@ -127,6 +130,11 @@ function mod.Create(slotFrame)
                 SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format(PET_BONUS_TOOLTIP_SPELLDAMAGE, format("%.2f", petSpellDmgBonus)))
 		    end
 	    end
+
+        if InCombatLockdown() then
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
+        end
 
         SDT.Tooltip:Show()
     end)

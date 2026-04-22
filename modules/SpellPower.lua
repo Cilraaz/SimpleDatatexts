@@ -1,6 +1,7 @@
 -- modules/SpellPower.lua
 -- Spell Power datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -62,6 +63,8 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
+    if not SDTC.stats.spellPower then SDTC.stats.spellPower = {} end
+    local Stats = SDTC.stats.spellPower
     local spellPower = 0
     local maxSpellPower = 0
 
@@ -70,19 +73,22 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateSpellPower()
         -- Get the highest spell power across all schools
-        maxSpellPower = 0
-        for i = 2, MAX_SPELL_SCHOOLS do
-            local power = GetSpellBonusDamage(i)
-            if issecretvalue(power) then return end
-            if power > maxSpellPower then
-                maxSpellPower = power
+        local firstPower = GetSpellBonusDamage(2)
+        if not issecretvalue(firstPower) then
+            Stats.school[2] = firstPower
+            maxSpellPower = firstPower
+            for i = 3, MAX_SPELL_SCHOOLS do
+                Stats.school[i] = GetSpellBonusDamage(i)
+                if Stats.school[i] > maxSpellPower then
+                    maxSpellPower = Stats.school[i]
+                end
             end
         end
         
-        spellPower = maxSpellPower
+        Stats.spellPower = maxSpellPower
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
-        local textString = (showLabel and ITEM_MOD_SPELL_POWER_SHORT..": " or "") .. spellPower
+        local textString = (showLabel and ITEM_MOD_SPELL_POWER_SHORT..": " or "") .. Stats.spellPower
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
@@ -112,12 +118,11 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
 
-        local text = format('%s: |cffFFFFFF%d|r', ITEM_MOD_SPELL_POWER_SHORT, maxSpellPower)
+        local text = format('%s: |cffFFFFFF%d|r', ITEM_MOD_SPELL_POWER_SHORT, Stats.maxSpellPower)
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, STAT_SPELLPOWER_TOOLTIP, nil, nil, nil, nil, nil, nil, nil, true)
@@ -125,9 +130,14 @@ function mod.Create(slotFrame)
         
         -- Show spell power for each school
         for i = 2, MAX_SPELL_SCHOOLS do
-            local power = GetSpellBonusDamage(i)
+            local power = Stats.school[i]
             local schoolName = SPELL_SCHOOL_NAMES[i-1] or "Unknown"
             SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, schoolName, power, 1, 1, 1)
+        end
+
+        if InCombatLockdown() then
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
         end
 
         SDT.Tooltip:Show()

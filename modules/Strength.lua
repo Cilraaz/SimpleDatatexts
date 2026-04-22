@@ -1,6 +1,7 @@
 -- modules/Strength.lua
 -- Strength datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -53,6 +54,8 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
+    if not SDTC.stats.strength then SDTC.stats.strength = {} end
+    local Stats = SDTC.stats.strength
     local currentStr = 0
 
     ----------------------------------------------------
@@ -60,10 +63,12 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateStrength()
         currentStr = UnitStat("player", LE_UNIT_STAT_STRENGTH)
-        if issecretvalue(currentStr) then return end
+        if not issecretvalue(currentStr) then
+            Stats.strength = currentStr
+        end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showShortLabel = SDT:GetModuleSetting(moduleName, "showShortLabel", false)
-        local textString = (showLabel and (showShortLabel and L["Str"] or ITEM_MOD_STRENGTH_SHORT)..": " or "")..currentStr
+        local textString = (showLabel and (showShortLabel and L["Str"] or ITEM_MOD_STRENGTH_SHORT)..": " or "") .. Stats.strength
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end

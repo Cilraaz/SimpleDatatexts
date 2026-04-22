@@ -1,6 +1,7 @@
 -- modules/Armor.lua
 -- Armor datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -55,14 +56,19 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
+    if not SDTC.stats.armor then SDTC.stats.armor = {} end
+    local Stats = SDTC.stats.armor
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateArmor()
         local _, currentArmor = UnitArmor("player")
-        if issecretvalue(currentArmor) then return end
+        if not issecretvalue(currentArmor) then
+            Stats.armor = currentArmor
+        end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
-        local textString = (showLabel and ARMOR..": " or "")..currentArmor
+        local textString = (showLabel and ARMOR..": " or "") .. Stats.armor
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
@@ -91,7 +97,6 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
@@ -99,20 +104,24 @@ function mod.Create(slotFrame)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
 
         -- Armor
-        local _, currentArmor = UnitArmor("player")
         local upperLevel = UnitLevel("player") + 3
         for _ = 1, 4 do
-            local armorReduction = C_PDI_GetArmorEffectiveness(currentArmor, upperLevel) * 100
+            local armorReduction = C_PDI_GetArmorEffectiveness(Stats.armor, upperLevel) * 100
             SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format(L["Level %d"], upperLevel), format("%.2f%%", armorReduction), 1, 1, 1, 0.1, 1, 0.1)
             upperLevel = upperLevel - 1
         end
         
         local targetLevel = UnitLevel("target")
 	    if targetLevel and targetLevel > 0 and (targetLevel > upperLevel + 3 or targetLevel < upperLevel) then
-		    local armorReduction = C_PDI_GetArmorEffectiveness(currentArmor, targetLevel) * 100
+		    local armorReduction = C_PDI_GetArmorEffectiveness(Stats.armor, targetLevel) * 100
             SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
 		    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Target Mitigation"], format("%.2f%%", armorReduction), 1, 1, 1)
 	    end
+
+        if InCombatLockdown() then
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
+        end
 
         SDT.Tooltip:Show()
     end)

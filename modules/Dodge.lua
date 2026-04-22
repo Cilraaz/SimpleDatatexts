@@ -1,6 +1,7 @@
 -- modules/Dodge.lua
 -- Dodge datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -57,22 +58,24 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
+    if not SDTC.stats.dodge then SDTC.stats.dodge = {} end
+    local Stats = SDTC.stats.dodge
     local dodgeChance = 0
-    local dodgeRating = 0
-    local dodgeBonus = 0
 
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateDodge()
         dodgeChance = GetDodgeChance()
-        if issecretvalue(dodgeChance) then return end
-        dodgeRating = GetCombatRating(CR_DODGE)
-        dodgeBonus = GetCombatRatingBonus(CR_DODGE)
+        if not issecretvalue(dodgeChance) then
+            Stats.dodgeChance = dodgeChance
+            Stats.dodgeRating = GetCombatRating(CR_DODGE)
+            Stats.dodgeBonus = GetCombatRatingBonus(CR_DODGE)
+        end
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
-        local textString = (showLabel and STAT_DODGE..": " or "") .. SDT.FormatUtils:FormatPercent(dodgeChance, hideDecimals)
+        local textString = (showLabel and STAT_DODGE..": " or "") .. SDT.FormatUtils:FormatPercent(Stats.dodgeChance, hideDecimals)
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
@@ -102,18 +105,22 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
 
-        local text = format('%s: |cffFFFFFF%.2f%%|r', STAT_DODGE, dodgeChance)
-        local tooltip = format(CR_DODGE_TOOLTIP, dodgeRating, dodgeBonus)
+        local text = format('%s: |cffFFFFFF%.2f%%|r', STAT_DODGE, Stats.dodgeChance)
+        local tooltip = format(CR_DODGE_TOOLTIP, Stats.dodgeRating, Stats.dodgeBonus)
 
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
 
+        if InCombatLockdown() then
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
+        end
+        
         SDT.Tooltip:Show()
     end)
 

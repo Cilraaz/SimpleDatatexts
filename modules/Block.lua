@@ -1,6 +1,7 @@
 -- modules/Block.lua
 -- Block datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -56,23 +57,24 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
-    local blockChance, blockValue = 0, 0
-    local blockRating = 0
-    local blockBonus = 0
+    if not SDTC.stats.block then SDTC.stats.block = {} end
+    local Stats = SDTC.stats.block
+    local blockChance = 0
 
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateBlock()
         blockChance = GetBlockChance()
-        if issecretvalue(blockChance) then return end
-        blockValue = GetShieldBlock()
-        blockRating = GetCombatRating(CR_BLOCK)
-        blockBonus = GetCombatRatingBonus(CR_BLOCK)
+        if not issecretvalue(blockChance) then
+            Stats.blockChance = blockChance
+            Stats.blockRating = GetCombatRating(CR_BLOCK)
+            Stats.blockBonus = GetCombatRatingBonus(CR_BLOCK)
+        end
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
-        local textString = (showLabel and STAT_BLOCK..": " or "") .. SDT.FormatUtils:FormatPercent(blockChance, hideDecimals)
+        local textString = (showLabel and STAT_BLOCK..": " or "") .. SDT.FormatUtils:FormatPercent(Stats.blockChance, hideDecimals)
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
@@ -102,20 +104,24 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
 
-        local text = format('%s: |cffFFFFFF%.2f%%|r', STAT_BLOCK, blockChance)
-        local tooltip = format(CR_BLOCK_TOOLTIP, blockChance)
-        local bonus = format('%s: %s [+%.2f%%]', STAT_BLOCK, blockRating, blockBonus)
+        local text = format('%s: |cffFFFFFF%.2f%%|r', STAT_BLOCK, Stats.blockChance)
+        local tooltip = format(CR_BLOCK_TOOLTIP, Stats.blockChance)
+        local bonus = format('%s: %s [+%.2f%%]', STAT_BLOCK, Stats.blockRating, Stats.blockBonus)
 
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, bonus, nil, nil, nil, nil, nil, nil, nil, true)
+
+        if InCombatLockdown() then
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
+        end
 
         SDT.Tooltip:Show()
     end)

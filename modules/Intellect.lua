@@ -1,6 +1,7 @@
 -- modules/Intellect.lua
 -- Intellect datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -53,6 +54,8 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
+    if not SDTC.stats.intellect then SDTC.stats.intellect = {} end
+    local Stats = SDTC.stats.intellect
     local currentInt = 0
 
     ----------------------------------------------------
@@ -60,10 +63,12 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     local function UpdateIntellect()
         currentInt = UnitStat("player", LE_UNIT_STAT_INTELLECT)
-        if issecretvalue(currentInt) then return end
+        if not issecretvalue(currentInt) then
+            Stats.int = currentInt
+        end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showShortLabel = SDT:GetModuleSetting(moduleName, "showShortLabel", false)
-        local textString = (showLabel and (showShortLabel and L["Int"] or ITEM_MOD_INTELLECT_SHORT) .. ": " or "") .. currentInt
+        local textString = (showLabel and (showShortLabel and L["Int"] or ITEM_MOD_INTELLECT_SHORT) .. ": " or "") .. Stats.int
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end

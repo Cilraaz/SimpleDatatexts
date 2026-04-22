@@ -27,6 +27,7 @@ L["Anchor Point"] = "锚点"
 L["Set the anchor point for this module."] = "设置此模块的锚点。"
 L["Yes"] = "是"
 L["No"] = "否"
+L["Note: Value can't be updated while in combat. Using cached values."] = "注意：战斗中无法更新数值。正在使用缓存值。"
 
 -- ----------------------------
 -- Core.lua

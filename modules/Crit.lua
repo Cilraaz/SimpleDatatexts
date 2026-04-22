@@ -1,6 +1,7 @@
 -- modules/Crit.lua
 -- Crit datatext adapted from ElvUI for Simple DataTexts (SDT)
 local SDT = SimpleDatatexts
+local SDTC = SDT.cache
 local L = SDT.L
 
 local mod = {}
@@ -62,7 +63,8 @@ function mod.Create(slotFrame)
         slotFrame.text = text
     end
 
-    local critChance, ratingIndex = 0, 0
+    if not SDTC.stats.crit then SDTC.stats.crit = {} end
+    local Stats = SDTC.stats.crit
 
     ----------------------------------------------------
     -- Update logic
@@ -72,30 +74,35 @@ function mod.Create(slotFrame)
 
 	    local holySchool = 2 -- start at 2 to skip physical damage
 	    local minCrit = GetSpellCritChance(holySchool)
-        if issecretvalue(minCrit) then return end
-	    for i = (holySchool + 1), MAX_SPELL_SCHOOLS do
-		    spellCrit = GetSpellCritChance(i)
-		    minCrit = min(minCrit, spellCrit)
-	    end
+        if not issecretvalue(minCrit) then
+            Stats.minCrit = minCrit
+	        for i = (holySchool + 1), MAX_SPELL_SCHOOLS do
+		        Stats.spellCrit = GetSpellCritChance(i)
+		        Stats.minCrit = min(Stats.minCrit, Stats.spellCrit)
+	        end
 
-    	spellCrit = minCrit
-	    rangedCrit = GetRangedCritChance()
-	    meleeCrit = GetCritChance()
+    	    Stats.spellCrit = Stats.minCrit
+	        Stats.rangedCrit = GetRangedCritChance()
+	        Stats.meleeCrit = GetCritChance()
 
-	    if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
-		    critChance = spellCrit
-		    ratingIndex = CR_CRIT_SPELL
-	    elseif (rangedCrit >= meleeCrit) then
-    		critChance = rangedCrit
-	    	ratingIndex = CR_CRIT_RANGED
-	    else
-		    critChance = meleeCrit
-		    ratingIndex = CR_CRIT_MELEE
-	    end
+            local ratingIndex
+	        if (Stats.spellCrit >= Stats.rangedCrit and Stats.spellCrit >= Stats.meleeCrit) then
+		        Stats.critChance = Stats.spellCrit
+		        ratingIndex = CR_CRIT_SPELL
+	        elseif (rangedCrit >= meleeCrit) then
+        		Stats.critChance = Stats.rangedCrit
+	        	ratingIndex = CR_CRIT_RANGED
+	        else
+		        Stats.critChance = Stats.meleeCrit
+		        ratingIndex = CR_CRIT_MELEE
+	        end
+            Stats.critRating = GetCombatRating(ratingIndex)
+            Stats.critBonus = GetCombatRatingBonus(ratingIndex)
+        end
 
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
-        local textString = (showLabel and L["Crit"]..": " or "") .. SDT.FormatUtils:FormatPercent(critChance, hideDecimals)
+        local textString = (showLabel and L["Crit"]..": " or "") .. SDT.FormatUtils:FormatPercent(Stats.critChance, hideDecimals)
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
         SDT.FontManager:ApplyModuleFont(moduleName, text)
     end
@@ -124,18 +131,21 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
-        if InCombatLockdown() then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
 
-        local critical = GetCombatRating(ratingIndex)
-        local text = format('%s: |cffFFFFFF%.2f%%|r', MELEE_CRIT_CHANCE, critChance)
-        local tooltip = format(CR_CRIT_TOOLTIP, critical, GetCombatRatingBonus(ratingIndex))
+        local text = format('%s: |cffFFFFFF%.2f%%|r', MELEE_CRIT_CHANCE, Stats.critChance)
+        local tooltip = format(CR_CRIT_TOOLTIP, Stats.critRating, Stats.critBonus)
 
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
+
+        if InCombatLockdown() then
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
+        end
 
         SDT.Tooltip:Show()
     end)
