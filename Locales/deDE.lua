@@ -185,6 +185,12 @@ L["AP"] = "AP"
 -- ----------------------------
 L["Bags"] = "Taschen"
 
+-- ---------------------------- 
+-- modules/CStar.lua
+-- ----------------------------
+L["Collapsing Star"] = "Kollabierender Stern"
+L["CStar"] = "KStern"
+
 -- ----------------------------
 -- modules/CombatTimer.lua
 -- ----------------------------

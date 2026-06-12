@@ -62,6 +62,7 @@ modules/Block.lua
 modules/CombatTimer.lua
 modules/Coordinates.lua
 modules/Crit.lua
+modules/CStar.lua
 modules/Currency.lua
 modules/Date.lua
 modules/Dodge.lua
