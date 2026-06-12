@@ -1,3 +1,6 @@
 ## Changes
-- 877de3e build(TOC): 12.0.5.03 release
-- 42ca648 feat(Modules): Cache stat values on update and use cached value when API value is secret
+- 0de8308 build(TOC): 12.0.5.04 release
+- 28656cd feat(Modules): Use pcall to get values during combat
+- 706585d fix(FormatUtils): Fix FindBestAnchorPoint for upcoming pcall changes
+- 75e4118 fix(Cstar): Remove debug prints
+- 55f54ca feat(CStar): Add Collapsing Star tracking module
