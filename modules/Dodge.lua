@@ -62,16 +62,20 @@ function mod.Create(slotFrame)
     local Stats = SDTC.stats.dodge
     local dodgeChance = 0
 
+    local dodgeFunc = function() return GetDodgeChance() end
+    local ratingFunc = function() return GetCombatRating(CR_DODGE) end
+    local bonusFunc = function() return GetCombatRatingBonus(CR_DODGE) end
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateDodge()
-        dodgeChance = GetDodgeChance()
-        if not issecretvalue(dodgeChance) then
-            Stats.dodgeChance = dodgeChance
-            Stats.dodgeRating = GetCombatRating(CR_DODGE)
-            Stats.dodgeBonus = GetCombatRatingBonus(CR_DODGE)
-        end
+        local dodgeOk, dodgeChance = pcall(dodgeFunc)
+        local ratingOk, dodgeRating = pcall(ratingFunc)
+        local bonusOk, dodgeBonus = pcall(bonusFunc)
+        if dodgeOk then Stats.dodgeChance = dodgeChance end
+        if ratingOk then Stats.dodgeRating = dodgeRating end
+        if bonusOk then Stats.dodgeBonus = dodgeBonus end
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
@@ -115,11 +119,6 @@ function mod.Create(slotFrame)
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
-
-        if InCombatLockdown() then
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
-        end
         
         SDT.Tooltip:Show()
     end)

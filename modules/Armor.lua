@@ -59,14 +59,14 @@ function mod.Create(slotFrame)
     if not SDTC.stats.armor then SDTC.stats.armor = {} end
     local Stats = SDTC.stats.armor
 
+    local armorFunc = function() return UnitArmor("player") end
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateArmor()
-        local _, currentArmor = UnitArmor("player")
-        if not issecretvalue(currentArmor) then
-            Stats.armor = currentArmor
-        end
+        local armorOk, _, currentArmor = pcall(armorFunc)
+        if armorOk then Stats.armor = currentArmor end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local textString = (showLabel and ARMOR..": " or "") .. Stats.armor
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
@@ -97,6 +97,7 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     slotFrame:EnableMouse(true)
     slotFrame:SetScript("OnEnter", function(self)
+        if issecretvalue(Stats.armor) then return end
         local anchor = SDT.FormatUtils:FindBestAnchorPoint(self)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
@@ -117,11 +118,6 @@ function mod.Create(slotFrame)
             SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
 		    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Target Mitigation"], format("%.2f%%", armorReduction), 1, 1, 1)
 	    end
-
-        if InCombatLockdown() then
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
-        end
 
         SDT.Tooltip:Show()
     end)

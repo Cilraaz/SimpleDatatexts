@@ -40,18 +40,24 @@ function mod.Create(slotFrame)
 
     if not SDTC.stats.mastery then SDTC.stats.mastery = {} end
     local Stats = SDTC.stats.mastery
+    if not Stats.spells then Stats.spells = {} end
     local currentMastery, bonusCoeff = 0, 0
+
+    local masteryFunc = function() return GetMasteryEffect() end
+    local ratingFunc = function() return GetCombatRating(CR_MASTERY) end
+    local bonusFunc = function() return GetCombatRatingBonus(CR_MASTERY) end
 
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateMastery()
-        currentMastery, bonusCoeff = GetMasteryEffect()
-        if not issecretvalue(currentMastery) then
-            Stats.mastery = currentMastery
-            Stats.masteryRating = GetCombatRating(CR_MASTERY)
-	        Stats.masteryBonus = (GetCombatRatingBonus(CR_MASTERY) or 0) * (bonusCoeff or 0)
-        end
+        local masteryOk, currentMastery = pcall(masteryFunc)
+        local ratingOk, masteryRating = pcall(ratingFunc)
+        local bonusOk, masteryBonus = pcall(bonusFunc)
+        if masteryOk then Stats.mastery = currentMastery end
+        if ratingOk then Stats.masteryRating = masteryRating end
+        if bonusOk then Stats.masteryBonus = masteryBonus end
+
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
         local textString = (showLabel and L["Mastery:"].." " or "") .. SDT.FormatUtils:FormatPercent(Stats.mastery, hideDecimals)
@@ -61,14 +67,38 @@ function mod.Create(slotFrame)
     f.Update = UpdateMastery
 
     ----------------------------------------------------
+    -- Spec MAstery Spell Helper
+    ----------------------------------------------------
+    local function GetSpecMasterySpells()
+        local spec = GetSpecialization()
+	    if spec then
+		    local spells = { GetSpecializationMasterySpells(spec) }
+		    local hasSpell = false
+            local i = 1
+            local spellCache = Stats.spells
+		    for _, spell in next, spells do
+                local spellObj = Spell:CreateFromSpellID(spell)
+                if not spellCache[i] then spellCache[i] = {} end
+                spellCache[i].spellName = spellObj:GetSpellName()
+                spellCache[i].spellDescription = spellObj:GetSpellDescription()
+		    end
+	    end
+    end
+    GetSpecMasterySpells()
+
+    ----------------------------------------------------
     -- Event Handler
     ----------------------------------------------------
     local function OnEvent(self, event, ...)
-        if event == "PLAYER_ENTERING_WORLD"
-        or event == "UNIT_STATS"
+        if event == "PLAYER_ENTERING_WORLD" then
+            UpdateMastery()
+            GetSpecMasterySpells()
+        elseif event == "UNIT_STATS"
         or event == "COMBAT_RATING_UPDATE"
         or event == "PLAYER_EQUIPMENT_CHANGED" then
             UpdateMastery()
+        elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
+            GetSpecMasterySpells()
         end
     end
 
@@ -77,6 +107,7 @@ function mod.Create(slotFrame)
     f:RegisterEvent("UNIT_STATS")
     f:RegisterEvent("COMBAT_RATING_UPDATE")
     f:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+    f:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 
     ----------------------------------------------------
     -- Tooltip
@@ -87,43 +118,21 @@ function mod.Create(slotFrame)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
 
-	    local title = format('%s: |cffFFFFFF%.2f%%|r', STAT_MASTERY, Stats.masteryRating)
-	    if Stats.masteryBonus > 0 then
-		    title = format('%s |cffFFFFFF(%.2f%%|r |cff33ff33+%.2f%%|r|cffFFFFFF)|r', title, Stats.masteryRating - Stats.masteryBonus, Stats.masteryBonus)
-	    end
+	    local title = format('%s: |cffFFFFFF%.2f%%|r', STAT_MASTERY, Stats.mastery)
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, title)
-        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
 
-        local spec = GetSpecialization()
-	    if spec then
-		    local spells = { GetSpecializationMasterySpells(spec) }
-		    local hasSpell = false
-		    for _, spell in next, spells do
-			    if hasSpell then
-				    SDT.Tooltip:AddLine(" ")
-			    else
-				    hasSpell = true
-			    end
-
-                local spellObj = Spell:CreateFromSpellID(spell)
-                local spellName = spellObj:GetSpellName()
-                local spellDescription = spellObj:GetSpellDescription()
-                if spellName then
-                    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, spellName, nil, 1, 1, 1)
-                    if spellDescription and spellDescription ~= "" then
-                        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, spellDescription)
-                    end
+        for _, spell in next, Stats.spells do
+            SDT.Tooltip:AddLine(" ")
+            if spell.spellName then
+                SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, spell.spellName, nil, 1, 1, 1)
+                if spell.spellDescription and spell.spellDescription ~= "" then
+                    SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, spell.spellDescription)
                 end
-		    end
-	    end
+            end
+        end
 
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format("%s: %s [+%.2f%%]", STAT_MASTERY, Stats.masteryRating, Stats.masteryBonus))
-
-        if InCombatLockdown() then
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
-        end
 
         SDT.Tooltip:Show()
     end)

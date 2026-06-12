@@ -65,16 +65,21 @@ function mod.Create(slotFrame)
     local Stats = SDTC.stats.versatility
     local currentVers = 0
 
+    local dmgFunc = function() return GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) end
+    local ratingFunc = function() return GetCombatRating(CR_VERSATILITY_DAMAGE_DONE) end
+    local reductionFunc = function() return GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) end
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateVersatility()
-        currentVers = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE)
-        if not issecretvalue(currentVers) then
-            Stats.versDmg = currentVers
-            Stats.versReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN)
-            Stats.versRating = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)
-        end
+        local dmgOk, currentVersDmg = pcall(dmgFunc)
+        local ratingOk, currentVersRating = pcall(ratingFunc)
+        local reductionOk, currentVersReduction = pcall(reductionFunc)
+        if dmgOk then Stats.versDmg = currentVersDmg end
+        if ratingOk then Stats.versRating = currentVersRating end
+        if reductionOk then Stats.versReduction = currentVersReduction end
+
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
         local textString = (showLabel and L["Vers:"].." " or "") .. SDT.FormatUtils:FormatPercent(Stats.versDmg, hideDecimals)
@@ -112,16 +117,16 @@ function mod.Create(slotFrame)
         SDT.Tooltip:ClearLines()
 
         local text = HIGHLIGHT_FONT_COLOR_CODE..format(VERSATILITY_TOOLTIP_FORMAT, '|cffFFD000'..STAT_VERSATILITY..'|r', Stats.versDmg, Stats.versReduction)..FONT_COLOR_CODE_CLOSE
-        local tooltip = format(CR_VERSATILITY_TOOLTIP, Stats.versDmg, Stats.versReduction, SDT.FormatUtils:FormatLargeNumbers(Stats.versRating), Stats.versDmg, Stats.versReduction)
+        local tooltip
+        if not issecretvalue(Stats.versRating) then
+            tooltip = format(CR_VERSATILITY_TOOLTIP, Stats.versDmg, Stats.versReduction, SDT.FormatUtils:FormatLargeNumbers(Stats.versRating), Stats.versDmg, Stats.versReduction)
+        else
+            tooltip = format(CR_VERSATILITY_TOOLTIP, Stats.versDmg, Stats.versReduction, Stats.versRating, Stats.versDmg, Stats.versReduction)
+        end
         
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
-
-        if InCombatLockdown() then
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
-        end
 
         SDT.Tooltip:Show()
     end)

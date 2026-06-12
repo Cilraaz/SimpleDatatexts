@@ -58,14 +58,15 @@ function mod.Create(slotFrame)
     local Stats = SDTC.stats.strength
     local currentStr = 0
 
+    local strFunc = function() return UnitStat("player", LE_UNIT_STAT_STRENGTH) end
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateStrength()
-        currentStr = UnitStat("player", LE_UNIT_STAT_STRENGTH)
-        if not issecretvalue(currentStr) then
-            Stats.strength = currentStr
-        end
+        local strOk, currentStr = pcall(strFunc)
+        if strOk then Stats.strength = currentStr end
+        
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showShortLabel = SDT:GetModuleSetting(moduleName, "showShortLabel", false)
         local textString = (showLabel and (showShortLabel and L["Str"] or ITEM_MOD_STRENGTH_SHORT)..": " or "") .. Stats.strength

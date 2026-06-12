@@ -24,11 +24,8 @@ local GetSpellCritChance   = GetSpellCritChance
 ----------------------------------------------------
 -- Constants Locals
 ----------------------------------------------------
-local CR_CRIT_MELEE        = CR_CRIT_MELEE
-local CR_CRIT_RANGED       = CR_CRIT_RANGED
 local CR_CRIT_SPELL        = CR_CRIT_SPELL
 local CR_CRIT_TOOLTIP      = CR_CRIT_TOOLTIP
-local MAX_SPELL_SCHOOLS    = MAX_SPELL_SCHOOLS
 local MELEE_CRIT_CHANCE    = MELEE_CRIT_CHANCE
 
 ----------------------------------------------------
@@ -66,39 +63,20 @@ function mod.Create(slotFrame)
     if not SDTC.stats.crit then SDTC.stats.crit = {} end
     local Stats = SDTC.stats.crit
 
+    local critFunc = function() return GetSpellCritChance("player") end
+    local ratingFunc = function() return GetCombatRating(CR_CRIT_SPELL) end
+    local bonusFunc = function() return GetCombatRatingBonus(CR_CRIT_SPELL) end
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateCrit()
-        local spellCrit, rangedCrit, meleeCrit
-
-	    local holySchool = 2 -- start at 2 to skip physical damage
-	    local minCrit = GetSpellCritChance(holySchool)
-        if not issecretvalue(minCrit) then
-            Stats.minCrit = minCrit
-	        for i = (holySchool + 1), MAX_SPELL_SCHOOLS do
-		        Stats.spellCrit = GetSpellCritChance(i)
-		        Stats.minCrit = min(Stats.minCrit, Stats.spellCrit)
-	        end
-
-    	    Stats.spellCrit = Stats.minCrit
-	        Stats.rangedCrit = GetRangedCritChance()
-	        Stats.meleeCrit = GetCritChance()
-
-            local ratingIndex
-	        if (Stats.spellCrit >= Stats.rangedCrit and Stats.spellCrit >= Stats.meleeCrit) then
-		        Stats.critChance = Stats.spellCrit
-		        ratingIndex = CR_CRIT_SPELL
-	        elseif (rangedCrit >= meleeCrit) then
-        		Stats.critChance = Stats.rangedCrit
-	        	ratingIndex = CR_CRIT_RANGED
-	        else
-		        Stats.critChance = Stats.meleeCrit
-		        ratingIndex = CR_CRIT_MELEE
-	        end
-            Stats.critRating = GetCombatRating(ratingIndex)
-            Stats.critBonus = GetCombatRatingBonus(ratingIndex)
-        end
+        local critOk, critChance = pcall(critFunc)
+        local ratingOk, critRating = pcall(ratingFunc)
+        local bonusOk, critBonus = pcall(bonusFunc)
+        if critOk then Stats.critChance = critChance end
+        if ratingOk then Stats.critRating = critRating end
+        if bonusOk then Stats.critBonus = critBonus end
 
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
@@ -141,11 +119,6 @@ function mod.Create(slotFrame)
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
-
-        if InCombatLockdown() then
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
-        end
 
         SDT.Tooltip:Show()
     end)

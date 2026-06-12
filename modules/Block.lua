@@ -61,16 +61,20 @@ function mod.Create(slotFrame)
     local Stats = SDTC.stats.block
     local blockChance = 0
 
+    local blockFunc = function() return GetBlockChance() end
+    local blockRatingFunc = function() return GetCombatRating(CR_BLOCK) end
+    local blockBonusFunc = function() return GetCombatRatingBonus(CR_BLOCK) end
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateBlock()
-        blockChance = GetBlockChance()
-        if not issecretvalue(blockChance) then
-            Stats.blockChance = blockChance
-            Stats.blockRating = GetCombatRating(CR_BLOCK)
-            Stats.blockBonus = GetCombatRatingBonus(CR_BLOCK)
-        end
+        local blockOk, blockChance = pcall(blockFunc)
+        local ratingOk, blockRating = pcall(blockRatingFunc)
+        local bonusOk, blockBonus = pcall(blockBonusFunc)
+        if blockOk then Stats.blockChance = blockChance end
+        if ratingOk then Stats.blockRating = blockRating end
+        if bonusOk then Stats.blockBonus = blockBonus end
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
@@ -117,11 +121,6 @@ function mod.Create(slotFrame)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, bonus, nil, nil, nil, nil, nil, nil, nil, true)
-
-        if InCombatLockdown() then
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
-        end
 
         SDT.Tooltip:Show()
     end)

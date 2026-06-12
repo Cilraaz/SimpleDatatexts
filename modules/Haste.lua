@@ -17,15 +17,13 @@ local format      = string.format
 ----------------------------------------------------
 local GetCombatRating      = GetCombatRating
 local GetCombatRatingBonus = GetCombatRatingBonus
-local GetHaste             = GetHaste
 local UnitAttackSpeed      = UnitAttackSpeed
 
 ----------------------------------------------------
 -- Constants Locals
 ----------------------------------------------------
 local STAT_HASTE = STAT_HASTE
-local CR_HASTE_MELEE = CR_HASTE_MELEE
-local CR_HASTE_RANGED = CR_HASTE_RANGED
+local CR_HASTE_SPELL = CR_HASTE_SPELL
 local STAT_HASTE_BASE_TOOLTIP = STAT_HASTE_BASE_TOOLTIP
 local STAT_HASTE_TOOLTIP = STAT_HASTE_TOOLTIP
 local ATTACK_SPEED = ATTACK_SPEED
@@ -33,8 +31,6 @@ local ATTACK_SPEED = ATTACK_SPEED
 ----------------------------------------------------
 -- File Locals
 ----------------------------------------------------
-local isHunter = SDTC.playerClass == 'HUNTER'
-local hasteStat = isHunter and CR_HASTE_RANGED or CR_HASTE_MELEE
 local moduleName = "Haste"
 
 ----------------------------------------------------
@@ -68,16 +64,21 @@ function mod.Create(slotFrame)
     local Stats = SDTC.stats.haste
     local currentHaste = 0
 
+    local percFunc = function() return UnitSpellHaste("player") end
+    local ratingFunc = function() return GetCombatRating(CR_HASTE_SPELL) end
+    local bonusFunc = function() return GetCombatRatingBonus(CR_HASTE_SPELL) end
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateHaste()
-        currentHaste = GetHaste() or 0
-        if not issecretvalue(currentHaste) then
-            Stats.haste = currentHaste
-            Stats.hasteRating = GetCombatRating(hasteStat)
-            Stats.hasteBonus = GetCombatRatingBonus(hasteStat)
-        end
+        local pctOk, currentHastePerc = pcall(percFunc)
+        local ratingOk, currentHasteRating = pcall(ratingFunc)
+        local bonusOk, currentHasteBonus = pcall(bonusFunc)
+        if pctOk then Stats.haste = currentHastePerc end
+        if ratingOk then Stats.hasteRating = currentHasteRating end
+        if bonusOk then Stats.hasteBonus = currentHasteBonus end
+
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
         local textString = (showLabel and L["Haste:"].." " or "") .. SDT.FormatUtils:FormatPercent(Stats.haste, hideDecimals)
@@ -136,11 +137,6 @@ function mod.Create(slotFrame)
                 string.format("%.2f", mh),
                 1, 0.82, 0, 1, 0.82, 0
             )
-        end
-
-        if InCombatLockdown() then
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
         end
 
         SDT.Tooltip:Show()

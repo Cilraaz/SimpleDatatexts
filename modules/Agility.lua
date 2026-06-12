@@ -58,14 +58,14 @@ function mod.Create(slotFrame)
     local Stats = SDTC.stats.agility
     local currentAgi = 0
 
+    local agiFunc = function() return UnitStat("player", LE_UNIT_STAT_AGILITY) end
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateAgility()
-        currentAgi = UnitStat("player", LE_UNIT_STAT_AGILITY)
-        if not issecretvalue(currentAgi) then
-            Stats.agi = currentAgi
-        end
+        local agiOk, currentAgi = pcall(agiFunc)
+        if agiOk then Stats.agi = currentAgi end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showShortLabel = SDT:GetModuleSetting(moduleName, "showShortLabel", false)
         local textString = (showLabel and (showShortLabel and L["Agi"] or ITEM_MOD_AGILITY_SHORT)..": " or "")..Stats.agi

@@ -69,13 +69,19 @@ function mod.Create(slotFrame)
     if not SDTC.stats.attackPower then SDTC.stats.attackPower = {} end
     local Stats = SDTC.stats.attackPower
 
+    local APFunc = function() return (isHunter and UnitRangedAttackPower or UnitAttackPower)("player") end
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateAP()
-        local base, posBuff, negBuff = (isHunter and UnitRangedAttackPower or UnitAttackPower)("player")
-        if not issecretvalue(base) then
-            Stats.totalAP = base + posBuff + negBuff
+        local APOk, base, posBuff, negBuff = pcall(APFunc)
+        if APOk then
+            if not issecretvalue(base) then
+                Stats.totalAP = base + posBuff + negBuff
+            else
+                Stats.totalAP = base
+            end
         end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showShortLabel = SDT:GetModuleSetting(moduleName, "showShortLabel", false)
@@ -115,7 +121,7 @@ function mod.Create(slotFrame)
         SDT.Tooltip:ClearLines()
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, isHunter and RANGED_ATTACK_POWER or MELEE_ATTACK_POWER, Stats.totalAP, 1, 0.82, 0, 1, 1, 1)
 
-        local APBonus = format("%.2f", totalAP / ATTACK_POWER_MAGIC_NUMBER)
+        local APBonus = not issecretvalue(Stats.totalAP) and format("%.2f", Stats.totalAP / ATTACK_POWER_MAGIC_NUMBER) or "0"
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format(isHunter and RANGED_ATTACK_POWER_TOOLTIP or MELEE_ATTACK_POWER_TOOLTIP, APBonus), nil, nil, nil, nil, nil, nil, true)
 
 	    if isHunter and ComputePetBonus then
@@ -130,11 +136,6 @@ function mod.Create(slotFrame)
                 SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, format(PET_BONUS_TOOLTIP_SPELLDAMAGE, format("%.2f", petSpellDmgBonus)))
 		    end
 	    end
-
-        if InCombatLockdown() then
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
-        end
 
         SDT.Tooltip:Show()
     end)

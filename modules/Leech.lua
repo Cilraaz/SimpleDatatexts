@@ -61,15 +61,17 @@ function mod.Create(slotFrame)
     local Stats = SDTC.stats.leech
     local leechPercent, leechRating = 0, 0
 
+    local leechFunc = function() return GetCombatRating(CR_LIFESTEAL) end
+    local bonusFunc = function() return GetCombatRatingBonus(CR_LIFESTEAL) end
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateLeech()
-        leechRating = GetCombatRating(CR_LIFESTEAL)
-        if not issecretvalue(leechRating) then
-            Stats.leechPercent = GetCombatRatingBonus(CR_LIFESTEAL)
-            Stats.leechRating = leechRating
-        end
+        local leechOk, leechPercent = pcall(leechFunc)
+        local ratingOk, leechRating = pcall(bonusFunc)
+        if leechOk then Stats.leechPercent = leechPercent end
+        if ratingOk then Stats.leechRating = leechRating end
         
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
@@ -113,11 +115,6 @@ function mod.Create(slotFrame)
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
-
-        if InCombatLockdown() then
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
-        end
 
         SDT.Tooltip:Show()
     end)

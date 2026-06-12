@@ -58,14 +58,15 @@ function mod.Create(slotFrame)
     local Stats = SDTC.stats.intellect
     local currentInt = 0
 
+    local intFunc = function() return UnitStat("player", LE_UNIT_STAT_INTELLECT) end
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateIntellect()
-        currentInt = UnitStat("player", LE_UNIT_STAT_INTELLECT)
-        if not issecretvalue(currentInt) then
-            Stats.int = currentInt
-        end
+        local intOk, currentInt = pcall(intFunc)
+        if intOk then Stats.int = currentInt end
+        
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local showShortLabel = SDT:GetModuleSetting(moduleName, "showShortLabel", false)
         local textString = (showLabel and (showShortLabel and L["Int"] or ITEM_MOD_INTELLECT_SHORT) .. ": " or "") .. Stats.int

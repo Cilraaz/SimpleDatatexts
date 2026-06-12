@@ -66,27 +66,17 @@ function mod.Create(slotFrame)
     if not SDTC.stats.spellPower then SDTC.stats.spellPower = {} end
     local Stats = SDTC.stats.spellPower
     local spellPower = 0
-    local maxSpellPower = 0
+
+    local spellPowerFunc = function() return GetSpellBonusDamage(2) end
 
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateSpellPower()
         -- Get the highest spell power across all schools
-        local firstPower = GetSpellBonusDamage(2)
-        if not issecretvalue(firstPower) then
-            Stats.school[2] = firstPower
-            maxSpellPower = firstPower
-            for i = 3, MAX_SPELL_SCHOOLS do
-                Stats.school[i] = GetSpellBonusDamage(i)
-                if Stats.school[i] > maxSpellPower then
-                    maxSpellPower = Stats.school[i]
-                end
-            end
-        end
-        
-        Stats.spellPower = maxSpellPower
-        
+        local SPOk, spellPower = pcall(spellPowerFunc)
+        if SPOk then Stats.spellPower = spellPower end
+
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local textString = (showLabel and ITEM_MOD_SPELL_POWER_SHORT..": " or "") .. Stats.spellPower
         text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, textString))
@@ -122,23 +112,10 @@ function mod.Create(slotFrame)
         SDT.Tooltip:SetOwner(self, anchor)
         SDT.Tooltip:ClearLines()
 
-        local text = format('%s: |cffFFFFFF%d|r', ITEM_MOD_SPELL_POWER_SHORT, Stats.maxSpellPower)
+        local text = format('%s: |cffFFFFFF%d|r', ITEM_MOD_SPELL_POWER_SHORT, Stats.spellPower)
         SDT.FormatUtils:AddTooltipHeader(SDT.Tooltip, nil, text)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, STAT_SPELLPOWER_TOOLTIP, nil, nil, nil, nil, nil, nil, nil, true)
-        SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-        
-        -- Show spell power for each school
-        for i = 2, MAX_SPELL_SCHOOLS do
-            local power = Stats.school[i]
-            local schoolName = SPELL_SCHOOL_NAMES[i-1] or "Unknown"
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, schoolName, power, 1, 1, 1)
-        end
-
-        if InCombatLockdown() then
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
-        end
 
         SDT.Tooltip:Show()
     end)

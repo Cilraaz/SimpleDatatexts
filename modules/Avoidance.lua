@@ -61,15 +61,17 @@ function mod.Create(slotFrame)
     local Stats = SDTC.stats.avoidance
     local avoidanceRating = 0
 
+    local ratingFunc = function() return GetCombatRating(CR_AVOIDANCE) end
+    local bonusFunc = function() return GetCombatRatingBonus(CR_AVOIDANCE) end
+
     ----------------------------------------------------
     -- Update logic
     ----------------------------------------------------
     local function UpdateAvoidance()
-        avoidanceRating = GetCombatRating(CR_AVOIDANCE)
-        if not issecretvalue(avoidanceRating) then
-            Stats.avoidancePercent = GetCombatRatingBonus(CR_AVOIDANCE)
-            Stats.avoidanceRating = avoidanceRating
-        end        
+        local avoidOk, avoidanceRating = pcall(ratingFunc)
+        local bonusOk, avoidancePercent = pcall(bonusFunc)
+        if avoidOk then Stats.avoidanceRating = avoidanceRating end
+        if bonusOk then Stats.avoidancePercent = avoidancePercent end
         local showLabel = SDT:GetModuleSetting(moduleName, "showLabel", true)
         local hideDecimals = SDT:GetModuleSetting(moduleName, "hideDecimals", false)
         local textString = (showLabel and STAT_AVOIDANCE..": " or "") .. SDT.FormatUtils:FormatPercent(Stats.avoidancePercent, hideDecimals)
@@ -114,11 +116,6 @@ function mod.Create(slotFrame)
         SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, tooltip, nil, nil, nil, nil, nil, nil, nil, true)
 
         SDT.Tooltip:Show()
-
-        if InCombatLockdown() then
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, L["Note: Value can't be updated while in combat. Using cached values."], "", 1, 0, 0)
-        end
     end)
 
     slotFrame:SetScript("OnLeave", function()
