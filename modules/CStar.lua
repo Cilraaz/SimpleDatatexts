@@ -76,7 +76,6 @@ function mod.Create(slotFrame)
     local function OnEvent(self, event, ...)
         if event == "PLAYER_ENTERING_WORLD" or
            event == "PLAYER_REGEN_DISABLED" then
-            SDT:Print("Collapsing Star Counter Reset (event: " .. event .. ")")
             UpdateCStars(true)
         elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
             local unit, castGUID, spellID = ...
@@ -89,7 +88,6 @@ function mod.Create(slotFrame)
             local before = SDTC.DDH.priorMetaStatus
             SDTC.DDH.priorMetaStatus = metaStatus
             if not before and metaStatus then
-                SDT:Print("Collapsing Star Counter Reset (meta)")
                 UpdateCStars(true)
             end
         end
