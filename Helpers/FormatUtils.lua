@@ -176,7 +176,7 @@ function SDT.FormatUtils:FindBestAnchorPoint(frame)
     local screenWidth = UIParent:GetRight()
     local screenHeight = UIParent:GetTop()
 
-    if not x or not y then
+    if not x or not y or issecretvalue(x) or issecretvalue(y) then
         return "ANCHOR_BOTTOM"
     else
         if y < screenHeight / 2 then
