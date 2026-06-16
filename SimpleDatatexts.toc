@@ -1,4 +1,4 @@
-## Interface: 120005
+## Interface: 120007
 ## Title: Simple DataTexts
 ## Notes: Lightweight datatext framework.
 ## Author: Cilraaz
