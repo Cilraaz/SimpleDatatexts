@@ -1,3 +1,3 @@
 ## Changes
-- ad1b13f build(TOC): 12.0.7.01 release
-- 4345c33 build(TOC): Bump TOC for 12.0.7
+- eb4c1e5 build(TOC): 12.1.0.01 release
+- 7d5a7b2 feat(Core): Add per-panel Hide During Combat setting
