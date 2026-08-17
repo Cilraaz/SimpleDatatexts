@@ -128,6 +128,8 @@ L["Update slot assignment dropdowns after changing number of slots"] = "슬롯 �
 L["Width"] = "너비"
 L["Hide Panel"] = "패널 숨기기"
 L["Hide this panel. Panels are always visible while unlocked."] = "이 패널을 숨깁니다. 패널은 잠금 해제 상태일 때 항상 표시됩니다."
+L["Hide During Combat"] = "전투 중 숨기기"
+L["Hide this panel while you are in combat."] = "전투 중에는 이 패널을 숨깁니다."
 
 -- ----------------------------
 -- Config.lua - Module Settings

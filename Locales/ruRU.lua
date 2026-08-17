@@ -128,6 +128,8 @@ L["Update slot assignment dropdowns after changing number of slots"] = "Обно
 L["Width"] = "Ширина"
 L["Hide Panel"] = "Скрыть панель"
 L["Hide this panel. Panels are always visible while unlocked."] = "Скрыть эту панель. Панели всегда видны, пока они разблокированы."
+L["Hide During Combat"] = "Скрывать во время боя"
+L["Hide this panel while you are in combat."] = "Скрывает эту панель, пока вы находитесь в бою."
 
 -- ----------------------------
 -- Config.lua - Module Settings

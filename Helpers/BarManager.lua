@@ -44,9 +44,16 @@ function SDT.BarManager:ApplyVisibility(bar)
     -- Per-bar hidden flag
     if saved.hidden then
         bar:Hide()
-    else
-        bar:Show()
+        return
     end
+
+    -- Hide during combat, if enabled for this bar
+    if saved.hideDuringCombat and UnitAffectingCombat("player") then
+        bar:Hide()
+        return
+    end
+
+    bar:Show()
 end
 
 ----------------------------------------------------

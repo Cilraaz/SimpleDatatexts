@@ -44,6 +44,7 @@ local defaults = {
                 point = nil,
                 frameStrata = "MEDIUM",
                 hidden = false,
+                hideDuringCombat = false,
             }
         },
         
@@ -128,6 +129,8 @@ function SDT:CreateDefaultBar()
         height = 22,
         scale = 100,
         name = "SDT_Bar1",
+        hidden = false,
+        hideDuringCombat = false,
     }
 end
 

@@ -309,6 +309,14 @@ function SDT:OnEnable()
     self:RegisterEvent("CURRENCY_DISPLAY_UPDATE", "UpdateGlobalGold")
     self:UpdateGlobalGold()
 
+    -- Update panel visibility when entering/leaving combat
+    self:RegisterEvent("PLAYER_REGEN_DISABLED", function()
+        self.BarManager:ApplyVisibilityAll()
+    end)
+    self:RegisterEvent("PLAYER_REGEN_ENABLED", function()
+        self.BarManager:ApplyVisibilityAll()
+    end)
+
     if SDT.db.profile.debugMode then
         C_Timer.After(1, function() self:ShowProfileData() end)
     end

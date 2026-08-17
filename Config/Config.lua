@@ -548,6 +548,24 @@ function SDT:GetPanelOptions()
                         end,
                         order = 2,
                     },
+                    hideDuringCombat = {
+                        type = "toggle",
+                        name = L["Hide During Combat"],
+                        desc = L["Hide this panel while you are in combat."],
+                        get = function()
+                            if not self.selectedBar then return false end
+                            return self.db.profile.bars[self.selectedBar].hideDuringCombat or false
+                        end,
+                        set = function(_, val)
+                            if self.selectedBar then
+                                self.db.profile.bars[self.selectedBar].hideDuringCombat = val
+                                if self.bars[self.selectedBar] then
+                                    self.BarManager:ApplyVisibility(self.bars[self.selectedBar])
+                                end
+                            end
+                        end,
+                        order = 3,
+                    },
                     delete = {
                         type = "execute",
                         name = L["Remove Selected Panel"],
@@ -561,7 +579,7 @@ function SDT:GetPanelOptions()
                             self.selectedBar = nil
                             LibStub("AceConfigRegistry-3.0"):NotifyChange("SimpleDatatexts")
                         end,
-                        order = 3,
+                        order = 4,
                     },
                     spacer1 = {
                         type = "header",

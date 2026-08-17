@@ -128,6 +128,8 @@ L["Update slot assignment dropdowns after changing number of slots"] = "變更�
 L["Width"] = "寬度"
 L["Hide Panel"] = "隱藏面板"
 L["Hide this panel. Panels are always visible while unlocked."] = "隱藏此面板。面板在解鎖狀態下始終可見。"
+L["Hide During Combat"] = "戰鬥中隱藏"
+L["Hide this panel while you are in combat."] = "在戰鬥中隱藏此面板。"
 
 -- ----------------------------
 -- Config.lua - Module Settings
