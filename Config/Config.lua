@@ -231,12 +231,25 @@ function SDT:GetGeneralOptions()
                 end,
                 order = 3,
             },
+            hideAllDuringCombat = {
+                type = "toggle",
+                name = L["Hide All Panels During Combat"],
+                desc = L["Hide all panels while you are in combat."],
+                get = function()
+                    return self.db.profile.hideAllDuringCombat
+                end,
+                set = function(_, val)
+                    self.db.profile.hideAllDuringCombat = val
+                    self.BarManager:ApplyVisibilityAll()
+                end,
+                order = 4,
+            },
             showLoginMessage = {
                 type = "toggle",
                 name = L["Show Login Message"],
                 get = function() return self.db.profile.showLoginMessage end,
                 set = function(_, val) self.db.profile.showLoginMessage = val end,
-                order = 4,
+                order = 5,
             },
             minimapIcon = {
                 type = "toggle",
@@ -251,7 +264,7 @@ function SDT:GetGeneralOptions()
                         SDT.Icon:Hide("SimpleDatatexts")
                     end
                 end,
-                order = 5,
+                order = 6,
             },
             hideModuleTitle = {
                 type = "toggle",
@@ -261,7 +274,7 @@ function SDT:GetGeneralOptions()
                     self.db.profile.hideModuleTitle = val
                     self.ModuleRegistry:UpdateAllModules()
                 end,
-                order = 6,
+                order = 7,
             },
             use24HourClock = {
                 type = "toggle",
@@ -271,7 +284,7 @@ function SDT:GetGeneralOptions()
                     self.db.profile.use24HourClock = val
                     self.ModuleRegistry:UpdateAllModules()
                 end,
-                order = 7,
+                order = 8,
             },
             spacer1 = {
                 type = "header",

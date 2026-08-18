@@ -130,6 +130,8 @@ L["Hide Panel"] = "Panel ausblenden"
 L["Hide this panel. Panels are always visible while unlocked."] = "Dieses Panel ausblenden. Panels sind immer sichtbar, wenn sie entsperrt sind."
 L["Hide During Combat"] = "Im Kampf ausblenden"
 L["Hide this panel while you are in combat."] = "Dieses Panel ausblenden, während Ihr Euch im Kampf befindet."
+L["Hide All Panels During Combat"] = "Alle Panels im Kampf ausblenden"
+L["Hide all panels while you are in combat."] = "Alle Panels ausblenden, während Ihr Euch im Kampf befindet."
 
 -- ----------------------------
 -- Config.lua - Module Settings

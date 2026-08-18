@@ -47,8 +47,8 @@ function SDT.BarManager:ApplyVisibility(bar)
         return
     end
 
-    -- Hide during combat, if enabled for this bar
-    if saved.hideDuringCombat and UnitAffectingCombat("player") then
+    -- Hide during combat, if enabled globally or for this bar
+    if (SDT.db.profile.hideAllDuringCombat or saved.hideDuringCombat) and UnitAffectingCombat("player") then
         bar:Hide()
         return
     end

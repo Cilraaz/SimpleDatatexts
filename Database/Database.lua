@@ -10,6 +10,7 @@ local defaults = {
         -- Global settings
         locked = false,
         showPanels = true,
+        hideAllDuringCombat = false,
         debugMode = false,
         useClassColor = false,
         useCustomColor = false,
