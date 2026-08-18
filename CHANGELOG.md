@@ -1,3 +1,3 @@
 ## Changes
-- eb4c1e5 build(TOC): 12.1.0.01 release
-- 7d5a7b2 feat(Core): Add per-panel Hide During Combat setting
+- b109ea6 build(TOC): 12.1.0.02 release
+- 70ed1ab feat(Config): Added global "Hide All Panels During Combat" setting
