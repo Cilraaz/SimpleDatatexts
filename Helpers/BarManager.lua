@@ -381,6 +381,9 @@ function SDT.BarManager:RebuildSlots(bar)
         if slot.hitFrame then
             slot.hitFrame:SetFrameLevel(slot:GetFrameLevel() + 5)
             local textW = slot.text and slot.text:GetWidth() or 0
+            if issecretvalue(textW) then
+                textW = slotW
+            end
             slot.hitFrame:SetSize(math.max(slotW, textW), slotH)
             slot.hitFrame:Show()
         elseif slot.secureButton then
@@ -388,6 +391,9 @@ function SDT.BarManager:RebuildSlots(bar)
             slot.secureButton:ClearAllPoints()
             slot.secureButton:SetPoint(anchorPoint, slot, anchorPoint, offsetX, offsetY)
             local textW = slot.text and slot.text:GetWidth() or 0
+            if issecretvalue(textW) then
+                textW = slotW
+            end
             slot.secureButton:SetSize(math.max(slotW, textW), slotH)
         end
         
