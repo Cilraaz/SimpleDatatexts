@@ -137,6 +137,7 @@ local dungeonAbbreviations = {
     ["Voidscar Arena"] = "VSCAR",
     ["The Heart of Rage"] = "RAGE",
     ["Voidstorm"] = "VSTORM",
+    ["Altar of Fangs"] = "ALTAR",
     -- Fallback: take first letters of each word
 }
 
@@ -191,8 +192,8 @@ local dungeonTeleportSpells = {
     [246] = {},        -- Tol Dagor
     [247] = {467553, 467555}, -- The MOTHERLODE!!
     [248] = {424167},  -- Waycrest Manor
-    [249] = {},        -- Kings' Rest
-    [250] = {},        -- Temple of Sethraliss
+    [249] = {1286831}, -- Kings' Rest
+    [250] = {1286828}, -- Temple of Sethraliss
     [251] = {410074},  -- The Underrot
     [252] = {},        -- Shrine of the Storm
     [353] = {445418, 464256}, -- Siege of Boralus
@@ -240,6 +241,11 @@ local dungeonTeleportSpells = {
 	[558] = {1254572}, -- Magisters' Terrace
 	[559] = {1254563}, -- Nexus-Point Xenas
 	[560] = {1254559}, -- Maisara Caverns
+    [584] = {1286801}, -- The Blinding Vale
+    [585] = {1286804}, -- Voidscar Arena
+    [586] = {1286807}, -- Den of Nalorakk
+    [587] = {1286809}, -- Murder Row
+    [588] = {1286812}, -- Altar of Fangs
 }
 
 local function GetDungeonAbbreviation(fullName)
