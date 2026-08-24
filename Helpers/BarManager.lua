@@ -273,15 +273,31 @@ function SDT.BarManager:RebuildSlots(bar)
             end
 
             -- Clean up slot frame scripts set by previous modules
+            local onLeave = slot:GetScript("OnLeave")
+            if onLeave then
+                onLeave(slot)
+            end
+
             slot:SetScript("OnEnter", nil)
             slot:SetScript("OnLeave", nil)
             slot:SetScript("OnClick", nil)
+            slot:SetScript("OnMouseUp", nil)
+            slot:SetScript("OnMouseDown", nil)
 
             -- Clean up hit frame if it exists
             if slot.hitFrame then
+                local onLeave = slot.hitFrame:GetScript("OnLeave")
+                if onLeave then
+                    onLeave(slot.hitFrame)
+                end
+
                 slot.hitFrame:SetScript("OnEnter", nil)
                 slot.hitFrame:SetScript("OnLeave", nil)
                 slot.hitFrame:SetScript("OnClick", nil)
+                slot.hitFrame:SetScript("OnMouseUp", nil)
+                slot.hitFrame:SetScript("OnMouseDown", nil)
+                slot.hitFrame:SetScript("OnDragStart", nil)
+                slot.hitFrame:SetScript("OnDragStop", nil)
                 slot.hitFrame:Hide()
                 slot.hitFrame = nil
             end
@@ -324,7 +340,7 @@ function SDT.BarManager:RebuildSlots(bar)
 
         -- Create a hit frame and transfer the slot scripts onto it.
         if assignedName and assignedName ~= "(spacer)" and SDT.modules[assignedName]
-                and not slot.secureButton then
+                and not slot.secureButton and not slot.hitFrame then
             slot.hitFrame = CreateFrame("Button", nil, slot)
             slot.hitFrame:RegisterForClicks("AnyUp")
             slot.hitFrame:RegisterForDrag("LeftButton")
