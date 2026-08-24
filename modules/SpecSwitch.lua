@@ -38,6 +38,7 @@ local GetConfigIDsBySpecID    = C_ClassTalents.GetConfigIDsBySpecID
 local GetLastSelectedSavedConfigID = C_ClassTalents.GetLastSelectedSavedConfigID
 local LoadConfig              = C_ClassTalents.LoadConfig
 local SetStarterBuildActive   = C_ClassTalents.SetStarterBuildActive
+local UpdateLastSelectedSavedConfigID = C_ClassTalents.UpdateLastSelectedSavedConfigID
 -- C_SpecializationInfo
 local C_SpecializationInfo_GetAllSelectedPvpTalentIDs = C_SpecializationInfo.GetAllSelectedPvpTalentIDs
 local SetSpecialization       = C_SpecializationInfo.SetSpecialization or SetSpecialization
@@ -74,7 +75,16 @@ local moduleName = "Talent/Loot Specialization"
 ----------------------------------------------------
 local menuList = {
     { text = SELECT_LOOT_SPECIALIZATION, isTitle = true, notCheckable = true },
-    { checked = function() return GetLootSpecialization() == 0 end, func = function() SetLootSpecialization(0) end }
+    {
+        checked = function()
+            return GetLootSpecialization() == 0
+        end,
+        func = function()
+            SetLootSpecialization(0)
+            print(format("|cffffff00%s|r", L["Loot Specialization set to: Current Specialization"]))
+            return MenuResponse.CloseAll
+        end
+    }
 }
 
 local specList = { { text = SPECIALIZATION, isTitle = true, notCheckable = true } }
@@ -125,7 +135,7 @@ local function EnsureTalentUI()
     return true
 end
 
-local queuedLoadoutID
+local queuedLoadoutID = nil
 local LoadoutFunc
 do
     LoadoutFunc = function(_, arg1)
@@ -158,9 +168,8 @@ local function WrapMenuFunc(func)
         if func then
             func(self, arg1)
         end
-        if DropDownList1 then
-            DropDownList1:Hide()
-        end
+
+        return MenuResponse.CloseAll
     end
 end
 
@@ -461,17 +470,20 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     -- Event handler
     ----------------------------------------------------
-    local function OnEvent(self, event, ...)
-        if event == "TRAIT_CONFIG_UPDATED" and queuedLoadoutID then
-            C_ClassTalents.UpdateLastSelectedSavedConfigID(GetCurrentSpecID(), queuedLoadoutID)
-            queuedLoadoutID = nil
-        elseif event == "CONFIG_COMMIT_FAILED" then
-            queuedLoadoutID = nil
-        end
+    local function Refresh()
         BuildSpecAndLootLists()
         BuildLoadoutList()
-
         UpdateDisplay()
+    end
+
+    local function OnEvent(self, event, ...)
+        if event == "TRAIT_CONFIG_UPDATED" then
+            UpdateLastSelectedSavedConfigID(GetCurrentSpecID(), queuedLoadoutID)
+            Delay(0, Refresh)
+            return
+        end
+
+        Refresh()
     end
 
     f:SetScript("OnEvent", OnEvent)

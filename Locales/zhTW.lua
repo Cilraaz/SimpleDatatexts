@@ -421,6 +421,7 @@ L["Show Loot Specialization Icon"] = "顯示拾取專精圖示"
 L["Show Loot Specialization Text"] = "顯示拾取專精文字"
 L["Show Loot Spec When Current"] = "當前專精時顯示戰利品專精"
 L["Show Loadout"] = "顯示配裝"
+L["Loot Specialization set to: Current Specialization"] = "拾取專精設定為：目前專精"
 
 -- ----------------------------
 -- modules/Speed.lua

@@ -421,6 +421,7 @@ L["Show Loot Specialization Icon"] = "전리품 전문화 아이콘 표시"
 L["Show Loot Specialization Text"] = "전리품 전문화 텍스트 표시"
 L["Show Loot Spec When Current"] = "현재 전문화일 때 전리품 전문화 표시"
 L["Show Loadout"] = "장비 세트 표시"
+L["Loot Specialization set to: Current Specialization"] = "전리품 전문화 설정: 현재 전문화"
 
 -- ----------------------------
 -- modules/Speed.lua

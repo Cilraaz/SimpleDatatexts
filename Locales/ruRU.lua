@@ -421,6 +421,7 @@ L["Show Loot Specialization Icon"] = "Показать значок специа
 L["Show Loot Specialization Text"] = "Показать текст специализации добычи"
 L["Show Loot Spec When Current"] = "Показывать спек добычи при значении 'Текущий'"
 L["Show Loadout"] = "Показать набор"
+L["Loot Specialization set to: Current Specialization"] = "Специализация для добычи установлена: Текущая специализация"
 
 -- ----------------------------
 -- modules/Speed.lua

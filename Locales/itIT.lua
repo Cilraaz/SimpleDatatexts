@@ -421,6 +421,7 @@ L["Show Loot Specialization Icon"] = "Mostra icona specializzazione bottino"
 L["Show Loot Specialization Text"] = "Mostra testo specializzazione bottino"
 L["Show Loot Spec When Current"] = "Mostra spec bottino quando è 'corrente'"
 L["Show Loadout"] = "Mostra configurazione"
+L["Loot Specialization set to: Current Specialization"] = "Specializzazione bottino impostata su: Specializzazione attuale"
 
 -- ----------------------------
 -- modules/Speed.lua

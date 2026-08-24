@@ -421,6 +421,7 @@ L["Show Loot Specialization Icon"] = "Mostrar icono de especialización de botí
 L["Show Loot Specialization Text"] = "Mostrar texto de especialización de botín"
 L["Show Loot Spec When Current"] = "Mostrar spec de botín cuando es 'actual'"
 L["Show Loadout"] = "Mostrar configuración"
+L["Loot Specialization set to: Current Specialization"] = "Especialización de botín establecida en: Especialización actual"
 
 -- ----------------------------
 -- modules/Speed.lua

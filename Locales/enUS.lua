@@ -416,6 +416,7 @@ L["Show Loot Specialization Icon"] = "Show Loot Specialization Icon"
 L["Show Loot Specialization Text"] = "Show Loot Specialization Text"
 L["Show Loot Spec When Current"] = "Show Loot Spec When Current"
 L["Show Loadout"] = "Show Loadout"
+L["Loot Specialization set to: Current Specialization"] = "Loot Specialization set to: Current Specialization"
 
 -- ----------------------------
 -- modules/Speed.lua

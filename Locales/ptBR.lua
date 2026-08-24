@@ -421,6 +421,7 @@ L["Show Loot Specialization Icon"] = "Mostrar ícone de especialização de saqu
 L["Show Loot Specialization Text"] = "Mostrar texto de especialização de saque"
 L["Show Loot Spec When Current"] = "Mostrar espec. de saque quando 'Atual'"
 L["Show Loadout"] = "Mostrar configuração"
+L["Loot Specialization set to: Current Specialization"] = "Especialização de saque definida como: Especialização atual"
 
 -- ----------------------------
 -- modules/Speed.lua

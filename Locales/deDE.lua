@@ -421,6 +421,7 @@ L["Show Loot Specialization Icon"] = "Beutespezialisierungssymbol anzeigen"
 L["Show Loot Specialization Text"] = "Beutespezialisierungstext anzeigen"
 L["Show Loot Spec When Current"] = "Beutespezialisierung bei 'Aktuell' anzeigen"
 L["Show Loadout"] = "Ausrüstung anzeigen"
+L["Loot Specialization set to: Current Specialization"] = "Beutespezialisierung festgelegt auf: Aktuelle Spezialisierung"
 
 -- ----------------------------
 -- modules/Speed.lua
