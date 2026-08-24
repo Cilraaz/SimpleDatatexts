@@ -73,7 +73,15 @@ function SDT:HandleMenuList(root, menuList, submenu, depth)
         elseif list.func or list.hasArrow then
             local name = list.text or ('test'..depth)
 
-            local func = (list.arg1 or list.arg2) and (function() list.func(nil, list.arg1, list.arg2) end) or list.func
+            local func
+            if list.arg1 or list.arg2 then
+                func = function()
+                    return list.func(nil, list.arg1, list.arg2)
+                end
+            else
+                func = list.func
+            end
+
             local checked = list.checked and (not list.notCheckable and function() return list.checked(list) end or function() end)
             
             if checked then
