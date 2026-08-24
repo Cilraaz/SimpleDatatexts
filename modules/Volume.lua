@@ -127,6 +127,8 @@ function mod.Create(slotFrame)
 	    activeStream = AudioStreams[arg1]
 
 	    slotFrame.text:SetText(SDT.FormatUtils:ColorModuleText(moduleName, GetStreamString(activeStream)))
+
+		return MenuResponse.CloseAll
     end
 
     local function ToggleStream(_, arg1)
@@ -147,6 +149,8 @@ function mod.Create(slotFrame)
     local function SelectSoundOutput(_, arg1)
         SDT:SetCVar('Sound_OutputDriverIndex', arg1)
 	    Sound_GameSystem_RestartSoundSystem()
+
+		return MenuResponse.CloseAll
     end
 
 	twipe(deviceMenu)
