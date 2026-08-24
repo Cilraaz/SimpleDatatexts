@@ -42,7 +42,16 @@ local moduleName = "Loot Specialization"
 ----------------------------------------------------
 local menuList = {
     { text = SELECT_LOOT_SPECIALIZATION, isTitle = true, notCheckable = true },
-    { checked = function() return GetLootSpecialization() == 0 end, func = function() SetLootSpecialization(0) end }
+    {
+        checked = function()
+            return GetLootSpecialization() == 0
+        end,
+        func = function()
+            SetLootSpecialization(0)
+            print(format("|cffffff00%s|r", L["Loot Specialization set to: Current Specialization"]))
+            return MenuResponse.CloseAll
+        end
+    }
 }
 
 ----------------------------------------------------
@@ -71,8 +80,11 @@ local function MenuFunc(_, arg1) SetLootSpecialization(arg1) end
 
 local function WrapMenuFunc(func)
     return function(self, arg1)
-        if func then func(self, arg1) end
-        if DropDownList1 then DropDownList1:Hide() end
+        if func then
+            func(self, arg1)
+        end
+        
+        return MenuResponse.CloseAll
     end
 end
 
