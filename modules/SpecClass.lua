@@ -97,21 +97,6 @@ local function StarterChecked()
     return GetStarterBuildActive and GetStarterBuildActive()
 end
 
-local function EnsureTalentUI()
-    if IsAddOnLoaded("Blizzard_PlayerSpells") then
-        return true
-    end
-
-    local loaded, reason = UIParentLoadAddOn("Blizzard_PlayerSpells")
-
-    if not loaded then
-        print(format(L["Failed to load Blizzard_PlayerSpells: %s"], tostring(reason)))
-        return false
-    end
-
-    return true
-end
-
 local queuedLoadoutID
 local LoadoutFunc
 do
@@ -141,9 +126,8 @@ local function WrapMenuFunc(func)
         if func then
             func(self, arg1)
         end
-        if DropDownList1 then
-            DropDownList1:Hide()
-        end
+        
+        return MenuResponse.CloseAll
     end
 end
 
@@ -340,7 +324,7 @@ function mod.Create(slotFrame)
     slotFrame:SetScript("OnClick", function(self, button)
         if button == "LeftButton" then
             if IsShiftKeyDown() then
-                if EnsureTalentUI() and not InCombatLockdown() then
+                if not InCombatLockdown() then
                     TogglePlayerSpellsFrame()
                 end
                 return
