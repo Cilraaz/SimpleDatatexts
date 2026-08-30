@@ -269,6 +269,14 @@ function mod.Create(slotFrame)
                 activeLoadoutText = loadout.name or ""
             end
         end
+
+        if IsAddOnLoaded("TalentLoadoutManager") and TalentLoadoutManagerAPI and TalentLoadoutManagerAPI.CharacterAPI and TalentLoadoutManagerAPI.CharacterAPI.GetActiveLoadoutInfo then
+            local success, loadout = pcall(TalentLoadoutManagerAPI.CharacterAPI.GetActiveLoadoutInfo, TalentLoadoutManagerAPI.CharacterAPI)
+            if success and loadout then                
+                activeLoadoutText = loadout.displayName or ""
+            end
+        end
+
         if activeLoadoutText == "" then
             if CanUseClassTalents and CanUseClassTalents() and GetLastSelectedSavedConfigID then
                 local classTalentID = GetLastSelectedSavedConfigID(infoID)
@@ -476,13 +484,22 @@ function mod.Create(slotFrame)
         end)
     end
 
+    local function ScheduleRefresh()
+        if IsAddOnLoaded("TalentLoadoutManager") then
+            Delay(0.1, DelayedRefresh)
+            return
+        end
+
+        DelayedRefresh()
+    end
+
     local function OnEvent(self, event, ...)
         if event == "TRAIT_CONFIG_UPDATED" then
             if queuedLoadoutID then
                 UpdateLastSelectedSavedConfigID(GetCurrentSpecID(), queuedLoadoutID)
                 queuedLoadoutID = nil
             end
-            DelayedRefresh()
+            ScheduleRefresh()
             return
         end
 
