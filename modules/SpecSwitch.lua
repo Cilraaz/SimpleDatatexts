@@ -29,9 +29,7 @@ local SetLootSpecialization   = SetLootSpecialization
 local TogglePlayerSpellsFrame = TogglePlayerSpellsFrame
 -- C_AddOns
 local IsAddOnLoaded           = C_AddOns.IsAddOnLoaded
-local LoadAddOn               = C_AddOns.LoadAddOn
 -- C_ClassTalents
-local GetActiveConfigID       = C_ClassTalents.GetActiveConfigID
 local GetHasStarterBuild      = C_ClassTalents.GetHasStarterBuild
 local GetStarterBuildActive   = C_ClassTalents.GetStarterBuildActive
 local GetConfigIDsBySpecID    = C_ClassTalents.GetConfigIDsBySpecID
@@ -120,21 +118,6 @@ local function StarterChecked()
     return GetStarterBuildActive and GetStarterBuildActive()
 end
 
-local function EnsureTalentUI()
-    if IsAddOnLoaded("Blizzard_PlayerSpells") then
-        return true
-    end
-
-    local loaded, reason = UIParentLoadAddOn("Blizzard_PlayerSpells")
-
-    if not loaded then
-        print(format(L["Failed to load Blizzard_PlayerSpells: %s"], tostring(reason)))
-        return false
-    end
-
-    return true
-end
-
 local queuedLoadoutID = nil
 local LoadoutFunc
 do
@@ -151,7 +134,7 @@ do
 
         if not InCombatLockdown() then
             queuedLoadoutID = arg1
-            C_ClassTalents.LoadConfig(arg1, true)
+            LoadConfig(arg1, true)
         end
     end
 end
