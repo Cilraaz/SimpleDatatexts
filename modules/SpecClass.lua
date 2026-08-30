@@ -10,16 +10,13 @@ local mod = {}
 ----------------------------------------------------
 local ipairs = ipairs
 local tinsert = table.insert
-local tremove = table.remove
 local format = format
-local next = next
 local strjoin = strjoin
 
 ----------------------------------------------------
 -- WoW API Locals
 ----------------------------------------------------
 local GetNumSpecializations   = GetNumSpecializations
-local GetPvpTalentInfoByID    = GetPvpTalentInfoByID
 local GetSpecialization       = GetSpecialization
 local GetSpecializationInfo   = GetSpecializationInfo
 local IsControlKeyDown        = IsControlKeyDown
@@ -36,7 +33,6 @@ local LoadConfig              = C_ClassTalents.LoadConfig
 local SetStarterBuildActive   = C_ClassTalents.SetStarterBuildActive
 local UpdateLastSelectedSavedConfigID = C_ClassTalents.UpdateLastSelectedSavedConfigID
 -- C_SpecializationInfo
-local C_SpecializationInfo_GetAllSelectedPvpTalentIDs = C_SpecializationInfo.GetAllSelectedPvpTalentIDs
 local SetSpecialization       = C_SpecializationInfo.SetSpecialization or SetSpecialization
 -- C_Timer
 local Delay                   = C_Timer.After
@@ -52,7 +48,6 @@ local GetCurrentSpecID        = PlayerUtil.GetCurrentSpecID
 -- Constants Locals
 ----------------------------------------------------
 local UNKNOWN                 = UNKNOWN
-local PVP_TALENTS             = PVP_TALENTS
 local BLUE_FONT_COLOR         = BLUE_FONT_COLOR
 local STARTER_ID              = Constants.TraitConsts.STARTER_BUILD_TRAIT_CONFIG_ID
 
