@@ -282,13 +282,21 @@ function mod.Create(slotFrame)
 
         -- Build activeLoadoutText
         local activeLoadoutText = ""
-        if CanUseClassTalents and CanUseClassTalents() and GetLastSelectedSavedConfigID then
-            local classTalentID = GetLastSelectedSavedConfigID(infoID)
-            if classTalentID == STARTER_ID then
-                activeLoadoutText = "|cff00aaffStarter|r"
-            elseif classTalentID then
-                local cfg = C_Traits_GetConfigInfo and C_Traits_GetConfigInfo(classTalentID)
-                activeLoadoutText = cfg and cfg.name or ""
+        if IsAddOnLoaded("ImprovedTalentLoadouts") and ITLAPI and ITLAPI.GetCurrentLoadout then
+            local success, loadout = pcall(ITLAPI.GetCurrentLoadout, ITLAPI)
+            if success and loadout then
+                activeLoadoutText = loadout.name or ""
+            end
+        end
+        if activeLoadoutText == "" then
+            if CanUseClassTalents and CanUseClassTalents() and GetLastSelectedSavedConfigID then
+                local classTalentID = GetLastSelectedSavedConfigID(infoID)
+                if classTalentID == STARTER_ID then
+                    activeLoadoutText = "|cff00aaffStarter|r"
+                elseif classTalentID then
+                    local cfg = C_Traits_GetConfigInfo and C_Traits_GetConfigInfo(classTalentID)
+                    activeLoadoutText = cfg and cfg.name or ""
+                end
             end
         end
 
@@ -476,14 +484,28 @@ function mod.Create(slotFrame)
         UpdateDisplay()
     end
 
+    local refreshPending = false
+
+    local function DelayedRefresh()
+        if refreshPending then return end
+        refreshPending = true
+        Delay(0, function()
+            refreshPending = false
+            Refresh()
+        end)
+    end
+
     local function OnEvent(self, event, ...)
         if event == "TRAIT_CONFIG_UPDATED" then
-            UpdateLastSelectedSavedConfigID(GetCurrentSpecID(), queuedLoadoutID)
-            Delay(0, Refresh)
+            if queuedLoadoutID then
+                UpdateLastSelectedSavedConfigID(GetCurrentSpecID(), queuedLoadoutID)
+                queuedLoadoutID = nil
+            end
+            DelayedRefresh()
             return
         end
 
-        Refresh()
+        DelayedRefresh()
     end
 
     f:SetScript("OnEvent", OnEvent)
