@@ -1,8 +1,9 @@
 ## Changes
-- deea9a7 build(TOC): 12.1.0.04 release
-- f88f34a fix(BarManager): Fix tooltip and click functions not changing when using Shift-RightClick to change modules
-- a6a9f39 fix(Volume): Fix menu closing
-- cb7d3c6 fix(SpecLoot): Fix menu closing and loot spec message for "Current Specialization"
-- 6bdd60f fix(SpecClass): Fix menu closing, fix opening talent UI
-- a5a24dc fix(SystemUtils): Fix HandleMenuList to properly close handle MenuResponse to allow menus to close
-- 8dc83f9 fix(SpecSwitch): Fix Loadout display text not updating
+- d579984 build(TOC): 12.1.0.05 release
+- c78077b fix(SpecSwitch): Remove unused locals
+- 70ad71d fix(SpecClass): Cleanup unused locals
+- 86283eb feat(SpecClass): Migrate improved loadout handling and ITL support from SpecSwitch.lua
+- d921687 fix(SpecSwitch): Remove unused locals; Remove unused EnsureTalentUI function; Use local version of LoadConfig
+- fb8fb6f fix(SpecSwitch): Improve loadout updates and add ImprovedTalentLoadouts support
+- a838f22 fix(Config): Handle invalid selected panels in slot settings
+- a0ba86d feat(workflow): Update workflow to use Node 24
