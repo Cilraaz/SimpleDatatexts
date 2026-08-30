@@ -10,7 +10,6 @@ local mod = {}
 ----------------------------------------------------
 local ipairs = ipairs
 local tinsert = table.insert
-local tremove = table.remove
 local format = format
 local next = next
 local strjoin = strjoin
@@ -175,7 +174,6 @@ function mod.Create(slotFrame)
     local menuFrame = CreateFrame("Frame", "SDT_SpecMenuFrame", UIParent, "UIDropDownMenuTemplate")
 
     local activeSpecIndex = nil
-    local activeLoadoutText = ""
 
     ----------------------------------------------------
     -- Build/refresh menus and lists (called from OnEvent once)
