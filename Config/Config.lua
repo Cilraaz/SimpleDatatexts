@@ -848,9 +848,12 @@ end
 function SDT:GetSlotArgs()
     local args = {}
     
-    if not self.selectedBar then return args end
-    
-    local numSlots = self.db.profile.bars[self.selectedBar].numSlots or 3
+    local barData = self.selectedBar and self.db.profile.bars[self.selectedBar]
+    if not barData then
+        return args
+    end
+
+    local numSlots = barData.numSlots or 3
     
     for i = 1, numSlots do
         args["slot" .. i] = {
@@ -858,10 +861,11 @@ function SDT:GetSlotArgs()
             name = format(L["Slot %d:"], i),
             values = GetModuleList,
             get = function()
-                if not self.selectedBar or not self.db.profile.bars[self.selectedBar] then
+                local barData = self.selectedBar and self.db.profile.bars[self.selectedBar]
+                if not barData then
                     return ""
                 end
-                local slotData = self.db.profile.bars[self.selectedBar].slots[i]
+                local slotData = barData.slots[i]
                 if type(slotData) == "string" then
                     return slotData
                 elseif type(slotData) == "table" then
@@ -870,24 +874,32 @@ function SDT:GetSlotArgs()
                 return ""
             end,
             set = function(_, val)
+                local barData = self.selectedBar and self.db.profile.bars[self.selectedBar]
+                if not barData then
+                    return
+                end
+
                 if val == "" then
-                    self.db.profile.bars[self.selectedBar].slots[i] = nil
+                    barData.slots[i] = nil
                 else
                     -- Convert to new table format
-                    local oldData = self.db.profile.bars[self.selectedBar].slots[i]
+                    local oldData = barData.slots[i]
                     local offsetX, offsetY = 0, 0
                     if type(oldData) == "table" then
                         offsetX = oldData.offsetX or 0
                         offsetY = oldData.offsetY or 0
                     end
                     
-                    self.db.profile.bars[self.selectedBar].slots[i] = {
+                    barData.slots[i] = {
                         module = val,
                         offsetX = offsetX,
                         offsetY = offsetY,
                     }
                 end
-                self.BarManager:RebuildSlots(self.bars[self.selectedBar])
+                local bar = self.bars[self.selectedBar]
+                if bar then
+                    self.BarManager:RebuildSlots(bar)
+                end
             end,
             order = i * 10,
         }
@@ -900,21 +912,37 @@ function SDT:GetSlotArgs()
             max = 200,
             step = 1,
             disabled = function()
-                local slotData = self.db.profile.bars[self.selectedBar].slots[i]
+                local barData = self.selectedBar and self.db.profile.bars[self.selectedBar]
+                if not barData then
+                    return true
+                end
+
+                local slotData = barData.slots[i]
                 return not slotData or (type(slotData) == "string" and slotData == "")
             end,
             get = function()
-                local slotData = self.db.profile.bars[self.selectedBar].slots[i]
+                local barData = self.selectedBar and self.db.profile.bars[self.selectedBar]
+                if not barData then
+                    return 0
+                end
+
+                local slotData = barData.slots[i]
                 if type(slotData) == "table" then
                     return slotData.offsetX or 0
                 end
+
                 return 0
             end,
             set = function(_, val)
-                local slotData = self.db.profile.bars[self.selectedBar].slots[i]
+                local barData = self.selectedBar and self.db.profile.bars[self.selectedBar]
+                if not barData then
+                    return
+                end
+
+                local slotData = barData.slots[i]
                 if type(slotData) == "string" then
                     -- Convert to table format
-                    self.db.profile.bars[self.selectedBar].slots[i] = {
+                    barData.slots[i] = {
                         module = slotData,
                         offsetX = val,
                         offsetY = 0,
@@ -922,7 +950,10 @@ function SDT:GetSlotArgs()
                 elseif type(slotData) == "table" then
                     slotData.offsetX = val
                 end
-                self.BarManager:RebuildSlots(self.bars[self.selectedBar])
+                local bar = self.bars[self.selectedBar]
+                if bar then
+                    self.BarManager:RebuildSlots(bar)
+                end
             end,
             order = i * 10 + 1,
         }
@@ -935,21 +966,37 @@ function SDT:GetSlotArgs()
             max = 100,
             step = 1,
             disabled = function()
-                local slotData = self.db.profile.bars[self.selectedBar].slots[i]
+                local barData = self.selectedBar and self.db.profile.bars[self.selectedBar]
+                if not barData then
+                    return true
+                end
+
+                local slotData = barData.slots[i]
                 return not slotData or (type(slotData) == "string" and slotData == "")
             end,
             get = function()
-                local slotData = self.db.profile.bars[self.selectedBar].slots[i]
+                local barData = self.selectedBar and self.db.profile.bars[self.selectedBar]
+                if not barData then
+                    return 0
+                end
+
+                local slotData = barData.slots[i]
                 if type(slotData) == "table" then
                     return slotData.offsetY or 0
                 end
+
                 return 0
             end,
             set = function(_, val)
-                local slotData = self.db.profile.bars[self.selectedBar].slots[i]
+                local barData = self.selectedBar and self.db.profile.bars[self.selectedBar]
+                if not barData then
+                    return
+                end
+
+                local slotData = barData.slots[i]
                 if type(slotData) == "string" then
                     -- Convert to table format
-                    self.db.profile.bars[self.selectedBar].slots[i] = {
+                    barData.slots[i] = {
                         module = slotData,
                         offsetX = 0,
                         offsetY = val,
