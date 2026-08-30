@@ -27,15 +27,14 @@ local IsShiftKeyDown          = IsShiftKeyDown
 local TogglePlayerSpellsFrame = TogglePlayerSpellsFrame
 -- C_AddOns
 local IsAddOnLoaded           = C_AddOns.IsAddOnLoaded
-local LoadAddOn               = C_AddOns.LoadAddOn
 -- C_ClassTalents
-local GetActiveConfigID       = C_ClassTalents.GetActiveConfigID
 local GetHasStarterBuild      = C_ClassTalents.GetHasStarterBuild
 local GetStarterBuildActive   = C_ClassTalents.GetStarterBuildActive
 local GetConfigIDsBySpecID    = C_ClassTalents.GetConfigIDsBySpecID
 local GetLastSelectedSavedConfigID = C_ClassTalents.GetLastSelectedSavedConfigID
 local LoadConfig              = C_ClassTalents.LoadConfig
 local SetStarterBuildActive   = C_ClassTalents.SetStarterBuildActive
+local UpdateLastSelectedSavedConfigID = C_ClassTalents.UpdateLastSelectedSavedConfigID
 -- C_SpecializationInfo
 local C_SpecializationInfo_GetAllSelectedPvpTalentIDs = C_SpecializationInfo.GetAllSelectedPvpTalentIDs
 local SetSpecialization       = C_SpecializationInfo.SetSpecialization or SetSpecialization
@@ -113,7 +112,7 @@ do
 
         if not InCombatLockdown() then
             queuedLoadoutID = arg1
-            C_ClassTalents.LoadConfig(arg1, true)
+            LoadConfig(arg1, true)
         end
     end
 end
@@ -234,13 +233,21 @@ function mod.Create(slotFrame)
 
         -- Build activeLoadoutText
         local activeLoadoutText = ""
-        if CanUseClassTalents and CanUseClassTalents() and GetLastSelectedSavedConfigID then
-            local classTalentID = GetLastSelectedSavedConfigID(infoID)
-            if classTalentID == STARTER_ID then
-                activeLoadoutText = "|cff00aaffStarter|r"
-            elseif classTalentID then
-                local cfg = C_Traits_GetConfigInfo and C_Traits_GetConfigInfo(classTalentID)
-                activeLoadoutText = cfg and cfg.name or ""
+        if IsAddOnLoaded("ImprovedTalentLoadouts") and ITLAPI and ITLAPI.GetCurrentLoadout then
+            local success, loadout = pcall(ITLAPI.GetCurrentLoadout, ITLAPI)
+            if success and loadout then
+                activeLoadoutText = loadout.name or ""
+            end
+        end
+        if activeLoadoutText == "" then
+            if CanUseClassTalents and CanUseClassTalents() and GetLastSelectedSavedConfigID then
+                local classTalentID = GetLastSelectedSavedConfigID(infoID)
+                if classTalentID == STARTER_ID then
+                    activeLoadoutText = "|cff00aaffStarter|r"
+                elseif classTalentID then
+                    local cfg = C_Traits_GetConfigInfo and C_Traits_GetConfigInfo(classTalentID)
+                    activeLoadoutText = cfg and cfg.name or ""
+                end
             end
         end
 
@@ -343,16 +350,34 @@ function mod.Create(slotFrame)
     ----------------------------------------------------
     -- Event Handler
     ----------------------------------------------------
-    local function OnEvent(self, event, ...)
-        if event == "TRAIT_CONFIG_UPDATED" and queuedLoadoutID then
-            C_ClassTalents.UpdateLastSelectedSavedConfigID(GetCurrentSpecID(), queuedLoadoutID)
-            queuedLoadoutID = nil
-        elseif event == "CONFIG_COMMIT_FAILED" then
-            queuedLoadoutID = nil
-        end
+    local function Refresh()
         BuildSpecList()
         BuildLoadoutList()
         UpdateDisplay()
+    end
+
+    local refreshPending = false
+
+    local function DelayedRefresh()
+        if refreshPending then return end
+        refreshPending = true
+        Delay(0, function()
+            refreshPending = false
+            Refresh()
+        end)
+    end
+
+    local function OnEvent(self, event, ...)
+        if event == "TRAIT_CONFIG_UPDATED" then
+            if queuedLoadoutID then
+                UpdateLastSelectedSavedConfigID(GetCurrentSpecID(), queuedLoadoutID)
+                queuedLoadoutID = nil
+            end
+            DelayedRefresh()
+            return
+        end
+
+        DelayedRefresh()
     end
 
     f:SetScript("OnEvent", OnEvent)
