@@ -1,0 +1,96 @@
+## Interface: 16001
+## Title: Simple DataTexts
+## Notes: Lightweight datatext framework.
+## Author: Cilraaz
+## Version: 1.60.1.01
+## SavedVariables: SDTDB, SimpleDatatextsDB
+
+# Libs
+libs/LibStub/LibStub.lua
+libs/CallbackHandler-1.0/CallbackHandler-1.0.xml
+libs/AceAddon-3.0/AceAddon-3.0.xml
+libs/AceEvent-3.0/AceEvent-3.0.xml
+libs/AceDB-3.0/AceDB-3.0.xml
+libs/AceDBOptions-3.0/AceDBOptions-3.0.xml
+libs/AceGUI-3.0/AceGUI-3.0.xml
+libs/AceConfig-3.0/AceConfig-3.0.xml
+libs/AceSerializer-3.0/AceSerializer-3.0.xml
+libs/LibDeflate/LibDeflate.lua
+libs/LibSharedMedia-3.0/LibSharedMedia-3.0.lua
+libs/LibDataBroker-1.1/LibDataBroker-1.1.lua
+libs/LibDBIcon-1.0/LibDBIcon-1.0.lua
+libs/AceGUI-3.0-SharedMediaWidgets/widget.xml
+
+# Core
+Core.lua
+
+# Locales
+Locales/enUS.lua
+Locales/deDE.lua
+Locales/esES.lua
+Locales/frFR.lua
+Locales/itIT.lua
+Locales/ptBR.lua
+Locales/ruRU.lua
+
+# Database
+Database/Migration.lua
+Database/ProfileManager.lua
+Database/Database.lua
+
+# Helpers
+Helpers/BarManager.lua
+Helpers/FontManager.lua
+Helpers/FormatUtils.lua
+Helpers/ModuleRegistry.lua
+Helpers/SystemUtils.lua
+Helpers/UpdateTicker.lua
+
+# Config
+Config/Config.lua
+
+# Ara
+Ara_Broker_Guild_Friends.lua
+
+# Datatext Modules
+modules/Agility.lua
+modules/Armor.lua
+modules/AttackPower.lua
+modules/Avoidance.lua
+modules/Bags.lua
+modules/Block.lua
+modules/CombatTimer.lua
+modules/Coordinates.lua
+modules/Crit.lua
+modules/CStar.lua
+modules/Currency.lua
+modules/Date.lua
+modules/Dodge.lua
+modules/Durability.lua
+modules/Experience.lua
+modules/Friends.lua
+modules/Gold.lua
+modules/Guild.lua
+modules/Haste.lua
+modules/Hearthstone.lua
+modules/Intellect.lua
+modules/ItemLevel.lua
+modules/LDBObjects.lua
+modules/Leech.lua
+modules/Mail.lua
+modules/MapName.lua
+#modules/Mastery.lua
+modules/MythicPlusKey.lua
+modules/Parry.lua
+modules/Quests.lua
+#modules/SpecClass.lua
+#modules/SpecLoot.lua
+#modules/SpecSwitch.lua
+modules/Speed.lua
+modules/SpellPower.lua
+modules/Stagger.lua
+modules/Strength.lua
+modules/System.lua
+modules/Time.lua
+modules/Versatility.lua
+modules/Volume.lua

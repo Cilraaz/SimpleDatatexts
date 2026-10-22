@@ -1,8 +1,8 @@
-## Interface: 120100
+## Interface: 120105
 ## Title: Simple DataTexts
 ## Notes: Lightweight datatext framework.
 ## Author: Cilraaz
-## Version: 12.1.0.06
+## Version: 12.1.5.01
 ## SavedVariables: SDTDB, SimpleDatatextsDB
 
 # Libs
