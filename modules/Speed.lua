@@ -6,6 +6,8 @@ local L = SDT.L
 
 local mod = {}
 
+local _, _, _, TOC = GetBuildInfo()
+
 ----------------------------------------------------
 -- Lua Locals
 ----------------------------------------------------
@@ -63,10 +65,14 @@ function mod.Create(slotFrame)
         local currentSpeed
         
         -- Check if player is dragonriding
-        local isGliding, _, glidingSpeed = GetGlidingInfo()
+        if TOC >= 120000 then
+            local isGliding, _, glidingSpeed = GetGlidingInfo()
 
-        if isGliding and glidingSpeed then
-            currentSpeed = glidingSpeed
+            if isGliding and glidingSpeed then
+                currentSpeed = glidingSpeed
+            else
+                currentSpeed = GetUnitSpeed("player")
+            end
         else
             currentSpeed = GetUnitSpeed("player")
         end
