@@ -373,7 +373,7 @@ function SDT:GetGeneralOptions()
                 type = "range",
                 name = L["Font Size"],
                 min = 4,
-                max = 40,
+                max = 72,
                 step = 1,
                 get = function() return self.db.profile.fontSize end,
                 set = function(_, val)

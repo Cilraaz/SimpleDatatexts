@@ -91,7 +91,7 @@ function SDT.ModuleRegistry:GlobalModuleSettings(moduleName)
     SDT.ModuleRegistry:AddModuleConfigSeparator(moduleName, L["Font Settings"])
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "checkbox", L["Override Global Font"], "overrideFont", false)
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "font", L["Display Font:"], "font", "Friz Quadrata TT")
-    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "fontSize", L["Font Size"], "fontSize", 12, 4, 40, 1)
+    SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "fontSize", L["Font Size"], "fontSize", 12, 4, 72, 1)
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "fontOutline", L["Font Outline"], "fontOutline", "NONE", {
         ["NONE"] = L["None"],
         ["OUTLINE"] = "Outline",
