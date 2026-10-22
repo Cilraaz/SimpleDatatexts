@@ -1,4 +1,4 @@
 ## Changes
-- 04eb96f build(TOC): 12.1.0.06 release
-- fbc649b feat(SpecClass): Add support for Talent Loadout Manager
-- 587fc23 feat(SpecSwitch): Add support for Talent Loadout Manager
+- 1dedf2d build(TOC): 12.1.5.01 and 1.60.1.01 release
+- f5f6586 feat(Speed): Modify Speed module for Forever
+- f468a28 feat(locale): Refine French localization strings
