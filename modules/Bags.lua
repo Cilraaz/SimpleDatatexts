@@ -23,6 +23,7 @@ local ContainerIDToInventoryID   = C_Container.ContainerIDToInventoryID
 local GetBagName                 = C_Container.GetBagName
 local GetContainerNumFreeSlots   = C_Container.GetContainerNumFreeSlots
 local GetContainerNumSlots       = C_Container.GetContainerNumSlots
+local GetItemQualityColor        = C_Item.GetItemQualityColor
 
 ----------------------------------------------------
 -- File Locals
