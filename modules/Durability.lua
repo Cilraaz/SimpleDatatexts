@@ -16,7 +16,7 @@ local wipe   = table.wipe
 ----------------------------------------------------
 -- WoW API Locals
 ----------------------------------------------------
-local GetCoinTextureString       = GetCoinTextureString
+local GetCoinTextureString       = C_CurrencyInfo.GetCoinTextureString
 local GetInventoryItemDurability = GetInventoryItemDurability
 local GetInventoryItem           = C_TooltipInfo.GetInventoryItem
 local GetInventoryItemLink       = GetInventoryItemLink
@@ -215,7 +215,7 @@ function mod.Create(slotFrame)
 
         if totalRepairCost and totalRepairCost > 0 then
             SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, " ")
-            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, REPAIR_COST or "Repair Cost", GetCoinTextureString(totalRepairCost) or tostring(totalRepairCost), 0.6, 0.8, 1, 1, 1, 1)
+            SDT.FormatUtils:AddTooltipLine(SDT.Tooltip, nil, REPAIR_COST or "Repair Cost:", GetCoinTextureString(totalRepairCost) or tostring(totalRepairCost), 0.6, 0.8, 1, 1, 1, 1)
         end
 
         SDT.Tooltip:Show()
