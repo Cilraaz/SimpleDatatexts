@@ -16,12 +16,12 @@ local random = math.random
 ----------------------------------------------------
 local C_ToyBox = C_ToyBox
 local C_Item = C_Item
+local GetItemCount = C_Item.GetItemCount
 local GetItemInfo = C_Item.GetItemInfo
 local GetItemInfoInstant = C_Item.GetItemInfoInstant
 local PlayerHasToy = PlayerHasToy
-local IsUsableItem = C_Item.IsUsableItem
 local GetItemCooldown = C_Item.GetItemCooldown
-local UseItemByName = UseItemByName
+local UseItemByName = C_Item.UseItemByName
 local InCombatLockdown = InCombatLockdown
 
 ----------------------------------------------------
@@ -100,7 +100,7 @@ local function GetAvailableHearthstones()
             hasItem = PlayerHasToy(hs.id)
         else
             -- Check if player has the item in inventory
-            hasItem = C_Item.GetItemCount(hs.id) > 0
+            hasItem = GetItemCount(hs.id) > 0
         end
         
         if hasItem then
