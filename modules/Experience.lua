@@ -45,7 +45,9 @@ local function SetupModuleConfig()
     SDT.ModuleRegistry:AddModuleConfigSetting(moduleName, "select", L["Display Format"], "expFormat", 1, {
         [1] = "XP / Max",
         [2] = "XP / Max (Percent)",
-        [3] = "XP / Max (Percent) (Remaining)"
+        [3] = "XP / Max (Percent) (Remaining)",
+        [4] = "L: XP / Max (Percent) (Remaining)",
+        [5] = "Level: XP / Max (Percent) (Remaining)"
     })
 
     -- Bar Toggles
@@ -265,6 +267,26 @@ function mod.Create(slotFrame)
                 FormatValue(maxXP),
                 xpPercent,
                 FormatValue(xpRemaining))
+
+        -- Format mode 4: L: XP / XPMax (Percent %) (Remaining)
+        elseif format_mode == 4 then
+            textString = format("%s%d: %s / %s ($.1f%%) (%s)",
+                "L",
+                SDTC.playerLevel,
+                FormatValue(currentXP),
+                FormatValue(maxXP),
+                xpPercent,
+                FormatValue(xpRemaining))
+
+        -- Format mode 5: Level: XP / XPMax (Percent %) (Remaining)
+        elseif format_mode == 5 then
+            textString = format("%s %d: %s / %s ($.1f%%) (%s)",
+                "Level",
+                SDTC.playerLevel,
+                FormatValue(currentXP),
+                FormatValue(maxXP),
+                xpPercent,
+                FormatValue(xpRemaining))
         end
 
         local showRested = SDT:GetModuleSetting(moduleName, "expShowRested", true)
@@ -372,12 +394,14 @@ function mod.Create(slotFrame)
 
     -- Event Handlers
     local function OnEvent(self, event, ...)
-        if event == "PLAYER_ENTERING_WORLD"
-        or event == "PLAYER_XP_UPDATE"
-        or event == "PLAYER_LEVEL_UP" then
-            if event == "PLAYER_LEVEL_UP" then
+        if event == "PLAYER_LEVEL_UP" then
+            C_Timer.After(0.1, function()
                 SDTC.playerLevel = UnitLevel("player")
-            end
+                UpdateExperience()
+            end)
+        end
+        if event == "PLAYER_ENTERING_WORLD"
+        or event == "PLAYER_XP_UPDATE" then
             UpdateExperience()
         end
     end
