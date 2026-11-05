@@ -2,7 +2,7 @@
 ## Title: Simple DataTexts
 ## Notes: Lightweight datatext framework.
 ## Author: Cilraaz
-## Version: 1.0.1
+## Version: 1.0.2
 ## SavedVariables: SDTDB, SimpleDatatextsDB
 
 # Libs
