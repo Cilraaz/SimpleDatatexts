@@ -161,7 +161,7 @@ local BNGetNumFriends = BNGetNumFriends
 --Begin Compat wrappers for retail and classic to access same functions and expect same returns
 --Retail kind of has these for now, but won't forever, and classic is not expected to make same API restructuring, so this ugly mess is probably required forever
 local function GetBNGetFriendInfo(friendIndex)
-		if wowTOC >= 90000 then
+		if wowTOC >= 90000 or (wowTOC < 20000 and wowTOC >= 16000) then
 			local accountInfo = C_BattleNet.GetFriendAccountInfo(friendIndex) or {};
 			local wowProjectID = accountInfo and accountInfo.gameAccountInfo and accountInfo.gameAccountInfo.wowProjectID or 0;
 			local clientProgram = accountInfo and accountInfo.gameAccountInfo and accountInfo.gameAccountInfo.clientProgram ~= "" and accountInfo.gameAccountInfo.clientProgram or nil;
@@ -180,7 +180,7 @@ local function GetBNGetFriendInfo(friendIndex)
 end
 
 local function GetBNGetGameAccountInfo(toonId)
-	if wowTOC >= 90000 then
+	if wowTOC >= 90000 or (wowTOC < 20000 and wowTOC >= 16000) then
 		local gameAccountInfo = _G.C_BattleNet.GetGameAccountInfoByID(toonId) or {}
 		local wowProjectID = gameAccountInfo.wowProjectID or 0;
 		local characterName = gameAccountInfo.characterName or "";
