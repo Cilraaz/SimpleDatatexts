@@ -123,6 +123,9 @@ end
 function SDT:GetProfileOptions()
     local tbl = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
 
+    local _, _, _, wowTOC = GetBuildInfo()
+    if wowTOC < 120000 then return tbl end
+
     -- Order 42 puts it right after "Existing Profiles" (40).
     local specArgs = {
         specDesc = {
