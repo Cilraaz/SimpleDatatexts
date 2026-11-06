@@ -270,7 +270,7 @@ function mod.Create(slotFrame)
 
         -- Format mode 4: L: XP / XPMax (Percent %) (Remaining)
         elseif format_mode == 4 then
-            textString = format("%s%d: %s / %s ($.1f%%) (%s)",
+            textString = format("%s%d: %s / %s (%.1f%%) (%s)",
                 "L",
                 SDTC.playerLevel,
                 FormatValue(currentXP),
@@ -280,7 +280,7 @@ function mod.Create(slotFrame)
 
         -- Format mode 5: Level: XP / XPMax (Percent %) (Remaining)
         elseif format_mode == 5 then
-            textString = format("%s %d: %s / %s ($.1f%%) (%s)",
+            textString = format("%s %d: %s / %s (%.1f%%) (%s)",
                 "Level",
                 SDTC.playerLevel,
                 FormatValue(currentXP),
